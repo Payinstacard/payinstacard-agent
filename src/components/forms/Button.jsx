@@ -6,7 +6,7 @@ function Button(props) {
       <button
         type={props?.type || "button"}
         {...props?.buttonActions}
-        className={`flex w-full justify-center rounded-full px-3 py-3 font-semibold leading-6 shadow-sm  ${
+        className={`flex w-full text-base justify-center rounded-lg px-3 py-3 font-semibold leading-6 shadow-sm  ${
           props?.outlined
             ? "border-2 border-primary text-primary"
             : "bg-primary hover:bg-primarylight text-[#FFFFFF]"

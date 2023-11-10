@@ -8,6 +8,8 @@ import { useFormik } from "formik";
 import { LoginPageSchema } from "../schemas/ValidationSchema";
 import { useAuth } from "../stores/AuthContext";
 import LoginCard from "../assets/img/LoginCard.png";
+import { signIn } from "../Firebase";
+import { Firebase_login_error } from "../services/firebaseErrors";
 // import { signIn } from "../../Firebase";
 // import "firebase/auth";
 // import { Firebase_login_error } from "../../service/firebaseErrors";
@@ -32,34 +34,32 @@ function Login() {
       validationSchema: LoginPageSchema,
 
       onSubmit: async (values) => {
-        user.login();
-        // const MAX_LOGIN_ATTEMPTS = 3; // Set your desired maximum attempts here
-        // const LOCKOUT_DURATION = 9000; // 5 minutes in milliseconds (adjust as needed)
+        const MAX_LOGIN_ATTEMPTS = 3; // Set your desired maximum attempts here
+        const LOCKOUT_DURATION = 9000; // 5 minutes in milliseconds (adjust as needed)
 
-        // // console.log(loginAttempts);
+        // console.log(loginAttempts);
 
-        // if (accountLock) {
-        //   return; // Account is already locked
-        // }
+        if (accountLock) {
+          return; // Account is already locked
+        }
 
-        // if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-        //   setAccountLock(true);
-        //   setLockOutDuration(LOCKOUT_DURATION);
-        //   setTimeout(() => {
-        //     setAccountLock(false);
-        //     setLockOutDuration(0);
-        //   }, LOCKOUT_DURATION);
-        //   return;
-        // }
-
-        // try {
-        //   setLoad(true);
-        //   await signIn(values.email, values.password);
-        // } catch (error) {
-        //   setLoad(false);
-        //   setLoginAttempts(loginAttempts + 1);
-        //   errors.message = Firebase_login_error(error);
-        // }
+        if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+          setAccountLock(true);
+          setLockOutDuration(LOCKOUT_DURATION);
+          setTimeout(() => {
+            setAccountLock(false);
+            setLockOutDuration(0);
+          }, LOCKOUT_DURATION);
+          return;
+        }
+        try {
+          setLoad(true);
+          await signIn(values.email, values.password);
+        } catch (error) {
+          setLoad(false);
+          setLoginAttempts(loginAttempts + 1);
+          errors.message = Firebase_login_error(error);
+        }
       },
     });
 
@@ -79,17 +79,26 @@ function Login() {
             <Loader />
           ) : (
             <>
-              <div>
-                <div>{/* <img src={LoginCard} alt="LoginCard-Image" /> */}</div>
-                <div className="flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+              <div className="w-full flex">
+                <div className="w-1/2">
+                  <img
+                    src={LoginCard}
+                    alt="LoginCard-Image"
+                    className="w-full"
+                  />
+                </div>
+                <div className="w-1/2 flex flex-col items-center justify-center px-6 py-12 lg:px-8">
                   <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img className=" w-20" src={LogoSvg} alt="Your Company" />
-                    <h2 className="mt-10 text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                      Login here
-                    </h2>
+                    <h1 className="mt-10 text-[40px] font-bold leading-9 tracking-tight text-gray-900 text-[#1E293B]">
+                      Login
+                    </h1>
+                    <p className="font-medium	mt-4 text-base text-[#64748B]">
+                      Nice to meet you! Please enter your details.
+                    </p>
                   </div>
 
-                  <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                  <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form className="space-y-6" onSubmit={handleSubmit}>
                       <Input
                         name="email"
@@ -142,7 +151,7 @@ function Login() {
                       <div className="text-right">
                         <Link
                           to="/forgotpassword"
-                          className="font-semibold text-[#00006b]"
+                          className="font-semibold text-sm text-[#00006b]"
                         >
                           Forgot password?
                         </Link>

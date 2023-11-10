@@ -3,11 +3,11 @@ import { useAuth } from "../stores/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function AgentsLayout(props) {
-  const user = useAuth();
+  const auth = useAuth();
   const navigation = useNavigate();
 
   const logout = () => {
-    user.logout();
+    auth.logoutCurrentUser();
     navigation("/");
   };
   return (

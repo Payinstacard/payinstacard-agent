@@ -9,4 +9,3 @@ function DashboardLayout(props) {
 }
 
 export default DashboardLayout;
-<h1>DashboardLayout</h1>;

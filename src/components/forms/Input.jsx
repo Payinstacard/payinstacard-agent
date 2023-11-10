@@ -6,12 +6,12 @@ function Input(props) {
       <div className="flex flex-col mb-4">
         <label
           htmlFor={props.name}
-          className="block text-sm font-medium leading-6 text-gray-900"
+          className="block text-[#5E6366] text-sm font-medium leading-6 text-gray-900"
         >
           {props.label}
         </label>
 
-        <div className="relative">
+        <div className="relative ">
           {props?.icon && props?.icon !== "" && (
             <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
               <div className="flex items-center justify-center rounded-tl rounded-bl z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
@@ -28,7 +28,7 @@ function Input(props) {
             onChange={props.onChange}
             onBlur={props.onBlur}
             required={props?.required || false}
-            className="text-sm sm:text-base relative w-full border-0 border-b placeholder-gray-400  focus:outline-none focus-visible:outline-none py-2 pr-2 pl-12"
+            className="text-sm bg-[#EFF1F999] sm:text-base relative w-full border-0 rounded-lg placeholder-[#7F7F7F]  focus:outline-none focus-visible:outline-none py-2 pr-2 pl-12"
           />
         </div>
         {props?.error && props?.error && props.touch !== "" && (

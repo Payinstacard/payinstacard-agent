@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, defer } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import { HomeLayout } from "../layouts/HomeLayout";
 import HomePage from "../pages/Home";
@@ -7,11 +7,18 @@ import ForgotPassword from "../pages/ForgotPassword";
 import AgentsLayout from "../layouts/AgentsLayout";
 import { ProtectedLayout } from "../layouts/ProtectedLayout";
 import ErrorPage from "./../model/ErrorPage";
+// import { defer } from "lodash";
+
+const getUserData = async () => {
+  const user = await window.localStorage.getItem("user");
+  return user;
+};
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <AuthLayout />,
+    loader: () => defer({ userPromise: getUserData() }),
     children: [
       {
         path: "/",
@@ -38,6 +45,10 @@ export const router = createBrowserRouter([
           {
             path: "",
             element: <AgentsLayout />,
+          },
+          {
+            path: "sales",
+            element: <h1>This is sales page</h1>,
           },
         ],
       },

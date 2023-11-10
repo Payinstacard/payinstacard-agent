@@ -12,7 +12,7 @@ module.exports = {
         blackBlur2: "#5E6366",
       },
       fontFamily: {
-        lato: ["Inter", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
     },
   },

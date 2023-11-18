@@ -3,7 +3,8 @@ import { NavLink, useLocation } from "react-router-dom";
 import MenuItem from "./MenuItem";
 
 import DashboardIcon from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
-import Sales from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
+import Customers from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
+import Transactions from "../../assets/svg/ProtectedLayoutImages/sidebar/Transactions.svg";
 import LogOut from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
 
 function Sidebar() {
@@ -18,9 +19,14 @@ function Sidebar() {
       src: DashboardIcon,
     },
     {
-      title: "Sales",
-      path: "/dashboard/sales",
-      src: Sales,
+      title: "Customers",
+      path: "/dashboard/customers",
+      src: Customers,
+    },
+    {
+      title: "Transactions",
+      path: "/dashboard/transactions",
+      src: Transactions,
     },
     // { title: "Users", path: "/dashboard/users", src: <CgProfile /> },
     // {

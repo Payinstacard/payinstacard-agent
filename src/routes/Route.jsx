@@ -8,6 +8,8 @@ import AgentsLayout from "../layouts/AgentsLayout";
 import { ProtectedLayout } from "../layouts/ProtectedLayout";
 import ErrorPage from "./../model/ErrorPage";
 // import { defer } from "lodash";
+import Customers from "./../pages/Customers";
+import AddNewCustomer from "../pages/AddNewCustomer";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -47,8 +49,16 @@ export const router = createBrowserRouter([
             element: <AgentsLayout />,
           },
           {
-            path: "sales",
-            element: <h1>This is sales page</h1>,
+            path: "customers",
+            element: <Customers />,
+          },
+          {
+            path: "customers/add",
+            element: <AddNewCustomer />,
+          },
+          {
+            path: "transactions",
+            element: <h1>This is Transactions page</h1>,
           },
         ],
       },

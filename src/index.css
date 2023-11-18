@@ -11,3 +11,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.inputWithButton {
+  position: relative;
+}
+
+.inputWithButton input {
+  padding-right: 60px;
+}
+
+.inputWithButton button {
+  position: absolute;
+  background-color: #00006b;
+  color: white;
+  padding: 5px 25px 5px 25px;
+  border-radius: 8px;
+  font-size: 12px;
+  right: 10px;
+  top: 5px;
+}

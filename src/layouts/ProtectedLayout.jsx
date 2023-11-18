@@ -19,7 +19,7 @@ export const ProtectedLayout = () => {
   return (
     <>
       {/**For navigation bar  */}
-      <div className="flex px-10 py-[17px]">
+      <div className="flex px-10 py-[17px] border-b">
         <div className="w-[196px]">
           <img src={PayinstaLogo} alt="" className="w-[63px]" />
         </div>
@@ -47,12 +47,12 @@ export const ProtectedLayout = () => {
           </div>
         </div>
       </div>
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex  h-screen bg-gray-100">
         <div className="w-[236px] bg-white">
           <Sidebar />
         </div>
         <div className="overflow-auto grow">
-          container
+          {/* container */}
           <div className="m-6 rounded-xl">{loading ? <Loader /> : outlet}</div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import React, { Children, Suspense } from "react";
 import { AuthContextProvider } from "../stores/AuthContext";
 import { Await, useLoaderData, useOutlet } from "react-router-dom";
-import validate from "./../schemas/AgentValidation";
 import Loader from "../components/Loader/Loader";
 
 function AuthLayout() {

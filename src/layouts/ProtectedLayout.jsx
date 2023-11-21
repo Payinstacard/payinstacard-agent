@@ -1,7 +1,7 @@
 import { Navigate, useOutlet } from "react-router-dom";
 import { useAuth } from "../stores/AuthContext";
 import Loader from "../components/Loader/Loader";
-import PayinstaLogo from "../assets/svg/Payinsta_trademark_Logo.svg";
+import PayinstaLogo from "../assets/svg/payinstaLogo.svg";
 import SearchIcon from "../assets/svg/ProtectedLayoutImages/SearchIcon.svg";
 import BellIcon from "../assets/svg/ProtectedLayoutImages/Bell_Icon.svg";
 import UserProfileImg from "../assets/svg/ProtectedLayoutImages/UserProfileImage.svg";

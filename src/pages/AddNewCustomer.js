@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import validate from "../schemas/CustomerValidation";
+import { useParams } from "react-router-dom";
 
 const initialErrors = {
   firstName: "",
@@ -29,7 +30,44 @@ function AddNewCustomer() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [load, setLoad] = useState(false);
   const [otp, setOtp] = useState("");
+  const params = useParams();
 
+  const id = params.id;
+
+  const dummyData = [
+    {
+      Customer_data: {
+        Customer_id: "Cust1",
+        Email: "customer1@example.com",
+        Beneficiaries: 1,
+      },
+      mobile: "1234567890",
+      created_At: "2023-07-31T11:51:49.892Z",
+      transactions: [
+        { OrderPaymentStatus: "200" },
+        { OrderPaymentStatus: "201" },
+        // Add more transaction objects as needed
+      ],
+    },
+    {
+      Customer_data: {
+        Customer_id: "Cust2",
+        Email: "customer2@example.com",
+        Beneficiaries: 2,
+      },
+      mobile: "9876543210",
+      created_At: "2023-08-01T14:22:33.456Z",
+      transactions: [
+        { OrderPaymentStatus: "200" },
+        // Add more transaction objects as needed
+      ],
+    },
+    // Add more objects for testing
+  ];
+
+  const userData = dummyData.find(
+    (item) => item?.Customer_data?.Customer_id === id
+  );
   const handleInputChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };

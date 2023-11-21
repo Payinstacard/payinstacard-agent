@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import PageTitle from "./../components/model/PageTitle";
 
 import Card from "../components/model/Card";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Delete from "../assets/svg/delete.svg";
-import Edit from "../assets/svg/delete.svg";
+import Edit from "../assets/svg/edit.svg";
 import { getDateString } from "../services/helper";
 import DataTable from "react-data-table-component";
 import _ from "lodash";
@@ -78,12 +78,48 @@ const customStyles = {
     style: {
       fontSize: "16px",
       fontWeight: "bold",
+      backgroundColor: "#F9FCFF",
     },
   },
   cells: {
-    style: {},
+    style: {
+      backgroundColor: "",
+      margin: "20px 0",
+    },
   },
 };
+
+const dummyData = [
+  {
+    Customer_data: {
+      Customer_id: "Cust1",
+      Email: "customer1@example.com",
+      Beneficiaries: 1,
+    },
+    mobile: "1234567890",
+    created_At: "2023-07-31T11:51:49.892Z",
+    transactions: [
+      { OrderPaymentStatus: "200" },
+      { OrderPaymentStatus: "201" },
+      // Add more transaction objects as needed
+    ],
+  },
+  {
+    Customer_data: {
+      Customer_id: "Cust2",
+      Email: "customer2@example.com",
+      Beneficiaries: 2,
+    },
+    mobile: "9876543210",
+    created_At: "2023-08-01T14:22:33.456Z",
+    transactions: [
+      { OrderPaymentStatus: "200" },
+      // Add more transaction objects as needed
+    ],
+  },
+  // Add more objects for testing
+];
+
 function Customers(props) {
   const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
@@ -99,20 +135,68 @@ function Customers(props) {
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
 
-  let filteredData = [...data].reverse();
-  if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
-    const startDate = new Date(dateRange.startDate);
-    startDate.setUTCHours(0, 0, 0, 0);
-    const endDate = new Date(dateRange.endDate);
-    endDate.setUTCHours(23, 59, 59, 999);
-    filteredData = filteredData.filter((item) => {
-      const itemDate = new Date(item.created_At);
-      return (
-        startDate.getTime() <= itemDate.getTime() &&
-        itemDate.getTime() <= endDate.getTime()
-      );
+  React.useEffect(() => {
+    let mapData = dummyData.map((item, index) => {
+      return { ...item, ["Index"]: dummyData.length - index };
     });
-  }
+
+    if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
+      const startDate = new Date(dateRange.startDate);
+      startDate.setUTCHours(0, 0, 0, 0);
+      const endDate = new Date(dateRange.endDate);
+      endDate.setUTCHours(23, 59, 59, 999);
+      mapData = mapData.filter((item) => {
+        const itemDate = new Date(item.created_At);
+        return (
+          startDate.getTime() <= itemDate.getTime() &&
+          itemDate.getTime() <= endDate.getTime()
+        );
+      });
+    }
+    if (filterText !== "") {
+      mapData = mapData.filter((item) => {
+        let name = `${item.Customer_data.FirstName} ${item.Customer_data.LastName}`;
+        return (
+          name.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.mobile.toLowerCase().includes(filterText.toLowerCase())
+        );
+      });
+    }
+    if (currentFilterBy !== false) {
+      mapData = mapData.filter((item) => {
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 30);
+        let transactions_in_last_month = item.transactions.some(
+          (transaction) => {
+            const transactionDate = new Date(transaction.created_At);
+            return transactionDate >= currentDate;
+          }
+        );
+
+        if (currentFilterBy === "activeuser") {
+          return transactions_in_last_month;
+        } else if (currentFilterBy === "totaluser") {
+          return !item.disabled === true;
+        } else if (currentFilterBy === "inactiveuser") {
+          return !transactions_in_last_month && !item.disabled === true;
+        } else if (currentFilterBy === "suspendeduser") {
+          return item.disabled === true;
+        } else if (currentFilterBy === "kycuser") {
+          return item.kyc_status === true;
+        } else if (currentFilterBy === "approvalpendinguser") {
+          return (
+            item.kyc_status === false &&
+            item.kyc_details.aadhaarVerified === true &&
+            item.kyc_details._PANVerified === true &&
+            !item.disabled === true
+          );
+        } else {
+          return true;
+        }
+      });
+    }
+    setFilteredItems(mapData.reverse());
+  }, [data, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -130,12 +214,12 @@ function Customers(props) {
     };
 
     return (
-      <div className="w-full flex flex-col row justify-between items-center mb-5 p-0">
+      <div className="w-full flex flex-col xl:flex-row justify-between items-center mb-5 p-0">
         <h3 className="mb-2 sm:mb-0">List</h3>
 
         {/* <div className="w-10/11 flex flex-col sm:flex-row item-stratch gap-2 sm:gap-5 justify-end items-center"> */}
 
-        <div className="flex flex-col row item-stratch gap-3 sm:gap-4 md:gap-5 items-center">
+        <div className="flex flex-col lg:flex-row flex-wrap lg:items-start item-stratch gap-3 sm:gap-4 md:gap-5 items-center">
           <div className="w-[290px]">
             <Datepicker
               placeholder={"Select Date"}
@@ -157,19 +241,13 @@ function Customers(props) {
           </div>
           <div>
             <Export
-              onExport={() => downloadCSVOfUsers(filteredData, selectedRows)}
+              onExport={() => downloadCSVOfUsers(filteredItems, selectedRows)}
             />
           </div>
         </div>
       </div>
     );
-  }, [
-    filterText,
-    resetPaginationToggle,
-    filteredItems,
-    selectedRows,
-    filteredData,
-  ]);
+  }, [filterText, resetPaginationToggle, filteredItems, selectedRows]);
 
   const dateSortFun = (rowA, rowB) => {
     const dateA = new Date(rowA.created_At);
@@ -188,13 +266,13 @@ function Customers(props) {
     {
       name: "SL",
       selector: (row, index) => index + 1,
-      width: "55px",
+      // width: "55px",
     },
     {
       name: "Customer Name",
       cell: (row, index) => (
         <div>
-          {/* <NavLink
+          <NavLink
             to={`/dashboard/users/${row.Customer_data.Customer_id}/${row.mobile}`}
             className=""
             title="View"
@@ -202,84 +280,86 @@ function Customers(props) {
             <p className="mb-1 font-bold border-b border-black">
               {row.Customer_data.Customer_id}
             </p>
-          </NavLink> */}
+          </NavLink>
 
-          <p>{index}</p>
+          {/* <p>{index}</p> */}
         </div>
       ),
-      width: "180px",
+      // width: "180px",
       sortable: true,
       //   sortFunction: caseInsensitiveSort,
     },
-    // {
-    //   name: "Contact Information",
-    //   cell: (row) => (
-    //     <div>
-    //       <p className="mb-1">{row.mobile}</p>
-    //       <p>{row.Customer_data.Email}</p>
-    //     </div>
-    //   ),
-    //   width: "250px",
-    // },
-    // {
-    //   name: "Beneficiaries",
-    //   cell: (row) => (
-    //     <div>
-    //       <p className="mb-1">{row.mobile}</p>
-    //       <p>{row.Customer_data.Email}</p>
-    //     </div>
-    //   ),
-    //   width: "250px",
-    // },
-    // {
-    //   name: "Date Of Onboarded",
-    //   selector: (row) => getDateString(row.created_At),
-    //   sortable: "true",
-    //   width: "140px",
-    //   sortFunction: dateSortFun,
-    // },
-    // {
-    //   name: "Total Transactions",
-    //   cell: (row) => (
-    //     <div>
-    //       <p className="mb-1">Total :- {row.transactions.length}</p>
-    //       <p>
-    //         Amount :-
-    //         {row.transactions.length -
-    //           row.transactions.filter(
-    //             (item) =>
-    //               item.OrderPaymentStatus !== "200" &&
-    //               item.OrderPaymentStatus !== "201"
-    //           ).length}
-    //       </p>
-    //     </div>
-    //   ),
-    //   width: "150px",
-    //   sortable: true,
-    // },
-    // {
-    //   name: "Actions",
-    //   button: "true",
-    //   Cell: ({ row }) => (
-    //     <div className="flex justify-between">
-    //       <button
-    //         onClick={() => console.log("Pay clicked for row", row.original)}
-    //       >
-    //         Pay
-    //       </button>
-    //       <button
-    //         onClick={() => console.log("Edit clicked for row", row.original)}
-    //       >
-    //         <Edit />
-    //       </button>
-    //       <button
-    //         onClick={() => console.log("Delete clicked for row", row.original)}
-    //       >
-    //         <Delete />
-    //       </button>
-    //     </div>
-    //   ),
-    // },
+    {
+      name: "Contact Information",
+      grow: 3,
+      cell: (row) => (
+        <div>
+          <p className="mb-1">{row.mobile}</p>
+          <p>{row.Customer_data.Email}</p>
+        </div>
+      ),
+      // width: "250px",
+    },
+    {
+      name: "Beneficiaries",
+      cell: (row) => (
+        <div>
+          <p>{row.Customer_data.Beneficiaries}</p>
+        </div>
+      ),
+      // width: "250px",
+    },
+    {
+      name: "Date Of Onboarded",
+      selector: (row) => getDateString(row.created_At),
+      sortable: "true",
+      // width: "140px",
+      sortFunction: dateSortFun,
+    },
+    {
+      name: "Total Transactions",
+      grow: 2,
+      cell: (row) => (
+        <div>
+          <p className="mb-1">Transactions :- {row.transactions.length}</p>
+          <p>
+            Amount :-
+            {row.transactions.length -
+              row.transactions.filter(
+                (item) =>
+                  item.OrderPaymentStatus !== "200" &&
+                  item.OrderPaymentStatus !== "201"
+              ).length}
+          </p>
+        </div>
+      ),
+      // width: "150px",
+      sortable: true,
+    },
+    {
+      name: "Actions",
+      grow: 2,
+      // button: "true",
+      cell: (row) => (
+        <>
+          <button
+            className="bg-primary text-white py-1.5 px-3.5 mr-2 rounded"
+            onClick={() => console.log("clicked")}
+          >
+            Pay
+          </button>
+          {/* <button>
+            <img src={Edit} alt="" className="w-8 h-8 mr-2" />
+          </button> */}
+          <Link to={`add/${row.Customer_data?.Customer_id}`}>
+            <img src={Edit} alt="" className="w-8 h-8 mr-2" />
+          </Link>
+          <button>
+            <img src={Delete} alt="" className="w-8 h-8" />
+          </button>
+        </>
+      ),
+    },
   ];
   return (
     <div>
@@ -292,7 +372,7 @@ function Customers(props) {
         {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
         <DataTable
           columns={columns}
-          data={filteredData}
+          data={filteredItems}
           pagination
           paginationComponent={Pagination}
           progressPending={load}

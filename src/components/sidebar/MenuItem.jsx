@@ -31,7 +31,7 @@ function MenuItem(props) {
           //   } ${linkClass} ${buttonStyles} mt-2
           //   `;
           // }}
-          className="flex gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 pl-3 rounded-lg cursor-pointer mt-2	"
+          className="flex gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 pl-3 rounded-lg cursor-pointer mt-2"
         >
           <span className="">
             <img src={props.menu.src} alt="" className="" />

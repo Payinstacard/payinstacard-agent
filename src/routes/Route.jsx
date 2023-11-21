@@ -57,6 +57,10 @@ export const router = createBrowserRouter([
             element: <AddNewCustomer />,
           },
           {
+            path: "customers/add/:id",
+            element: <AddNewCustomer />,
+          },
+          {
             path: "transactions",
             element: <h1>This is Transactions page</h1>,
           },

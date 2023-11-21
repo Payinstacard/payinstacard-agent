@@ -6,7 +6,7 @@ import Login from "../pages/Login";
 import ForgotPassword from "../pages/ForgotPassword";
 import AgentsLayout from "../layouts/AgentsLayout";
 import { ProtectedLayout } from "../layouts/ProtectedLayout";
-import ErrorPage from "./../model/ErrorPage";
+import ErrorPage from "../pages/ErrorPage";
 // import { defer } from "lodash";
 import Customers from "./../pages/Customers";
 import AddNewCustomer from "../pages/AddNewCustomer";

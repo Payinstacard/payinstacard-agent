@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -12,7 +14,7 @@ module.exports = {
         blackBlur2: "#5E6366",
       },
       fontFamily: {
-        inter: ["Inter", "sans-serif"],
+        sans: ["Inter var", "sans-serif"],
       },
     },
   },

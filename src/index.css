@@ -30,3 +30,28 @@
   right: 10px;
   top: 5px;
 }
+
+.react-data-table > header {
+  padding: 0;
+}
+
+.rdt_TableCol input[type="checkbox"],
+.rdt_TableRow input[type="checkbox"] {
+  color: #00006b;
+  border-radius: 4px;
+}
+
+.inputMobile input {
+  background-color: transparent;
+  border: none;
+}
+.inputMobile:hover input,
+.inputMobile:active input,
+.inputMobile:focus input,
+.inputMobile input:hover,
+.inputMobile input:active,
+.inputMobile input:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}

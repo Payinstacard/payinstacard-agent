@@ -54,13 +54,13 @@ function AgentsLayout(props) {
           title={"Commission Earned"}
         />
       </div>
-      <div className="flex justify-between">
+      {/* <div className="flex justify-between">
         <div className="w-3/4">graph here</div>
         <div className="w-1/4 h-[300px]">pie chart here</div>
-      </div>
+      </div> */}
 
-      <p>for logout</p>
-      <button onClick={logout}>logout</button>
+      {/* <p>for logout</p>
+      <button onClick={logout}>logout</button> */}
     </>
   );
 }

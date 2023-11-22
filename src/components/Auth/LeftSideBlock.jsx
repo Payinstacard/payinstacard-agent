@@ -4,7 +4,7 @@ import UsersAvatars from "../../assets/img/UsersAvatars.png";
 
 const LeftSideBlock = () => {
   return (
-    <div class="flex-1 flex items-center relative md:flex flex-col md:flex-row w-[100%] md:w-[50%]">
+    <div class="flex-1 flex items-center relative hidden md:flex flex-col md:flex-row w-[100%] md:w-[50%]">
       <img
         className="absolute left-0 top-0 w-full h-full z-1 object-cover"
         src={LoginCard1}

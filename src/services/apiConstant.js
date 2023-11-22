@@ -1,5 +1,6 @@
 export const ADD_CUSTOMER = "/api/v2/agents/agents/create-customer";
-export const FETCH_CUSTOMER = "api/v2/agents/agents/fetchAll-custome";
+export const FETCH_CUSTOMER = "api/v2/agents/agents/fetchAll-customer";
+export const DELETE_CUSTOMER = "api/v2/agents/agents/delete-customer";
 
 export const SEND_OTP = "/api/v2/agents/otp/send";
 export const RESEND_OTP = "/api/v2/agents/otp/resend";

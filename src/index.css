@@ -55,3 +55,7 @@
   outline: none;
   box-shadow: none;
 }
+
+.PhoneInputInput {
+  background-color: #eff1f999 !important;
+}

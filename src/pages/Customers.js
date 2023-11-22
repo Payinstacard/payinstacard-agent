@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageTitle from "./../components/model/PageTitle";
 
 import _ from "lodash";
@@ -15,6 +15,8 @@ import { getDateString } from "../services/helper";
 import { downloadCSVOfUsers } from "./../services/usersApis";
 import Export from "../components/Table/Export";
 import { customStyles, dummyCustomerData } from "../utils/TableUtils";
+import apiClient from "../services/apiClient";
+import { DELETE_CUSTOMER, FETCH_CUSTOMER } from "../services/apiConstant";
 
 function Customers(props) {
   const [data, setData] = useState([]);
@@ -31,9 +33,35 @@ function Customers(props) {
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
 
+  const fetchAllCustomers = async () => {
+    await apiClient
+      .get(FETCH_CUSTOMER)
+      .then((response) => {
+        setData([...response?.data?.response?.AgentCustomers_array]);
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  useEffect(() => {
+    fetchAllCustomers();
+  }, []);
+
+  async function deleteCustomer(id) {
+    console.log("id", id);
+    await apiClient
+      .post(DELETE_CUSTOMER, id)
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   React.useEffect(() => {
-    let mapData = dummyCustomerData.map((item, index) => {
-      return { ...item, ["Index"]: dummyCustomerData.length - index };
+    let mapData = data.map((item, index) => {
+      return { ...item, ["Index"]: data.length - index };
     });
 
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
@@ -110,7 +138,7 @@ function Customers(props) {
     };
 
     return (
-      <div className="w-full flex flex-col xl:flex-row justify-between items-center mb-8 p-0 ">
+      <div className="w-full flex flex-col xl:flex-row justify-between items-center mb-8 p-0">
         <h3 className="mb-2 sm:mb-0">List</h3>
 
         {/* <div className="w-10/11 flex flex-col sm:flex-row item-stratch gap-2 sm:gap-5 justify-end items-center"> */}
@@ -171,12 +199,14 @@ function Customers(props) {
       cell: (row, index) => (
         <div>
           <NavLink
-            to={`/dashboard/users/${row.Customer_data.Customer_id}/${row.mobile}`}
+            to={`/dashboard/users/${row?.Customer_id}/${row?.mobile}`}
             className=""
             title="View"
           >
             <p className="mb-1 font-bold border-b border-black">
-              {row.Customer_data.Customer_id}
+              {row?.Customer_data?.FirstName +
+                " " +
+                row?.Customer_data?.LastName}
             </p>
           </NavLink>
 
@@ -192,8 +222,8 @@ function Customers(props) {
       grow: 3,
       cell: (row) => (
         <div>
-          <p className="mb-1">{row.mobile}</p>
-          <p>{row.Customer_data.Email}</p>
+          <p className="mb-1">{row?.mobile}</p>
+          <p>{row?.Email}</p>
         </div>
       ),
     },
@@ -202,7 +232,7 @@ function Customers(props) {
       grow: 1.2,
       cell: (row) => (
         <div>
-          <p>{row.Customer_data.Beneficiaries}</p>
+          <p>{row?.BenificaryCollection.length}</p>
         </div>
       ),
       style: { textAlign: "center", display: "block" },
@@ -253,10 +283,10 @@ function Customers(props) {
           {/* <button>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </button> */}
-          <Link to={`add/${row.Customer_data?.Customer_id}`}>
+          <Link to={`add/${row?.Customer_data?.Customer_id}`}>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </Link>
-          <button>
+          <button onClick={() => deleteCustomer(row?._id)}>
             <img src={Delete} alt="" className="w-8 h-8" />
           </button>
         </>
@@ -267,7 +297,7 @@ function Customers(props) {
     <div>
       <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
       <div className="flex flex-wrap justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
-        <Card data={100} title={"Total Customers"} />
+        <Card data={data.length} title={"Total Customers"} />
         <Card data="&#8377;20,000" title={"Total Payments"} />
       </div>
       <div className="agent-table react-data-table mt-3 sm:mt-10">

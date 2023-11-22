@@ -34,17 +34,17 @@ const validate = (formData) => {
 
   if (!mobileNo || _.isEmpty(mobileNo)) {
     newErrors = { ...newErrors, mobileNo: "Mobile number is required" };
-  } else if (!/^[0-9]{10}$/.test(mobileNo)) {
+  } else if (!/^(|\+91)?[789]\d{9}$/.test(mobileNo)) {
     newErrors = {
       ...newErrors,
       mobileNo: "Invalid mobile number.",
     };
-  } else if (
-    !mobileVerified ||
-    mobileVerified == "" ||
-    mobileVerified === false
-  ) {
-    newErrors = { ...newErrors, mobileVerified: "Verify mobile first." };
+    // } else if (
+    //   !mobileVerified ||
+    //   mobileVerified == "" ||
+    //   mobileVerified === false
+    // ) {
+    //   newErrors = { ...newErrors, mobileVerified: "Verify mobile first." };
   }
 
   if (!email || _.isEmpty(email)) {

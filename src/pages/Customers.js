@@ -16,7 +16,8 @@ import { downloadCSVOfUsers } from "./../services/usersApis";
 import Export from "../components/Table/Export";
 import { customStyles, dummyCustomerData } from "../utils/TableUtils";
 import apiClient from "../services/apiClient";
-import { DELETE_CUSTOMER, FETCH_CUSTOMER } from "../services/apiConstant";
+import { FETCH_CUSTOMER } from "../services/apiConstant";
+import { toast } from "react-toastify";
 
 function Customers(props) {
   const [data, setData] = useState([]);
@@ -46,18 +47,6 @@ function Customers(props) {
   useEffect(() => {
     fetchAllCustomers();
   }, []);
-
-  async function deleteCustomer(id) {
-    console.log("id", id);
-    await apiClient
-      .post(DELETE_CUSTOMER, id)
-      .then((response) => {
-        console.log("response", response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   React.useEffect(() => {
     let mapData = data.map((item, index) => {
@@ -199,7 +188,8 @@ function Customers(props) {
       cell: (row, index) => (
         <div>
           <NavLink
-            to={`/dashboard/users/${row?.Customer_id}/${row?.mobile}`}
+            // to={`/dashboard/users/${row?.Customer_id}/${row?.mobile}`}
+            to="customer-details"
             className=""
             title="View"
           >
@@ -283,12 +273,9 @@ function Customers(props) {
           {/* <button>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </button> */}
-          <Link to={`add/${row?.Customer_data?.Customer_id}`}>
+          <Link to={`add/${row?.Customer_id}`}>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </Link>
-          <button onClick={() => deleteCustomer(row?._id)}>
-            <img src={Delete} alt="" className="w-8 h-8" />
-          </button>
         </>
       ),
     },
@@ -297,8 +284,8 @@ function Customers(props) {
     <div>
       <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
       <div className="flex flex-wrap justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
-        <Card data={data.length} title={"Total Customers"} />
-        <Card data="&#8377;20,000" title={"Total Payments"} />
+        <Card data={data.length} title={"Total Customers"} width="w-1/4" />
+        <Card data="&#8377;20,000" title={"Total Payments"} width="w-1/4" />
       </div>
       <div className="agent-table react-data-table mt-3 sm:mt-10">
         {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}

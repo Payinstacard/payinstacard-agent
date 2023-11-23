@@ -30,12 +30,20 @@ function MenuItem(props) {
         //   } ${linkClass} ${buttonStyles} mt-2
         //   `;
         // }}
-        className="flex gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 pl-3 rounded-lg cursor-pointer mt-2"
+        // className="flex gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 pl-3 rounded-lg cursor-pointer mt-2"
+        className={`${
+          props.isSideBarExpand ? "pl-3" : "p-5"
+        } flex gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 rounded-lg cursor-pointer mt-2 `}
       >
         <span className="">
           <img src={props.menu.src} alt="" className="" />
         </span>
-        <span className="text-base">{props.menu.title}</span>
+        {/* <span className="text-base">{props.menu.title}</span> */}
+        {props.isSideBarExpand ? (
+          <span className={`origin-left  text-base hover:block`}>
+            {props.menu.title}
+          </span>
+        ) : null}
       </NavLink>
     </li>
   );

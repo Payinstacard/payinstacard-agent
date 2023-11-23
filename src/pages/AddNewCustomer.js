@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import validate from "../schemas/CustomerValidation";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import apiClient from "../services/apiClient";
-import { ADD_CUSTOMER } from "../services/apiConstant";
+import { ADD_CUSTOMER, FETCH_CUSTOMER } from "../services/apiConstant";
 import _ from "lodash";
 import { RESEND_OTP, SEND_OTP, VERIFY_OTP } from "../services/apiConstant";
 import { toast } from "react-toastify";
@@ -43,8 +43,37 @@ function AddNewCustomer() {
   const params = useParams();
   const [otpError, setOtpError] = useState("");
   const [pincodeError, setPincodeError] = useState("");
+  const navigate = useNavigate();
 
   const id = params.id;
+
+  const fetchCusomerByID = async (customer_id) => {
+    await apiClient
+      .get(FETCH_CUSTOMER + "?id=" + customer_id)
+      .then((response) => {
+        const mydata = response?.data?.response;
+        console.log(response);
+        setData({
+          firstName: mydata?.Customer_data?.FirstName,
+          lastName: "",
+          mobileNo: "",
+          mobileVerified: false,
+          email: "",
+          city: "",
+          state: "",
+          pincode: "",
+        });
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  useEffect(() => {
+    if (!_.isEmpty(id)) {
+      fetchCusomerByID(id);
+    }
+  }, [id]);
+
   const startTimer = () => {
     setIsTimerActive(true);
     setTimer(30);
@@ -308,16 +337,47 @@ function AddNewCustomer() {
         .post(ADD_CUSTOMER, customerData)
         .then((response) => {
           setData(initialCustomerData);
-          console.log("response", response);
-          toast("Customer added", {
-            theme: "dark",
-            hideProgressBar: true,
-            type: "success",
-          });
+          if (
+            String(response?.data?.code) === "201" &&
+            response.data.status === true
+          ) {
+            toast(
+              response?.data?.message
+                ? response?.data?.message
+                : "Customer Saved Successfully",
+              {
+                theme: "dark",
+                hideProgressBar: true,
+                type: "success",
+              }
+            );
+            navigate("/dashboard/customers");
+          } else {
+            toast(
+              response?.data?.message
+                ? response?.data?.message
+                : "Something Wrong",
+              {
+                theme: "dark",
+                hideProgressBar: true,
+                type: "error",
+              }
+            );
+          }
           setLoad(false);
         })
         .catch((error) => {
-          console.log("error", error);
+          console.log("error");
+          toast(
+            error?.response?.data?.message
+              ? error?.response?.data?.message
+              : "Something Wrong",
+            {
+              theme: "dark",
+              hideProgressBar: true,
+              type: "error",
+            }
+          );
           setLoad(false);
         });
     }
@@ -327,7 +387,9 @@ function AddNewCustomer() {
     <div className="m-2">
       {load && <Loader />}
       <div className="flex flex-col sm:flex-row justify-between items-center">
-        <h2 className="text-xl font-semibold mb-2 sm:mb-0">Add Customer</h2>
+        <h2 className="text-xl font-semibold mb-2 sm:mb-0">
+          {!_.isEmpty(id) ? "Edit" : "Add"} Customer
+        </h2>
         <div>
           {/* <button
             className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1 mr-8"
@@ -351,7 +413,7 @@ function AddNewCustomer() {
       </div>
       <div className="mt-8 bg-white rounded-md h-full flex-1 px-10 py-10 pt-14">
         <h2 className="text-lg text-[#45464E] font-medium">
-          Add Personal Information
+          {!_.isEmpty(id) ? "Edit" : "Add"} Personal Information
         </h2>
         <div className="text-sm mt-10 grid grid-cols-2 gap-y-4 gap-x-16 mx-28">
           <div className="col-span-1">

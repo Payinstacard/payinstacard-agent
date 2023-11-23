@@ -8,39 +8,30 @@ export function downloadCSVOfUsers(array, selectedRows) {
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {
       return {
-        Name: `${item.Customer_data.FirstName} ${item.Customer_data.LastName}`,
-        KycDetails: item.kyc_status ? "verified" : "Not verified",
-        Transfer: item.transfers.length,
-        Bneficiary: item.beneficiary.length,
-        ConviencePercentage: item.conviencePercentage,
-        Mobiele: item.mobile,
-        Transactions: item.transactions.length,
-        CustomerId: item.Customer_data.Customer_id,
-        AmountLimit: item.walletLimit,
-        LimitAssigned: item.assignedLimit,
-        Disabled: item.disabled ? "Enable" : "Disable",
-        PaymentStatus: item.paymentDisabled ? "Enable" : "Disable",
-        KYCStatus: item.kyc_status ? "Kyc Enable" : "Kyc Disable",
-        CreatedAt: getDateString(item.created_At),
+        Name: `${item?.Customer_data.FirstName} ${item?.Customer_data.LastName}`,
+        Transfer: item?.transfers.length,
+        Beneficiary: item?.BenificaryCollection.length,
+        mobile: item?.mobile,
+        Transactions: item?.transactions.length,
+        CustomerId: item?.Customer_id,
+        Disabled: item?.disabled ? "Enable" : "Disable",
+        PaymentStatus: item?.paymentDisabled ? "Enable" : "Disable",
+        CreatedAt: getDateString(item?.created_At),
       };
     });
   } else {
     newArray = selectedRows.map((item) => {
       return {
-        Name: `${item.Customer_data.FirstName} ${item.Customer_data.LastName}`,
-        KycDetails: item.kyc_status ? "verified" : "Not verified",
-        Transfer: item.transfers.length,
-        Bneficiary: item.beneficiary.length,
-        ConviencePercentage: item.conviencePercentage,
-        Mobiele: item.mobile,
-        Transactions: item.transactions.length,
-        CustomerId: item.Customer_data.Customer_id,
-        AmountLimit: item.walletLimit,
-        LimitAssigned: item.assignedLimit,
-        Disabled: item.disabled ? "Enable" : "Disable",
-        PaymentStatus: item.paymentDisabled ? "Enable" : "Disable",
-        KYCStatus: item.kyc_status ? "Kyc Enable" : "Kyc Disable",
-        CreatedAt: getDateString(item.created_At),
+        Name: `${item?.Customer_data.FirstName} ${item?.Customer_data.LastName}`,
+        KycDetails: item?.kyc_status ? "verified" : "Not verified",
+        Transfer: item?.transfers.length,
+        Bneficiary: item?.BenificaryCollection.length,
+        mobile: item?.mobile,
+        Transactions: item?.transactions.length,
+        CustomerId: item?.Customer_id,
+        Disabled: item?.disabled ? "Enable" : "Disable",
+        PaymentStatus: item?.paymentDisabled ? "Enable" : "Disable",
+        CreatedAt: getDateString(item?.created_At),
       };
     });
   }

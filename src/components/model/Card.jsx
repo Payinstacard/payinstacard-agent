@@ -14,7 +14,10 @@ function Card(props) {
     //         : props?.data}
     //     </p>?
     //   </div>
-    <div className="w-1/4 custom-box-shadow px-4 py-3 bg-white rounded-lg min-w-fit">
+    <div
+      //  className="w-1/4 rounded-lg custom-box-shadow px-4 py-3 bg-white min-w-fit"
+      className={`${props.width} rounded-lg custom-box-shadow px-4 py-3 bg-white min-w-fit`}
+    >
       <div className="mr-3">
         <div className="flex justify-between">
           <p className="text-xs sm:text-sm text-[#464748] py-3">

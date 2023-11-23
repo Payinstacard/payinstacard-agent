@@ -16,11 +16,12 @@ export const ProtectedLayout = () => {
     <>
       {/**For navigation bar  */}
       <Navbar />
-      <div className="flex  bg-gray-100 ">
-        <div className="w-[236px] bg-white h-[calc(100vh-100px)] overflow-auto">
+      <div className="flex bg-gray-100 ">
+        {/* <div className="w-[236px] bg-white h-[calc(100vh-100px)] overflow-auto"> */}
+        <div>
           <Sidebar />
         </div>
-        <div className="h-[calc(100vh-100px)] overflow-auto grow ">
+        <div className="h-[calc(100vh-100px)] overflow-auto grow">
           {/* container */}
           <div className="m-6 rounded-xl">{loading ? <Loader /> : outlet}</div>
         </div>

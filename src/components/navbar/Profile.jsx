@@ -9,13 +9,13 @@ function Profile(props) {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigate();
   return (
-    <div className="flex ">
+    <div className="flex">
       <img
         src={auth?.user?.photoURL ? auth?.user?.photoURL : UserProfileImg}
         alt=""
         className="mr-2"
       />
-      <div className="w-2/5 flex gap-2 justify-between items-center relative">
+      <div className="w-2/5 flex gap-2 justify-between items-center relative hidden sm:block">
         <div>
           <p className="text-sm text-[#060B1E]">
             {auth?.user?.displayName ? auth?.user?.displayName : "Agent"}

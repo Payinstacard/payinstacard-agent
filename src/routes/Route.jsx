@@ -10,6 +10,9 @@ import ErrorPage from "../pages/ErrorPage";
 // import { defer } from "lodash";
 import Customers from "./../pages/Customers";
 import AddNewCustomer from "../pages/AddNewCustomer";
+import CustomersDetailsLayout from "../layouts/CustomerDetailLayout";
+import BeneficiaryAccounts from "../components/customerpage/BeneficiaryAccounts";
+import Transactions from "../components/customerpage/Transactions";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -59,6 +62,20 @@ export const router = createBrowserRouter([
           {
             path: "customers/add/:id",
             element: <AddNewCustomer />,
+          },
+          {
+            path: "customers/customer-details",
+            element: <CustomersDetailsLayout />,
+            children: [
+              {
+                path: "",
+                element: <BeneficiaryAccounts />,
+              },
+              {
+                path: "transactions",
+                element: <Transactions />,
+              },
+            ],
           },
           {
             path: "transactions",

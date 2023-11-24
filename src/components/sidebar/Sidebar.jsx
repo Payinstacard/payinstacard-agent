@@ -61,7 +61,7 @@ function Sidebar() {
       <div
         className={`${
           isSideBarExpand ? "w-60 p-4" : "w-fit p-3"
-        } bg-white shadow-lg h-screen sticky top-0 hidden sm:block relative duration-300 border-r  `}
+        } bg-white shadow-lg h-[calc(100vh-100px)] sticky top-0 hidden sm:block relative duration-300 border-r  `}
       >
         <BsArrowLeftCircle
           className={`${

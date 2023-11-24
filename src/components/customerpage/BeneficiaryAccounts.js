@@ -13,11 +13,12 @@ function BeneficiaryAccounts(props) {
   };
 
   return (
-    <div className="m-8 max-w-3xl">
+    <div className="m-2 sm:m-8 max-w-3xl">
       <div className="flex flex-col flex-wrap sm:flex-row justify-between items-center my-4">
-        <h2 className="text-xl font-semibold mb-2 sm:mb-0">Benificiary</h2>
+        <h2 className="text-lg sm:text-xl  font-semibold mb-2 sm:mb-0">
+          Benificiary
+        </h2>
         <div>
-          {/* <button className="bg-primary text-white py-1 px-3 sm:py-2 rounded-lg rounded-6 sm:px-6"> */}
           <button
             className="bg-primary text-white cursor-pointer  py-1 px-3 sm:py-2 text-sm sm:text-base rounded-lg rounded-6 sm:px-6"
             onClick={openModal}
@@ -32,45 +33,55 @@ function BeneficiaryAccounts(props) {
         <BeneficiaryDetailsModel isOpen={isModalOpen} onClose={closeModal} />
       </div>
 
-      <div class="text-sm custom-box-shadow p-8 rounded-lg">
-        <div className="flex justify-between border-b pb-4 mb-4 items-center">
-          <h1 className="text-lg font-bold">ID: PAYINSTA123</h1>
+      <div className="text-xs sm:text-sm custom-box-shadow p-4 sm:p-8 rounded-lg">
+        <div className="flex justify-between border-b pb-2 sm:pb-4 mb-2 sm:mb-4 items-center">
+          <h1 className="text-base sm:text-lg font-bold">ID: PAYINSTA123</h1>
           <button>
-            <img src={delete_beneficiary_icon} />
+            <img src={delete_beneficiary_icon} className="w-8 sm:w-11" />
           </button>
         </div>
-        <div className="flex justify-between flex-wrap mb-3">
-          <div className="md:w-[30%] w-full ">
-            <p className="text-[#8B8D97] mb-1">Full Name</p>
-            <p className="font-bold text-base">putta manikanta</p>
+        <div className="flex flex-wrap mb-2">
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Full Name</p>
+            <p className="font-bold text-sm sm:text-base">Putta Manikanta</p>
           </div>
-          <div className="md:w-[30%] w-full">
-            <p className="text-[#8B8D97] mb-1">Beneficiary Email</p>
-            <p className="font-bold text-base">kljsdflkjsd@gamil.com</p>
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">
+              Beneficiary Email
+            </p>
+            <p className="font-bold text-sm sm:text-base">
+              kljsdflkjsd@gmail.com
+            </p>
           </div>
-          <div className="md:w-[30%] w-full">
-            <p className="text-[#8B8D97] mb-1">Beneficiary Phone Number</p>
-            <p className="font-bold text-base">9812435678</p>
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">
+              Beneficiary Phone Number
+            </p>
+            <p className="font-bold text-sm sm:text-base">9812435678</p>
           </div>
         </div>
-        <div className="mb-3">
-          <p className="text-[#8B8D97] mb-1">Beneficiary Address</p>
-          <p className="font-bold text-base">
+
+        <div className="mb-4">
+          <p className="text-gray-500 text-sm mb-0 sm:mb-1">
+            Beneficiary Address
+          </p>
+          <p className="font-bold text-sm sm:text-base">
             AddressAddress AddressAddressAddress
           </p>
         </div>
-        <div className="flex justify-between flex-wrap">
-          <div className="md:w-[30%] w-full w-full">
-            <p className="text-[#8B8D97] mb-1">Payment Type</p>
-            <p className="font-bold text-base">Bank</p>
+
+        <div className="flex flex-wrap">
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Payment Type</p>
+            <p className="font-bold text-sm sm:text-base">Bank</p>
           </div>
-          <div className="md:w-[30%] w-full">
-            <p className="text-[#8B8D97] mb-1">Account No</p>
-            <p className="font-bold text-base">123456789812</p>
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Account No</p>
+            <p className="font-bold text-sm sm:text-base">123456789812</p>
           </div>
-          <div className="md:w-[30%] w-full">
-            <p className="text-[#8B8D97] mb-1">IFSC</p>
-            <p className="font-bold text-base">SBIN35678</p>
+          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
+            <p className="text-gray-500 text-sm mb-0 sm:mb-1">IFSC</p>
+            <p className="font-bold text-sm sm:text-base">SBIN35678</p>
           </div>
         </div>
       </div>

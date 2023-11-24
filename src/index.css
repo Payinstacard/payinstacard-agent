@@ -57,9 +57,10 @@
 }
 
 .PhoneInputInput {
-  background-color: #eff1f999 !important;
+  background: #eff1f9;
+  border: none;
+  border-radius: 0.5rem;
 }
-
 .custom-box-shadow {
   box-shadow: 0px 0px 10px 0px #0000001a;
 }

@@ -12,7 +12,7 @@ import Customers from "./../pages/Customers";
 import AddNewCustomer from "../pages/AddNewCustomer";
 import CustomersDetailsLayout from "../layouts/CustomerDetailLayout";
 import BeneficiaryAccounts from "../components/customerpage/BeneficiaryAccounts";
-import Transactions from "../components/customerpage/Transactions";
+import CustomerTransactions from "../components/customerpage/CustomerTransactions";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "transactions",
-                element: <Transactions />,
+                element: <CustomerTransactions />,
               },
             ],
           },

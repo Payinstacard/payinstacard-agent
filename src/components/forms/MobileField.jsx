@@ -13,9 +13,10 @@ const CustomPhoneNumberInput = ({ name, value, onChange }) => {
     />
   );
 };
-function MobileField({ name, value, onChange }) {
+function MobileField({ name, value, disabled, onChange }) {
   return (
     <PhoneInput
+      disabled={disabled}
       defaultCountry="IN"
       name={name}
       value={value}

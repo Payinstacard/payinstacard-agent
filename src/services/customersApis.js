@@ -3,7 +3,7 @@ import { utils, writeFile } from "xlsx";
 import _ from "lodash";
 
 // for exporting functionality of users
-export function downloadCSVOfUsers(array, selectedRows) {
+export function downloadCSVOfCustomers(array, selectedRows) {
   let newArray;
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {

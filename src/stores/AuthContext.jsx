@@ -29,6 +29,8 @@ export function AuthContextProvider({ children, userData }) {
       } else if (!_.isNull(user)) {
         loginCurrentUser(user);
         await user.getIdTokenResult().then((idTokenResult) => {
+
+          console.log(idTokenResult)
           const authTime = idTokenResult.claims.auth_time * 1000;
           const sessionDurationInMilliseconds = 2 * 60 * 60 * 1000; // 120 min
           const expirationInMilliseconds =

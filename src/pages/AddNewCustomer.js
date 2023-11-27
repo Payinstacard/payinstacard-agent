@@ -68,7 +68,6 @@ function AddNewCustomer() {
           state: mydata?.Customer_data?.State,
           pincode: mydata?.Customer_data?.Pincode,
         });
-        setVerify(true);
       })
       .catch((error) => {
         // console.log(error);
@@ -157,7 +156,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setVerify(false);
             setIsTimerActive(false);
             toast(message, {
@@ -226,7 +227,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setVerify(false);
             setIsTimerActive(false);
             toast(message, {
@@ -279,7 +282,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setValidation({ ...validation, otp: message });
             toast(message, {
               theme: "dark",
@@ -307,7 +312,7 @@ function AddNewCustomer() {
             ...data,
             state: response[0]?.PostOffice[0]?.State,
             city: response[0]?.PostOffice[0]?.District,
-            Address: response[0]?.PostOffice[0]?.Name,
+            address: response[0]?.PostOffice[0]?.Name,
           });
           setPincodeError("");
         })

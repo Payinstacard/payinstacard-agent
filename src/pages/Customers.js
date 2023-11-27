@@ -41,6 +41,7 @@ function Customers(props) {
     await apiClient
       .get(FETCH_CUSTOMER)
       .then((response) => {
+        console.log(response);
         setLoad(false);
         const status = response.status;
         const message = response.data.message;
@@ -58,8 +59,11 @@ function Customers(props) {
         // setData([...response?.data?.response?.AgentCustomers_array]);
       })
       .catch((error) => {
+        console.log(error);
         setLoad(false);
-        const message = error.response.data.message;
+        const message =
+          error?.response?.data?.message ||
+          error?.data?.response?.data?.message;
         toast(message, {
           theme: "dark",
           hideProgressBar: true,

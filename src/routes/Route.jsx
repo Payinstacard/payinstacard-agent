@@ -64,10 +64,11 @@ export const router = createBrowserRouter([
                 path: "add",
                 element: <AddNewCustomer />,
               },
-              {
-                path: "edit/:id",
-                element: <AddNewCustomer />,
-              },
+              // temporary remove edit customer functionality
+              // {
+              //   path: "edit/:id",
+              //   element: <AddNewCustomer />,
+              // },
             ],
           },
 

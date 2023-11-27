@@ -73,11 +73,11 @@ function AddNewCustomer() {
         // console.log(error);
       });
   };
-  useEffect(() => {
-    if (!_.isEmpty(id)) {
-      fetchCusomerByID(id);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   if (!_.isEmpty(id)) {
+  //     fetchCusomerByID(id);
+  //   }
+  // }, [id]);
 
   const startTimer = () => {
     setIsTimerActive(true);

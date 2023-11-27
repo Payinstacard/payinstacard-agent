@@ -19,8 +19,10 @@ import apiClient from "../../services/apiClient";
 import { FETCH_CUSTOMER } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
 function CustomersTable(props) {
+  const { agentData } = useSelector((state) => state.agentData);
   const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
@@ -39,7 +41,7 @@ function CustomersTable(props) {
     setLoad(true);
 
     await apiClient
-      .get(FETCH_CUSTOMER)
+      .get(FETCH_CUSTOMER + "?agent_id=" + agentData?.firebase_uid)
       .then((response) => {
         console.log(response);
         setLoad(false);

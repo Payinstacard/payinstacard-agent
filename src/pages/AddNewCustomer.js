@@ -9,11 +9,13 @@ import { toast } from "react-toastify";
 import MobileField from "../components/forms/MobileField";
 import Loader from "../components/Loader/Loader";
 import GreenCheck from "../assets/svg/GREENcheckbox.svg";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const initialErrors = {
   firstName: "",
   lastName: "",
   mobileNo: "",
+  address: "",
   mobileVerified: false,
   email: "",
   city: "",
@@ -30,6 +32,7 @@ const initialCustomerData = {
   city: "",
   state: "",
   pincode: "",
+  address: "",
 };
 
 function AddNewCustomer() {
@@ -41,8 +44,8 @@ function AddNewCustomer() {
   const [load, setLoad] = useState(false);
   const [otp, setOtp] = useState("");
   const params = useParams();
-  const [otpError, setOtpError] = useState("");
   const [pincodeError, setPincodeError] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
 
   const id = params.id;
@@ -55,14 +58,17 @@ function AddNewCustomer() {
         console.log(response);
         setData({
           firstName: mydata?.Customer_data?.FirstName,
-          lastName: "",
-          mobileNo: "",
-          mobileVerified: false,
-          email: "",
-          city: "",
-          state: "",
-          pincode: "",
+          lastName: mydata?.Customer_data?.LastName,
+          mobileNo: mydata?.mobile,
+          // mobileVerified: mydata?.verified,
+          mobileVerified: !_.isEmpty(mydata?.mobile),
+          email: mydata?.Email,
+          address: mydata?.Customer_data?.Address,
+          city: mydata?.Customer_data?.City,
+          state: mydata?.Customer_data?.State,
+          pincode: mydata?.Customer_data?.Pincode,
         });
+        setVerify(true);
       })
       .catch((error) => {
         // console.log(error);
@@ -115,7 +121,6 @@ function AddNewCustomer() {
       setValidation({ ...validation, mobileNo: "" });
 
       setLoad(true);
-      // setAadharUser({});
       try {
         console.log("api call");
         await apiClient
@@ -124,6 +129,7 @@ function AddNewCustomer() {
           })
           .then((response) => {
             setVerify(true);
+            setIsEdit(true);
             setIsTimerActive(true);
             setTimer(30);
             console.log(response);
@@ -186,9 +192,7 @@ function AddNewCustomer() {
       setValidation({ ...validation, mobileNo: "" });
 
       setLoad(true);
-      // setAadharUser({});
       try {
-        console.log("api call");
         await apiClient
           .post(RESEND_OTP, {
             phone: data.mobileNo,
@@ -266,6 +270,7 @@ function AddNewCustomer() {
               ...data,
               mobileVerified: true,
             });
+            setIsEdit(false);
             toast(message, {
               theme: "dark",
               hideProgressBar: true,
@@ -323,7 +328,7 @@ function AddNewCustomer() {
       const customerData = {
         FirstName: data.firstName,
         LastName: data.lastName,
-        Address: data.Address,
+        Address: data.address,
         Pincode: data.pincode,
         State: data.state,
         City: data.city,
@@ -331,10 +336,10 @@ function AddNewCustomer() {
         email: data.email,
         verified: data.mobileVerified,
       };
-
+      const endPoint = id ? `${ADD_CUSTOMER}?customerId=${id}` : ADD_CUSTOMER;
       setLoad(true);
       await apiClient
-        .post(ADD_CUSTOMER, customerData)
+        .post(endPoint, customerData)
         .then((response) => {
           setData(initialCustomerData);
           if (
@@ -386,36 +391,24 @@ function AddNewCustomer() {
   return (
     <div className="m-2">
       {load && <Loader />}
-      <div className="flex flex-col sm:flex-row justify-between items-center">
-        <h2 className="text-xl font-semibold mb-2 sm:mb-0">
-          {!_.isEmpty(id) ? "Edit" : "Add"} Customer
-        </h2>
+      <div className="flex flex-row justify-between md:justify-normal	items-center mt-4 md:mt-0 ">
         <div>
-          {/* <button
-            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1 mr-8"
-            onClick={handlePreviousStep}
-          >
-            <span className="mr-2">&#8592;</span> Back
-          </button> */}
           <Link
             to={"/dashboard/customers"}
-            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1 mr-8"
+            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-4 md:px-8 py-[2px] md:py-1 mr-4 min-[1000px]:mr-5"
           >
             <span className="mr-2">&#8592;</span> Back
           </Link>
-          <button
-            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1"
-            onClick={addCustomer}
-          >
-            Submit <span className="mr-2">&#8594;</span>
-          </button>
         </div>
+        <h2 className="text-xl font-semibold ">
+          {!_.isEmpty(id) ? "Edit" : "Add"} Customer
+        </h2>
       </div>
-      <div className="mt-8 bg-white rounded-md h-full flex-1 px-10 py-10 pt-14">
+      <div className=" bg-white rounded-md h-full flex-1 px-0 min-[390px]:px-5 md:px-10 py-5 md:py-10 pt-7 md:pt-14 mt-4 md:mt-8">
         <h2 className="text-lg text-[#45464E] font-medium">
           {!_.isEmpty(id) ? "Edit" : "Add"} Personal Information
         </h2>
-        <div className="text-sm mt-10 grid grid-cols-2 gap-y-4 gap-x-16 mx-28">
+        <div className="text-sm mt-5 md:mt-10 grid grid-cols-1 min-[1000px]:grid-cols-2 gap-y-4 gap-x-16 mx-2 min-[390px]:mx-7 min-[1230px]:mx-28">
           <div className="col-span-1">
             <label className="block mb-2">First Name</label>
             <input
@@ -452,6 +445,7 @@ function AddNewCustomer() {
                 placeholder="Mobile Number"
                 value={data?.mobileNo || ""}
                 onChange={(e) => handleInputChange(e)}
+                disabled={data?.mobileVerified}
               />
               {/* <input
                 //   disabled={data?.kyc_details?.mobileVerified}
@@ -469,7 +463,34 @@ function AddNewCustomer() {
                 <p className="text-red-800">{validation.mobileVerified}</p>
               )}
               {data.mobileVerified ? (
-                <></>
+                id && (
+                  <>
+                    {isEdit ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            validateMobile();
+                          }}
+                        >
+                          Verify
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsEdit(true);
+                            setVerify(false);
+                            setData({ ...data, mobileVerified: false });
+                          }}
+                          disabled={verify}
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </>
+                )
               ) : (
                 <>
                   {verify ? (
@@ -482,7 +503,7 @@ function AddNewCustomer() {
                           validateMobile();
                         }}
                       >
-                        {verify ? "Get Otp" : "Verify"}
+                        Verify
                       </button>
                     </>
                   )}
@@ -611,6 +632,14 @@ function AddNewCustomer() {
         </div>
 
         {/* <input type="text" value={data} onChange={handleInputChange} /> */}
+        <div className="mt-7 flex justify-center md:justify-end">
+          <Link
+            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1"
+            onClick={addCustomer}
+          >
+            Submit <span className="ml-2">&#8594;</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

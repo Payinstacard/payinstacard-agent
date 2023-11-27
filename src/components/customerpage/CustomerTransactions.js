@@ -235,6 +235,7 @@ function CustomerTransactions(props) {
               onFilter={(e) => setFilterText(e.target.value)}
               onClear={handleClear}
               filterText={filterText}
+              bgColor="bg-[#EFF0F2]"
             />
           </div>
           <div className="w-[290px]">

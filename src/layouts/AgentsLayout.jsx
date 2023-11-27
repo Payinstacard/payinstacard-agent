@@ -33,13 +33,14 @@ function AgentsLayout(props) {
         buttonIcon={SupportIcon}
       />
       <div className="flex flex-wrap justify-start gap-3 sm:gap-6 my-8">
-        <Card data="100" title={"Total Customers"} />
+        <Card data="100" title={"Total Customers"} width="w-1/4" />
         <Card
           // data={
           //   [...data.filter((row) => row.OrderPaymentStatus === "200")].length
           // }
           data="&#8377;20,000"
           title={"Total payments"}
+          width="w-1/4"
         />
         <Card
           number={true}
@@ -52,6 +53,7 @@ function AgentsLayout(props) {
           //   )}
           data="2530"
           title={"Commission Earned"}
+          width="w-1/4"
         />
       </div>
       {/* <div className="flex justify-between">

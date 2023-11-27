@@ -66,7 +66,7 @@ function Sidebar() {
         <BsArrowLeftCircle
           className={`${
             !isSideBarExpand && "rotate-180"
-          } absolute text-2xl bg-white  cursor-pointer top-6 -right-3`}
+          } absolute text-2xl  cursor-pointer top-6 -right-3`}
           onClick={() => setIsSideBarExpand(!isSideBarExpand)}
         />
         <div className="h-4/5 flex flex-col justify-between">

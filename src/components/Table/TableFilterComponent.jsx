@@ -1,7 +1,7 @@
 import { default as React } from "react";
 import { FiSearch } from "react-icons/fi";
 
-const TableFilterComponent = ({ filterText, onFilter, onClear }) => {
+const TableFilterComponent = ({ filterText, onFilter, onClear, bgColor }) => {
   return (
     <>
       <div className="">
@@ -13,7 +13,7 @@ const TableFilterComponent = ({ filterText, onFilter, onClear }) => {
             aria-label="Search"
             value={filterText}
             onChange={onFilter}
-            className="relative m-0 block flex-auto rounded-[5px] border-0 active:border-0 bg-[#EFF0F2] pl-7 py-2 text-sm sm:text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-0 focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-0 dark:text-neutral-200 dark:placeholder:text-black-100 dark:focus:border-0"
+            className={` ${bgColor} relative m-0 block flex-auto rounded-[5px] border-0 active:border-0  pl-7 py-2 text-sm sm:text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-0 focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-0 dark:text-neutral-200 dark:placeholder:text-black-100 dark:focus:border-0`}
           />
 
           <FiSearch

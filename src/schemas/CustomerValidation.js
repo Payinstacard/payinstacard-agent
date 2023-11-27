@@ -11,6 +11,7 @@ const validate = (formData) => {
     email,
     city,
     state,
+    address,
     pincode,
   } = formData;
 
@@ -39,12 +40,8 @@ const validate = (formData) => {
       ...newErrors,
       mobileNo: "Invalid mobile number.",
     };
-    // } else if (
-    //   !mobileVerified ||
-    //   mobileVerified == "" ||
-    //   mobileVerified === false
-    // ) {
-    //   newErrors = { ...newErrors, mobileVerified: "Verify mobile first." };
+  } else if (!mobileVerified) {
+    newErrors = { ...newErrors, mobileVerified: "Verify mobile first." };
   }
 
   if (!email || _.isEmpty(email)) {
@@ -62,6 +59,10 @@ const validate = (formData) => {
 
   if (!state || _.isEmpty(state)) {
     newErrors = { ...newErrors, state: "State is required" };
+  }
+
+  if (!address || _.isEmpty(address)) {
+    newErrors = { ...newErrors, pincode: "Address is required" };
   }
 
   if (!pincode || _.isEmpty(pincode)) {

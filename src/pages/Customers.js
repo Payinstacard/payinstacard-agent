@@ -18,6 +18,7 @@ import { customStyles, dummyCustomerData } from "../utils/TableUtils";
 import apiClient from "../services/apiClient";
 import { FETCH_CUSTOMER } from "../services/apiConstant";
 import { toast } from "react-toastify";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 function Customers(props) {
   const [data, setData] = useState([]);
@@ -35,13 +36,35 @@ function Customers(props) {
   const [filteredItems, setFilteredItems] = useState([]);
 
   const fetchAllCustomers = async () => {
+    setLoad(true);
+
     await apiClient
       .get(FETCH_CUSTOMER)
       .then((response) => {
-        setData([...response?.data?.response?.AgentCustomers_array]);
+        setLoad(false);
+        const status = response.status;
+        const message = response.data.message;
+
+        if (status === 200) {
+          setData([...response?.data?.response?.AgentCustomers_array]);
+          return;
+        }
+
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "error",
+        });
+        // setData([...response?.data?.response?.AgentCustomers_array]);
       })
       .catch((error) => {
-        // console.log(error);
+        setLoad(false);
+        const message = error.response.data.message;
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "error",
+        });
       });
   };
   useEffect(() => {
@@ -138,6 +161,7 @@ function Customers(props) {
               onFilter={(e) => setFilterText(e.target.value)}
               onClear={handleClear}
               filterText={filterText}
+              bgColor="bg-white"
             />
           </div>
           <div className="w-[290px]">
@@ -285,29 +309,69 @@ function Customers(props) {
   return (
     <div className="mx-2 sm:mx-0">
       <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
-      <div className="flex flex-wrap justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
-        <Card data={data.length} title={"Total Customers"} width="w-1/4" />
-        <Card data="&#8377;20,000" title={"Total Payments"} width="w-1/4" />
-      </div>
-      <div className="agent-table react-data-table mt-3 sm:mt-10">
-        {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
-        <DataTable
-          columns={columns}
-          data={filteredItems}
-          pagination
-          paginationComponent={Pagination}
-          progressPending={load}
-          progressComponent={<Loader />}
-          fixedHeader
-          subHeader
-          subHeaderComponent={subHeaderComponentMemo}
-          customStyles={customStyles}
-          selectableRows
-          onSelectedRowsChange={handleRowSelected}
-          clearSelectedRows={toggleCleared}
-        />
-        {/* </StyleSheetManager> */}
-      </div>
+      {load ? (
+        <Loader />
+      ) : (
+        <>
+          <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
+            {/** CARD #1 */}
+            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg custom-box-shadow px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+              <div className="mr-0 min-[510px]:mr-3">
+                <div className="flex justify-between">
+                  <p className="text-xs sm:text-sm text-[#464748] py-3">
+                    Total Customers
+                  </p>
+                  <button>
+                    <HiOutlineDotsVertical className="text-[#464748]" />
+                  </button>
+                </div>
+                <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+                  {data.length}
+                </p>
+              </div>
+            </div>
+            {/** CARD #2 */}
+            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg custom-box-shadow px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+              <div className="mr-0 min-[510px]:mr-3">
+                <div className="flex justify-between">
+                  <p className="text-xs sm:text-sm text-[#464748] py-3">
+                    Total Payments
+                  </p>
+                  <button>
+                    <HiOutlineDotsVertical className="text-[#464748]" />
+                  </button>
+                </div>
+                <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+                  {/* {props?.number
+            ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
+            : props?.data} */}
+                  &#8377;20,000
+                </p>
+              </div>
+              {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
+            </div>
+          </div>
+          <div className="agent-table react-data-table mt-3 sm:mt-10">
+            {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
+            <DataTable
+              columns={columns}
+              data={filteredItems}
+              pagination
+              paginationComponent={Pagination}
+              progressPending={load}
+              progressComponent={<Loader />}
+              fixedHeader
+              subHeader
+              subHeaderComponent={subHeaderComponentMemo}
+              customStyles={customStyles}
+              selectableRows
+              onSelectedRowsChange={handleRowSelected}
+              clearSelectedRows={toggleCleared}
+            />
+            {/* </StyleSheetManager> */}
+          </div>
+        </>
+      )}
     </div>
   );
 }

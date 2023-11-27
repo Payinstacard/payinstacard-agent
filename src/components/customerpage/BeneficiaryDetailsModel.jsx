@@ -3,7 +3,7 @@ import CrossBox from "../../assets/svg/crossbox.svg";
 import { BsEye } from "react-icons/bs";
 import { BsEyeSlash } from "react-icons/bs";
 import "./BeneficiaryDetailsModel.css";
-import MobileInput from "./MobileInput";
+import MobileInput from "../common/forms/MobileInput";
 
 const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -49,7 +49,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   const validateForm = () => {
     const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
     const emailRegX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-    const mobileRegX = /^[6789]\d{9}$/;
+    // const mobileRegX = /^[6789]\d{9}$/;
 
     const errors = {};
     setFormErrors(errors);

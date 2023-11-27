@@ -1,7 +1,7 @@
 import React, { Children, Suspense } from "react";
 import { AuthContextProvider } from "../stores/AuthContext";
 import { Await, useLoaderData, useOutlet } from "react-router-dom";
-import Loader from "../components/Loader/Loader";
+import Loader from "../components/common/Loader/Loader";
 
 function AuthLayout() {
   const outlet = useOutlet();

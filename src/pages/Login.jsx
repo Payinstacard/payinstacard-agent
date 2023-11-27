@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LeftSideBlock from "../components/Auth/LeftSideBlock";
-import Loader from "../components/Loader/Loader";
+import Loader from "../components/common/Loader/Loader";
 import LoginForm from "../components/Auth/LoginForm";
 
 function Login() {

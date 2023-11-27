@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import validate from "../schemas/CustomerValidation";
+import validate from "../../schemas/CustomerValidation";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import apiClient from "../services/apiClient";
-import { ADD_CUSTOMER, FETCH_CUSTOMER } from "../services/apiConstant";
+import apiClient from "../../services/apiClient";
+import { ADD_CUSTOMER, FETCH_CUSTOMER } from "../../services/apiConstant";
 import _ from "lodash";
-import { RESEND_OTP, SEND_OTP, VERIFY_OTP } from "../services/apiConstant";
+import { RESEND_OTP, SEND_OTP, VERIFY_OTP } from "../../services/apiConstant";
 import { toast } from "react-toastify";
-import MobileField from "../components/forms/MobileField";
-import Loader from "../components/Loader/Loader";
-import GreenCheck from "../assets/svg/GREENcheckbox.svg";
+import MobileField from "../common/forms/MobileField";
+import Loader from "../common/Loader/Loader";
+import GreenCheck from "../../assets/svg/GREENcheckbox.svg";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const initialErrors = {
@@ -68,17 +68,16 @@ function AddNewCustomer() {
           state: mydata?.Customer_data?.State,
           pincode: mydata?.Customer_data?.Pincode,
         });
-        setVerify(true);
       })
       .catch((error) => {
         // console.log(error);
       });
   };
-  useEffect(() => {
-    if (!_.isEmpty(id)) {
-      fetchCusomerByID(id);
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   if (!_.isEmpty(id)) {
+  //     fetchCusomerByID(id);
+  //   }
+  // }, [id]);
 
   const startTimer = () => {
     setIsTimerActive(true);
@@ -157,7 +156,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setVerify(false);
             setIsTimerActive(false);
             toast(message, {
@@ -226,7 +227,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setVerify(false);
             setIsTimerActive(false);
             toast(message, {
@@ -279,7 +282,9 @@ function AddNewCustomer() {
           })
           .catch((error) => {
             console.log(error);
-            let message = error.response.data.message;
+            let message =
+              error?.response?.data?.message ||
+              error?.data?.response?.data?.message;
             setValidation({ ...validation, otp: message });
             toast(message, {
               theme: "dark",
@@ -307,7 +312,7 @@ function AddNewCustomer() {
             ...data,
             state: response[0]?.PostOffice[0]?.State,
             city: response[0]?.PostOffice[0]?.District,
-            Address: response[0]?.PostOffice[0]?.Name,
+            address: response[0]?.PostOffice[0]?.Name,
           });
           setPincodeError("");
         })

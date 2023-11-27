@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
-import PageTitle from "./../components/model/PageTitle";
+import PageTitle from "../common/PageTitle/PageTitle";
 
 import _ from "lodash";
 import DataTable from "react-data-table-component";
 import { Link, NavLink } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker";
-import Delete from "../assets/svg/delete.svg";
-import Edit from "../assets/svg/edit.svg";
-import Loader from "../components/Loader/Loader";
-import Pagination from "../components/Table/Pagination";
-import TableFilterComponent from "../components/Table/TableFilterComponent";
-import Card from "../components/model/Card";
-import { getDateString } from "../services/helper";
-import { downloadCSVOfCustomers } from "../services/customersApis";
-import Export from "../components/Table/Export";
-import { customStyles, dummyCustomerData } from "../utils/TableUtils";
-import apiClient from "../services/apiClient";
-import { FETCH_CUSTOMER } from "../services/apiConstant";
+import Delete from "../../assets/svg/delete.svg";
+import Edit from "../../assets/svg/edit.svg";
+import Loader from "../common/Loader/Loader";
+import Pagination from "../common/Table/Pagination";
+import TableFilterComponent from "../common/Table/TableFilterComponent";
+import Card from "../common/Card/Card";
+import { getDateString } from "../../services/helper";
+import { downloadCSVOfCustomers } from "../../services/customersApis";
+import Export from "../common/Table/Export";
+import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
+import apiClient from "../../services/apiClient";
+import { FETCH_CUSTOMER } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { useSelector } from "react-redux";
 
-function Customers(props) {
+function CustomersTable(props) {
+  const { agentData } = useSelector((state) => state.agentData);
   const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
@@ -39,8 +41,9 @@ function Customers(props) {
     setLoad(true);
 
     await apiClient
-      .get(FETCH_CUSTOMER)
+      .get(FETCH_CUSTOMER + "?agent_id=" + agentData?.firebase_uid)
       .then((response) => {
+        console.log(response);
         setLoad(false);
         const status = response.status;
         const message = response.data.message;
@@ -58,8 +61,9 @@ function Customers(props) {
         // setData([...response?.data?.response?.AgentCustomers_array]);
       })
       .catch((error) => {
+        console.log(error);
         setLoad(false);
-        const message = error.response.data.message;
+        const message = "Something Went Wong !";
         toast(message, {
           theme: "dark",
           hideProgressBar: true,
@@ -299,7 +303,10 @@ function Customers(props) {
           {/* <button>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </button> */}
-          <Link to={`add/${row?.Customer_id}`}>
+          {/* <Link to={`add/${row?.Customer_id}`}>
+            <img src={Edit} alt="" className="w-8 h-8 mr-2" />
+          </Link> */}
+          <Link>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </Link>
         </>
@@ -308,7 +315,7 @@ function Customers(props) {
   ];
   return (
     <div className="mx-2 sm:mx-0">
-      <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
+      {/* <PageTitle buttonText="Add New Customer" title="Customers" url="add" /> */}
       {load ? (
         <Loader />
       ) : (
@@ -376,4 +383,4 @@ function Customers(props) {
   );
 }
 
-export default Customers;
+export default CustomersTable;

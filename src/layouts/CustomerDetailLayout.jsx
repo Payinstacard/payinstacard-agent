@@ -6,7 +6,7 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import Card from "../components/model/Card";
+import Card from "../components/common/Card/Card";
 import CustomerIcon from "../assets/svg/customerIcon.svg";
 
 function CustomersDetailsLayout(props) {
@@ -16,7 +16,7 @@ function CustomersDetailsLayout(props) {
     <div className="mt-4 sm:mt-10">
       <Link
         to={"/dashboard/customers"}
-        className="border border-primary text-[#00006B] sm:text-base text-sm hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-4 py-2 sm:px-6 sm:py-3 ms-4 ms:ms-0"
+        className="border border-primary text-[#00006B] sm:text-base text-sm hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-4 py-2 sm:px-6 sm:py-3 ms-4 sm:ms-0"
       >
         <span className="mr-2">&#8592;</span> Back
       </Link>

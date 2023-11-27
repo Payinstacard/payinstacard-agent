@@ -131,14 +131,14 @@ function CustomerTransactions(props) {
     },
   ];
   const fetchAllCustomers = async () => {
-    // await apiClient
-    //   .get(FETCH_CUSTOMER)
-    //   .then((response) => {
-    //     setData([...response?.data?.response?.AgentCustomers_array]);
-    //   })
-    //   .catch((error) => {
-    //     // console.log(error);
-    //   });
+    await apiClient
+      .get(FETCH_CUSTOMER)
+      .then((response) => {
+        setData([...response?.data?.response?.AgentCustomers_array]);
+      })
+      .catch((error) => {
+         console.log(error);
+      });
     setData(dummyCustomerTransactions);
   };
   useEffect(() => {

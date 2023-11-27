@@ -45,6 +45,8 @@ function Customers(props) {
         const status = response.status;
         const message = response.data.message;
 
+        console.log(response)
+
         if (status === 200) {
           setData([...response?.data?.response?.AgentCustomers_array]);
           return;
@@ -58,8 +60,9 @@ function Customers(props) {
         // setData([...response?.data?.response?.AgentCustomers_array]);
       })
       .catch((error) => {
+        console.log(error)
         setLoad(false);
-        const message = error.response.data.message;
+        const message = "Something Went Wong !";
         toast(message, {
           theme: "dark",
           hideProgressBar: true,

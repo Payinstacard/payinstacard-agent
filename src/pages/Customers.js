@@ -41,6 +41,7 @@ function Customers(props) {
     await apiClient
       .get(FETCH_CUSTOMER)
       .then((response) => {
+        console.log(response);
         setLoad(false);
         const status = response.status;
         const message = response.data.message;

@@ -2,8 +2,8 @@ import { useFormik } from "formik";
 import React from "react";
 import { Link } from "react-router-dom";
 import LogoPng from "../../assets/svg/payinstaLogo.svg";
-import Button from "../forms/Button";
-import Input from "../forms/Input";
+import Button from "../common/forms/Button";
+import Input from "../common/forms/Input";
 import { ForgotPasswordPageSchema } from "../../schemas/ValidationSchema";
 const initialValues = {
   email: "",

@@ -1,5 +1,5 @@
 import React from "react";
-import downloadIcon from "../../assets/svg/download.svg";
+import downloadIcon from "../../../assets/svg/download.svg";
 
 const Export = ({ onExport }) => (
   <button

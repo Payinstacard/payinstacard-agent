@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BeneficiaryDetailsModel from "../model/BeneficiaryDetailsModel";
+import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
 import delete_beneficiary_icon from "../../assets/svg/delete_beneficiary.svg";
 
 function BeneficiaryAccounts(props) {

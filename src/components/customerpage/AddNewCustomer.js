@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import validate from "../schemas/CustomerValidation";
+import validate from "../../schemas/CustomerValidation";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import apiClient from "../services/apiClient";
-import { ADD_CUSTOMER, FETCH_CUSTOMER } from "../services/apiConstant";
+import apiClient from "../../services/apiClient";
+import { ADD_CUSTOMER, FETCH_CUSTOMER } from "../../services/apiConstant";
 import _ from "lodash";
-import { RESEND_OTP, SEND_OTP, VERIFY_OTP } from "../services/apiConstant";
+import { RESEND_OTP, SEND_OTP, VERIFY_OTP } from "../../services/apiConstant";
 import { toast } from "react-toastify";
-import MobileField from "../components/forms/MobileField";
-import Loader from "../components/Loader/Loader";
-import GreenCheck from "../assets/svg/GREENcheckbox.svg";
+import MobileField from "../common/forms/MobileField";
+import Loader from "../common/Loader/Loader";
+import GreenCheck from "../../assets/svg/GREENcheckbox.svg";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const initialErrors = {

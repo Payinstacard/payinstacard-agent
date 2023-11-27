@@ -6,7 +6,7 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import Card from "../components/model/Card";
+import Card from "../components/common/Card/Card";
 import CustomerIcon from "../assets/svg/customerIcon.svg";
 
 function CustomersDetailsLayout(props) {

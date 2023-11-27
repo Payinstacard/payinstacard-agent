@@ -1,9 +1,9 @@
 import React from "react";
 import { useAuth } from "../stores/AuthContext";
 import { useNavigate } from "react-router-dom";
-import PageTitle from "../components/model/PageTitle";
+import PageTitle from "../components/common/PageTitle/PageTitle";
 import SupportIcon from "../assets/img/support.png";
-import Card from "../components/model/Card";
+import Card from "../components/common/Card/Card";
 
 function AgentsLayout(props) {
   const auth = useAuth();

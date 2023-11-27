@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import HamburgerButton from "../HamburgerMenuButton/HamburgerButton";
+import HamburgerButton from "../common/HamburgerMenuButton/HamburgerButton";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
 import Customers from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";

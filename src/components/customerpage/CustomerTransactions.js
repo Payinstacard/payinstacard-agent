@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PageTitle from "../../components/model/PageTitle";
+import PageTitle from "../common/PageTitle/PageTitle";
 
 import _ from "lodash";
 import DataTable from "react-data-table-component";
@@ -7,13 +7,13 @@ import { Link, NavLink } from "react-router-dom";
 import Datepicker from "react-tailwindcss-datepicker";
 import Delete from "../../assets/svg/delete.svg";
 import Edit from "../../assets/svg/edit.svg";
-import Loader from "../../components/Loader/Loader";
-import Pagination from "../../components/Table/Pagination";
-import TableFilterComponent from "../../components/Table/TableFilterComponent";
-import Card from "../../components/model/Card";
+import Loader from "../common/Loader/Loader";
+import Pagination from "../common/Table/Pagination";
+import TableFilterComponent from "../common/Table/TableFilterComponent";
+import Card from "../common/Card/Card";
 import { getDateString } from "../../services/helper";
 import { downloadCSVOfCustomers } from "../../services/customersApis";
-import Export from "../../components/Table/Export";
+import Export from "../common/Table/Export";
 import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
 import apiClient from "../../services/apiClient";
 import { FETCH_CUSTOMER } from "../../services/apiConstant";
@@ -137,7 +137,7 @@ function CustomerTransactions(props) {
         setData([...response?.data?.response?.AgentCustomers_array]);
       })
       .catch((error) => {
-         console.log(error);
+        console.log(error);
       });
     setData(dummyCustomerTransactions);
   };
@@ -369,20 +369,6 @@ function CustomerTransactions(props) {
       // button: "true",
       cell: (row) => (
         <>
-          <button
-            className="bg-primary text-white py-1.5 px-3.5 mr-2 rounded"
-            onClick={() => console.log("clicked")}
-          >
-            Repeat
-          </button>
-          {/* <button>
-            <img src={Edit} alt="" className="w-8 h-8 mr-2" />
-          </button> */}
-          <Link
-          // to={`add/${row?.Customer_id}`}
-          >
-            <img src={View} alt="" className="w-8 h-8 mr-2" />
-          </Link>
           <Link
           // to={`add/${row?.Customer_id}`}
           >

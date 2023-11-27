@@ -1,5 +1,5 @@
 import React from "react";
-import EyeIcon from "../../assets/svg/eye.svg";
+import EyeIcon from "../../../assets/svg/eye.svg";
 
 function Input(props) {
   const [showPassword, setShowPassword] = React.useState(false);

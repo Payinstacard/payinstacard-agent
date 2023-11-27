@@ -1,9 +1,18 @@
 import { getDateString } from "./helper";
 import { utils, writeFile } from "xlsx";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 // for exporting functionality of users
 export function downloadCSVOfCustomers(array, selectedRows) {
+  if (_.isEmpty(array)) {
+    toast("There are no records in table", {
+      theme: "dark",
+      hideProgressBar: true,
+      type: "error",
+    });
+    return;
+  }
   let newArray;
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {

@@ -1,5 +1,5 @@
 import { Navigate, useOutlet } from "react-router-dom";
-import Loader from "../components/Loader/Loader";
+import Loader from "../components/common/Loader/Loader";
 import Sidebar from "../components/sidebar/Sidebar";
 import { useAuth } from "../stores/AuthContext";
 import Navbar from "../components/navbar/Navbar";

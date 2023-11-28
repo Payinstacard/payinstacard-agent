@@ -203,17 +203,25 @@ function AddNewCustomer() {
             setIsTimerActive(true);
             setTimer(30);
             console.log(response);
-            let message = response.data.message;
+            setValidation({
+              ...validation,
+              otp: "",
+            });
+            setOtp("");
+            const type = response.data.response.type;
 
-            if (response.data.status) {
-              console.log(message);
+            if (type === "success") {
+              const message =
+                response?.data?.response?.message || response?.data?.message;
               toast(message, {
                 theme: "dark",
                 hideProgressBar: true,
                 type: "success",
               });
             } else {
-              console.log(message);
+              const message = "Please try again";
+
+              setIsEdit(false);
               setVerify(false);
               setIsTimerActive(false);
 
@@ -223,6 +231,25 @@ function AddNewCustomer() {
                 type: "warning",
               });
             }
+            // if (response.data.status) {
+            //   console.log(message);
+            //   toast(message, {
+            //     theme: "dark",
+            //     hideProgressBar: true,
+            //     type: "success",
+            //   });
+            // } else {
+            //   console.log(message);
+            //   setVerify(false);
+            //   setIsTimerActive(false);
+
+            //   toast(message, {
+            //     theme: "dark",
+            //     hideProgressBar: true,
+            //     type: "warning",
+            //   });
+            // }
+
             setLoad(false);
           })
           .catch((error) => {
@@ -267,18 +294,36 @@ function AddNewCustomer() {
           .then((response) => {
             setLoad(false);
             console.log(response);
-            let message = response.data.message;
-            let responseData = response.data.response;
             setData({
               ...data,
               mobileVerified: true,
             });
+            setValidation({ ...validation, otp: "" });
             setIsEdit(false);
-            toast(message, {
-              theme: "dark",
-              hideProgressBar: true,
-              type: "success",
-            });
+
+            const type = response.data.response.type;
+            const message =
+              response?.data?.response?.message || response?.data?.message;
+
+            if (type === "success") {
+              toast(message, {
+                theme: "dark",
+                hideProgressBar: true,
+                type: "success",
+              });
+            } else {
+              toast(message, {
+                theme: "dark",
+                hideProgressBar: true,
+                type: "warning",
+              });
+            }
+
+            // toast(message, {
+            //   theme: "dark",
+            //   hideProgressBar: true,
+            //   type: "success",
+            // });
           })
           .catch((error) => {
             console.log(error);
@@ -300,7 +345,16 @@ function AddNewCustomer() {
   };
   const submitPincode = async () => {
     if (!data.pincode || data.pincode === "") {
-      setPincodeError("Pincode is required");
+      // setPincodeError("Pincode is required");
+      setValidation({
+        ...validation,
+        pincode: "Pincode is required",
+      });
+    } else if (!/^\d*$/.test(data.pincode)) {
+      setValidation({
+        ...validation,
+        pincode: "Pincode should be number",
+      });
     } else if (data.pincode.length == 6) {
       setLoad(true);
       await fetch(`https://api.postalpincode.in/pincode/${data?.pincode}`)
@@ -314,18 +368,28 @@ function AddNewCustomer() {
             city: response[0]?.PostOffice[0]?.District,
             address: response[0]?.PostOffice[0]?.Name,
           });
-          setPincodeError("");
+          // setPincodeError("");
+          setValidation({ ...validation, pincode: "", city: "", state: "" });
         })
         .catch((error) => {
-          setPincodeError("Invalid Pincode");
+          // setPincodeError("Invalid Pincode");
+          setValidation({ ...validation, pincode: "Invalid Pincode" });
+
           setLoad(false);
           console.error("Error:", error);
           // Handle errors here
         });
-    } else setPincodeError("Pincode should be of 6 Numbers only.");
+    } else
+      setValidation({
+        ...validation,
+        pincode: "Pincode should be of 6 Numbers only.",
+      });
+
+    // else setPincodeError("Pincode should be of 6 Numbers only.");
   };
 
   const addCustomer = async (e) => {
+    console.log(data);
     const validationErrors = validate(data);
     setValidation(validationErrors);
     const isValid = Object.keys(validationErrors).length === 0;
@@ -415,7 +479,9 @@ function AddNewCustomer() {
         </h2>
         <div className="text-sm mt-5 md:mt-10 grid grid-cols-1 min-[1000px]:grid-cols-2 gap-y-4 gap-x-16 mx-2 min-[390px]:mx-7 min-[1230px]:mx-28">
           <div className="col-span-1">
-            <label className="block mb-2">First Name</label>
+            <label className="block mb-2">
+              First Name <span className="text-red-500 ">*</span>
+            </label>
             <input
               type="text"
               name="firstName"
@@ -429,7 +495,9 @@ function AddNewCustomer() {
             )}
           </div>
           <div className="col-span-1">
-            <label className="block mb-2">Last Name</label>
+            <label className="block mb-2">
+              Last Name <span className="text-red-500 ">*</span>
+            </label>
             <input
               type="text"
               name="lastName"
@@ -443,7 +511,9 @@ function AddNewCustomer() {
             )}
           </div>
           <div className="col-span-1 ">
-            <label className="block mb-2">Mobile Number</label>
+            <label className="block mb-2">
+              Mobile Number <span className="text-red-500 ">*</span>
+            </label>
             <div className="inputWithButton">
               <MobileField
                 name="mobileNo"
@@ -524,6 +594,7 @@ function AddNewCustomer() {
                   <input
                     type="text"
                     name="otp"
+                    value={otp}
                     placeholder="Enter OTP"
                     className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg"
                     onChange={(e) => setOtp(e.target.value)}
@@ -574,7 +645,9 @@ function AddNewCustomer() {
             )}
           </div>
           <div className="col-span-1">
-            <label className="block mb-2">Email</label>
+            <label className="block mb-2">
+              Email <span className="text-red-500 ">*</span>
+            </label>
             <input
               type="text"
               name="email"
@@ -588,7 +661,9 @@ function AddNewCustomer() {
             )}
           </div>
           <div className="col-span-1">
-            <label className="block mb-2">Pincode</label>
+            <label className="block mb-2">
+              Pincode <span className="text-red-500 ">*</span>
+            </label>
             <input
               type="text"
               name="pincode"
@@ -601,9 +676,9 @@ function AddNewCustomer() {
             {validation?.pincode && (
               <p className="text-red-800">{validation.pincode}</p>
             )}
-            {pincodeError !== "" && (
+            {/* {pincodeError !== "" && (
               <span className="text-red-700">{pincodeError}</span>
-            )}
+            )} */}
           </div>
 
           <div className="col-span-1">

@@ -19,7 +19,8 @@ import apiClient from "../../services/apiClient";
 import { FETCH_CUSTOMER } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCustomers } from "../../stores/CustomerRedux";
 
 function CustomersTable(props) {
   const { agentData } = useSelector((state) => state.agentData);
@@ -36,48 +37,56 @@ function CustomersTable(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
+  const dispatch = useDispatch();
+  // const fetchAllCustomers = async () => {
+  //   setLoad(true);
 
-  const fetchAllCustomers = async () => {
-    setLoad(true);
+  //   await apiClient
+  //     .get(FETCH_CUSTOMER)
+  //     .then((response) => {
+  //       setLoad(false);
+  //       const status = response.status;
+  //       const message = response.data.message;
+  //       console.log(response);
 
-    await apiClient
-      .get(FETCH_CUSTOMER + "?agent_id=" + agentData?.firebase_uid)
-      .then((response) => {
-        console.log(response);
-        setLoad(false);
-        const status = response.status;
-        const message = response.data.message;
+  //       if (status === 200) {
+  //         setData([...response?.data?.response?.AgentCustomers_array]);
+  //         return;
+  //       }
 
-        if (status === 200) {
-          setData([...response?.data?.response?.AgentCustomers_array]);
-          return;
-        }
-
-        toast(message, {
-          theme: "dark",
-          hideProgressBar: true,
-          type: "error",
-        });
-        // setData([...response?.data?.response?.AgentCustomers_array]);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoad(false);
-        const message = "Something Went Wong !";
-        toast(message, {
-          theme: "dark",
-          hideProgressBar: true,
-          type: "error",
-        });
-      });
-  };
-  useEffect(() => {
-    fetchAllCustomers();
-  }, []);
+  //       toast(message, {
+  //         theme: "dark",
+  //         hideProgressBar: true,
+  //         type: "error",
+  //       });
+  //       // setData([...response?.data?.response?.AgentCustomers_array]);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoad(false);
+  //       const message = "Something Went Wong !";
+  //       toast(message, {
+  //         theme: "dark",
+  //         hideProgressBar: true,
+  //         type: "error",
+  //       });
+  //     });
+  // };
+  // useEffect(() => {
+  //   fetchAllCustomers();
+  // }, []);
 
   React.useEffect(() => {
-    let mapData = data.map((item, index) => {
-      return { ...item, ["Index"]: data.length - index };
+    dispatch(fetchCustomers(agentData?.firebase_uid));
+    console.log("id=>=>", agentData?.firebase_uid);
+  }, []);
+
+  const customersData = useSelector(
+    (state) => state?.customersData?.customersData
+  );
+  React.useEffect(() => {
+    let mapData = customersData.map((item, index) => {
+      return { ...item, ["Index"]: customersData.length - index };
     });
 
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
@@ -136,7 +145,7 @@ function CustomersTable(props) {
       });
     }
     setFilteredItems(mapData.reverse());
-  }, [data, filterText, currentFilterBy, dateRange]);
+  }, [customersData, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -154,7 +163,7 @@ function CustomersTable(props) {
     };
 
     return (
-      <div className="w-full flex flex-col xl:flex-row justify-between items-center mb-8 p-0">
+      <div className="w-full flex flex-col xl:flex-row justify-between items-center mb-4 sm:mb-8 p-0">
         <h3 className="mb-2 sm:mb-0">List</h3>
 
         {/* <div className="w-10/11 flex flex-col sm:flex-row item-stratch gap-2 sm:gap-5 justify-end items-center"> */}
@@ -192,6 +201,7 @@ function CustomersTable(props) {
     );
   }, [filterText, resetPaginationToggle, filteredItems, selectedRows]);
 
+  //sort functon for date column
   const dateSortFun = (rowA, rowB) => {
     const dateA = new Date(rowA.created_At);
     const dateB = new Date(rowB.created_At);
@@ -204,13 +214,30 @@ function CustomersTable(props) {
 
     return 0;
   };
+  //sort function for name column
+  const caseInsensitiveSort = (rowA, rowB) => {
+    const nameA = `${rowA.Customer_data.FirstName} ${rowA.Customer_data.LastName}`;
+    const nameB = `${rowB.Customer_data.FirstName} ${rowB.Customer_data.LastName}`;
+    const a = nameA.toLowerCase();
+    const b = nameB.toLowerCase();
+
+    if (a > b) {
+      return 1;
+    }
+
+    if (b > a) {
+      return -1;
+    }
+
+    return 0;
+  };
 
   const columns = [
     {
       name: "SL",
       grow: 1,
       selector: (row, index) => <span className="mr-10">{index + 1}</span>,
-      style: { textAlign: "right", display: "block" },
+      style: { textAlign: "center", display: "block" },
     },
     {
       name: "Customer Name",
@@ -219,7 +246,7 @@ function CustomersTable(props) {
         <div>
           <NavLink
             // to={`/dashboard/users/${row?.Customer_id}/${row?.mobile}`}
-            to="customer-details"
+            to={`customer-details/${row?.Customer_id}`}
             className=""
             title="View"
           >
@@ -235,7 +262,7 @@ function CustomersTable(props) {
       ),
       grow: 1.7,
       sortable: true,
-      //   sortFunction: caseInsensitiveSort,
+      sortFunction: caseInsensitiveSort,
     },
     {
       name: "Contact Information",
@@ -287,7 +314,7 @@ function CustomersTable(props) {
     },
     {
       name: "Actions",
-      grow: 2,
+      grow: 1,
       style: {
         textAlign: "center",
       },
@@ -306,9 +333,9 @@ function CustomersTable(props) {
           {/* <Link to={`add/${row?.Customer_id}`}>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </Link> */}
-          <Link>
+          {/* <Link>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
-          </Link>
+          </Link> */}
         </>
       ),
     },
@@ -316,13 +343,14 @@ function CustomersTable(props) {
   return (
     <div className="mx-2 sm:mx-0">
       {/* <PageTitle buttonText="Add New Customer" title="Customers" url="add" /> */}
+      <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
       {load ? (
         <Loader />
       ) : (
         <>
           <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
             {/** CARD #1 */}
-            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg custom-box-shadow px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
               <div className="mr-0 min-[510px]:mr-3">
                 <div className="flex justify-between">
                   <p className="text-xs sm:text-sm text-[#464748] py-3">
@@ -333,12 +361,12 @@ function CustomersTable(props) {
                   </button>
                 </div>
                 <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
-                  {data.length}
+                  {customersData.length}
                 </p>
               </div>
             </div>
             {/** CARD #2 */}
-            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg custom-box-shadow px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
               <div className="mr-0 min-[510px]:mr-3">
                 <div className="flex justify-between">
                   <p className="text-xs sm:text-sm text-[#464748] py-3">

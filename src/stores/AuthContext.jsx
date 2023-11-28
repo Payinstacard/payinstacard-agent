@@ -32,12 +32,7 @@ export function AuthContextProvider({ children, userData }) {
         loginCurrentUser(user);
         dispatch(fetchAgent());
         await user.getIdTokenResult().then((idTokenResult) => {
-<<<<<<< HEAD
-
-          console.log(idTokenResult)
-=======
           console.log(idTokenResult);
->>>>>>> 12e637af444fa2109206c8dccdf4edfdb60120e1
           const authTime = idTokenResult.claims.auth_time * 1000;
           const sessionDurationInMilliseconds = 2 * 60 * 60 * 1000; // 120 min
           const expirationInMilliseconds =

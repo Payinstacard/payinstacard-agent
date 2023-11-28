@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Link,
   NavLink,
@@ -8,10 +8,41 @@ import {
 } from "react-router-dom";
 import Card from "../components/common/Card/Card";
 import CustomerIcon from "../assets/svg/customerIcon.svg";
+import { useSelector } from "react-redux";
+import { FETCH_SINGLE_CUSTOMER_DATA } from "../services/apiConstant";
+import apiClient from "../services/apiClient";
+import _ from "lodash";
 
 function CustomersDetailsLayout(props) {
+  const [customerData, setCustomerData] = useState("");
+  // const customersData = useSelector(
+  //   (state) => state?.customersData?.customersData
+  // );
   const location = useLocation();
-  const para = useParams();
+  const params = useParams();
+  const id = params?.id;
+  // const customerData = customersData.find(
+  //   (customer) => customer?.Customer_id === id
+  // );
+
+  const fetchSingleCustoemer = async (customer_id) => {
+    await apiClient
+      .get(FETCH_SINGLE_CUSTOMER_DATA + "?custom_id=" + customer_id)
+      .then((response) => {
+        const mydata = response?.data?.response.UserData;
+        console.log(response);
+        setCustomerData(mydata);
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  useEffect(() => {
+    if (!_.isEmpty(id)) {
+      fetchSingleCustoemer(id);
+    }
+  }, [id]);
+
   return (
     <div className="mt-4 sm:mt-10">
       <Link
@@ -30,34 +61,42 @@ function CustomersDetailsLayout(props) {
                 <img src={CustomerIcon} alt="customer-icon" />
                 <div className="ms-4">
                   <h3 className="font-bold text-sm sm:text-base">
-                    Manikanta Putta
+                    {customerData?.Customer_data?.FirstName +
+                      customerData?.Customer_data?.LastName}
                   </h3>
                   <p>
-                    <span className="text-[#8B8D97]">Added on</span> 12 Sept
-                    2023
+                    <span className="text-[#8B8D97]">Added on</span>{" "}
+                    {new Date(customerData?.created_At).toLocaleDateString(
+                      "en-US",
+                      { day: "numeric", month: "short", year: "numeric" }
+                    )}
                   </p>
                 </div>
               </div>
               <div>
                 <p className="text-[#8B8D97]">Email ID</p>
-                <p>manikantaputta@gmail.com</p>
+                <p>{customerData?.Email}</p>
               </div>
             </div>
             <div className="grid grid-rows-2 gap-3">
               <div>
                 <p className="text-[#8B8D97]">Phone Number</p>
-                <p>987654310</p>
+                <p>{customerData?.mobile}</p>
               </div>
               <div>
                 <p className="text-[#8B8D97]">Address</p>
-                <p>Hitech city, Hyderabad, Telangana, India - 500074</p>
+                <p>{customerData?.Customer_data?.Address}</p>
               </div>
             </div>
           </div>
           {/* <Card data={data.length} title={"Total Customers"} /> */}
           <div className="flex sm:flex-row gap-4 sm:w-[45%] flex-col grow">
             {/* <div className="flex flex-row flex-wrap gap-4 w-full md:w-[90%] lg:w-[75%]"> */}{" "}
-            <Card data="2" title={"Total Customers"} width="sm:w-[50%] " />
+            <Card
+              data={customerData?.BenificaryCollection?.length || 0}
+              title={"Total Beneficiaries"}
+              width="sm:w-[50%] "
+            />
             <Card
               data="&#8377;20,000"
               title={"Total Payments"}

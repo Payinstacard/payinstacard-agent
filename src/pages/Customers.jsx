@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Outlet } from "react-router-dom";
+import PageTitle from "../components/common/PageTitle/PageTitle";
 
 function Customers(props) {
   return (

@@ -4,18 +4,25 @@ import { BsEye } from "react-icons/bs";
 import { BsEyeSlash } from "react-icons/bs";
 import "./BeneficiaryDetailsModel.css";
 import MobileInput from "../common/forms/MobileInput";
+import apiClient from "../../services/apiClient";
+import { ADD_BENEFICIARY, BANK_VERIFICATION } from "../../services/apiConstant";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
+
+const initialBeneficiaryData = {
+  fullName: "",
+  email: "",
+  ben_mobile: "",
+  ben_address: "",
+  accountNumber: "",
+  confirm_accountNumber: "",
+  ifsc_code: "",
+  benificiaryVerified: "",
+  payment_info: "",
+};
 
 const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    ben_mobile: "",
-    ben_address: "",
-    accountNumber: "",
-    confirm_accountNumber: "",
-    ifsc_code: "",
-    benificiaryVerified: "",
-  });
+  const [formData, setFormData] = useState(initialBeneficiaryData);
   const [formErrors, setFormErrors] = useState({
     fullName: "",
     email: "",
@@ -26,6 +33,10 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
     ifsc_code: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [load, setLoad] = useState(false);
+  const navigate = useNavigate();
+  const params = useParams();
+  const id = params?.id;
 
   const handleChang = (e) => {
     const { name, value } = e.target;
@@ -37,14 +48,14 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
   //form validation
 
-  const verifyForm = () => {
-    const errors = validateForm();
-    if (Object.keys(errors).length === 0) {
-      console.log("susceesfully verify form");
-    } else {
-      setFormErrors(errors);
-    }
-  };
+  // const verifyForm = () => {
+  //   const errors = validateForm();
+  //   if (Object.keys(errors).length === 0) {
+  //     console.log("susceesfully verify form");
+  //   } else {
+  //     setFormErrors(errors);
+  //   }
+  // };
 
   const validateForm = () => {
     const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
@@ -108,6 +119,182 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
     return errors;
   };
 
+  const validateBankDetails = async () => {
+    const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    let formError = {};
+    let isValid = true;
+    if (formData?.accountNumber?.length === 0) {
+      formError = {
+        ...formError,
+        accountNumber: "Please enter Account Number",
+      };
+      isValid = false;
+    } else if (
+      !(
+        formData?.accountNumber?.length >= 9 &&
+        formData?.accountNumber?.length <= 18
+      )
+    ) {
+      formError = {
+        ...formError,
+        accountNumber: "please enter valid length account number",
+      };
+      isValid = false;
+    } else {
+      formError = {
+        ...formError,
+        accountNumber: "",
+      };
+    }
+
+    if (formData?.ifsc_code?.length === 0) {
+      formError = {
+        ...formError,
+        ifsc_code: "Please enter IFSC code",
+      };
+      isValid = false;
+    } else if (formData?.ifsc_code?.length < 11) {
+      formError = {
+        ...formError,
+        ifsc_code: "IFSC code should be of 11 Alphanumeric only",
+      };
+      isValid = false;
+    } else {
+      formError = {
+        ...formError,
+        ifsc_code: "",
+      };
+    }
+
+    if (bankIfscRegX.test(formData?.ifsc_code)) {
+      formError = {
+        ...formError,
+        ifsc_code: "",
+      };
+    } else {
+      isValid = false;
+      formError = {
+        ...formError,
+        ifsc_code: "Enter valid IFSC",
+      };
+    }
+    setFormErrors(formError);
+    return isValid;
+  };
+
+  const add_beneficiary_api = async (data, success_cb, error_cb) => {
+    await apiClient
+      .post(ADD_BENEFICIARY, data)
+      .then((response) => {
+        setFormData(initialBeneficiaryData);
+        if (
+          String(response?.data?.code) === "201" &&
+          response.data.status === true
+        ) {
+          toast(
+            response?.data?.message
+              ? response?.data?.message
+              : "Customer Beneficiary Saved Successfully",
+            {
+              theme: "dark",
+              hideProgressBar: true,
+              type: "success",
+            }
+          );
+          onclose();
+        } else {
+          toast(
+            response?.data?.message
+              ? response?.data?.message
+              : "Something Wrong",
+            {
+              theme: "dark",
+              hideProgressBar: true,
+              type: "error",
+            }
+          );
+        }
+        setLoad(false);
+      })
+      .catch((error) => {
+        console.log("error");
+        toast(
+          error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Something Wrong",
+          {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          }
+        );
+        setLoad(false);
+      });
+  };
+  const checkBank_varification_api = async (success_cb, error_cb) => {
+    await apiClient
+      .post(BANK_VERIFICATION, {
+        bankAccount: formData?.accountNumber,
+        ifsc: formData?.ifsc_code,
+      })
+      .then((response) => {
+        let status = response.data.response.status;
+        let message = response.data.response.message;
+
+        if (status === "SUCCESS") {
+          success_cb(response.data.response);
+        } else {
+          error_cb(response.data.response);
+        }
+      })
+      .catch((error) => {
+        error_cb(error);
+      });
+  };
+
+  const addBeneficiary = async () => {
+    const errors = validateForm();
+    if (Object.keys(errors).length === 0) {
+      if (validateBankDetails()) {
+        try {
+          setLoad(true);
+          checkBank_varification_api(
+            (res) => {
+              const beneficiaryData = {
+                custom_id: id,
+                FirstName: formData.fullName,
+                beneficiary_email: formData.email,
+                beneficiary_address: formData.ben_address,
+                beneficiary_phone: formData?.ben_mobile,
+                payment_info: res,
+              };
+              add_beneficiary_api(beneficiaryData);
+              setLoad(false);
+            },
+            (error) => {
+              toast(
+                error?.response?.data?.message
+                  ? error?.response?.data?.message
+                  : "Something Wrong",
+                {
+                  theme: "dark",
+                  hideProgressBar: true,
+                  type: "error",
+                }
+              );
+              setLoad(false);
+            }
+          );
+        } catch (error) {
+          setLoad(false);
+          console.log(error);
+        }
+      }
+
+      setLoad(true);
+    }
+  };
+
   return (
     <div
       className={`fixed top-0 left-0 w-full h-full flex items-center justify-center scroll  ${
@@ -140,7 +327,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           <div className="mt-1 mb-2">
             <input
               id="fullname"
-              name="fullname"
+              name="fullName"
               value={formData.fullName}
               type="text"
               className="w-full bg-[#EFF1F9] border-none rounded-lg"
@@ -273,7 +460,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           <div className="flex justify-center mt-5">
             <button
               className="px-20 py-2 bg-[#00006B] text-white rounded-lg"
-              onClick={verifyForm}
+              onClick={addBeneficiary}
               type="button"
             >
               save

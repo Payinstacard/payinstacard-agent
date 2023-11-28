@@ -64,6 +64,20 @@ export const router = createBrowserRouter([
                 path: "add",
                 element: <AddNewCustomer />,
               },
+              {
+                path: "customer-details/:id",
+                element: <CustomersDetailsLayout />,
+                children: [
+                  {
+                    path: "",
+                    element: <BeneficiaryAccounts />,
+                  },
+                  {
+                    path: "transactions",
+                    element: <CustomerTransactions />,
+                  },
+                ],
+              },
               // temporary remove edit customer functionality
               // {
               //   path: "edit/:id",
@@ -72,20 +86,6 @@ export const router = createBrowserRouter([
             ],
           },
 
-          {
-            path: "customers/customer-details",
-            element: <CustomersDetailsLayout />,
-            children: [
-              {
-                path: "",
-                element: <BeneficiaryAccounts />,
-              },
-              {
-                path: "transactions",
-                element: <CustomerTransactions />,
-              },
-            ],
-          },
           {
             path: "transactions",
             element: <h1>This is Transactions page</h1>,

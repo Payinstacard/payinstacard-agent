@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "./MenuItem";
 
-import DashboardIcon from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
-import Customers from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
-import Transactions from "../../assets/svg/ProtectedLayoutImages/sidebar/Transactions.svg";
-import LogOut from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
+import { ReactComponent as DashboardSvg } from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
+import { ReactComponent as Customers } from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
+import { ReactComponent as Transactions } from "../../assets/svg/ProtectedLayoutImages/sidebar/Transactions.svg";
+import { ReactComponent as LogOut } from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
 import { useAuth } from "../../stores/AuthContext";
 import { BsArrowLeftCircle } from "react-icons/bs";
+// import DashboardSvg from "../svgcomponents/DashboardSvg";
 
 function Sidebar() {
   const [isSideBarExpand, setIsSideBarExpand] = useState(false);
@@ -25,17 +26,17 @@ function Sidebar() {
     {
       title: "Dashboard",
       path: "/dashboard",
-      src: DashboardIcon,
+      icon: <DashboardSvg />,
     },
     {
       title: "Customers",
       path: "/dashboard/customers",
-      src: Customers,
+      icon: <Customers />,
     },
     {
       title: "Transactions",
       path: "/dashboard/transactions",
-      src: Transactions,
+      icon: <Transactions />,
     },
     // { title: "Users", path: "/dashboard/users", src: <CgProfile /> },
     // {
@@ -61,7 +62,7 @@ function Sidebar() {
       <div
         className={`${
           isSideBarExpand ? "w-60 p-4" : "w-fit p-3"
-        } bg-white shadow-lg h-[calc(100vh-100px)] sticky top-0 hidden sm:block relative duration-300 border-r  `}
+        } bg-white shadow-lg h-[calc(100vh-100px)] sticky top-0 hidden sm:block relative duration-300 border-r max-h-[1017px]`}
       >
         <BsArrowLeftCircle
           className={`${
@@ -69,7 +70,7 @@ function Sidebar() {
           } absolute text-2xl  cursor-pointer top-6 -right-3`}
           onClick={() => setIsSideBarExpand(!isSideBarExpand)}
         />
-        <div className="h-4/5 flex flex-col justify-between">
+        <div className="h-full flex flex-col justify-between">
           <ul
             // className="py-10 px-6"
             className={`${isSideBarExpand ? "py-0 px-6" : "py-0 px-3"}`}
@@ -89,18 +90,19 @@ function Sidebar() {
           <ul
             // className="px-6 pb-10 flex item-bottom"
             className={`${
-              isSideBarExpand ? "py-10 px-6 flex item-bottom" : "py-0 px-3"
-            }`}
+              isSideBarExpand ? "py-5 px-6 flex item-bottom" : "py-0 px-3"
+            } border-[#EFF0F2] border-t-[1px]`}
           >
             <li
               // className="flex w-full gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 pl-3 rounded-lg cursor-pointer mt-2"
               className={`${
-                isSideBarExpand ? "pl-3" : "p-5"
-              } flex w-full gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 rounded-lg cursor-pointer mt-2`}
+                isSideBarExpand ? "pl-3 min-w-[144.17px]" : "p-5 min-w-[66px]"
+              } flex w-full gap-2 hover:bg-primary text-[#6A727A] hover:text-white py-3 rounded-lg cursor-pointer `}
               onClick={logout}
             >
               <span>
-                <img src={LogOut} alt="" />
+                {/* <img src={LogOut} alt="" className="min-w-min" /> */}
+                <LogOut />
               </span>
               {/* <span className="text-base">Log Out</span> */}
               {isSideBarExpand ? (

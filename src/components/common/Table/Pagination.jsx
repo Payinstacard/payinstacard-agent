@@ -13,7 +13,7 @@ const Pagination = ({
   const pageLength = Math.ceil(rowCount / rowsPerPage);
   return (
     <div
-      className="flex items-stretch justify-between py-2 text-gray-500 mt-2 bg-[#F9FCFF]"
+      className="flex flex-col min-[440px]:flex-row gap-2 items-stretch justify-between py-2 text-gray-500 mt-2 bg-[#F9FCFF]"
       style={{
         borderRadius: "8px",
         borderWidth: "1px",
@@ -21,7 +21,7 @@ const Pagination = ({
         borderStyle: "solid",
       }}
     >
-      <div className="flex items-stretch">
+      <div className="flex items-stretch justify-center">
         <DropdownMenu
           classes="px-2"
           options={Array.from({ length: 5 }, (_, index) => (index + 1) * 10)}
@@ -32,7 +32,7 @@ const Pagination = ({
           {currentPage} of {rowCount} {rowCount > 1 ? "Items" : "Item"}
         </div>
       </div>
-      <div className="flex items-stretch justify-end ">
+      <div className="flex items-stretch min-[440px]:justify-end justify-center">
         <DropdownMenu
           classes="px-2"
           options={Array.from({ length: pageLength }, (_, index) => index + 1)}

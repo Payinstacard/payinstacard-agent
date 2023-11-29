@@ -279,9 +279,9 @@ function CustomerTransactions(props) {
   const columns = [
     {
       name: "SL",
-      grow: 1,
+      grow: 0,
       selector: (row, index) => <span className="mr-10">{index + 1}</span>,
-      style: { textAlign: "right", display: "block" },
+      style: { textAlign: "center", display: "block" },
     },
     {
       name: "Transaction ID",
@@ -305,32 +305,33 @@ function CustomerTransactions(props) {
           {/* <p>{index}</p> */}
         </div>
       ),
-      grow: 1.7,
+      grow: 1,
       sortable: true,
       //   sortFunction: caseInsensitiveSort,
     },
     {
       name: "Transaction Date",
-      grow: 2,
+      grow: 1,
       selector: (row) => getDateString(row.created_At),
       sortable: "true",
       // width: "140px",
       sortFunction: dateSortFun,
+      style: { textAlign: "left", display: "block" },
     },
     {
       name: "Beneficiary",
-      grow: 1.2,
+      grow: 1,
       cell: (row) => (
         <div>
           <p>{row?.beneficiary?.mobile}</p>
           <p>{row?.beneficiary?.ifsc}</p>
         </div>
       ),
-      style: { textAlign: "center", display: "block" },
+      style: { textAlign: "left", display: "block" },
     },
     {
       name: "Amount",
-      grow: 1.2,
+      grow: 0,
       cell: (row) => <div>{row?.transactedAmount}</div>,
       style: { textAlign: "center", display: "block" },
     },
@@ -362,7 +363,7 @@ function CustomerTransactions(props) {
     },
     {
       name: "Actions",
-      grow: 2,
+      grow: 0,
       style: {
         textAlign: "center",
       },

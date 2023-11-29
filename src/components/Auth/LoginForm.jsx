@@ -60,7 +60,7 @@ function LoginForm({
       },
     });
   return (
-    <div class="w-[100%] md:w-[50%] flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+    <div className="w-[100%] md:w-[50%] flex flex-col items-center justify-center px-6 py-12 lg:px-8">
       <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
         <img className="" src={LogoPng} alt="Your Company" />
         <h1 className="mt-6 text-[40px] font-bold leading-9 tracking-tight text-gray-900 text-[#1E293B]">

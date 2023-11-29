@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import _ from "lodash";
 import { BASE_URL, FETCH_AGENT_DATA } from "../services/apiConstant";
 import apiClient from "../services/apiClient";
 
@@ -34,7 +33,7 @@ export const fetchAgent = (tokens) => {
         .get(BASE_URL + FETCH_AGENT_DATA)
         .then((data) => {
           const datas = data.data;
-          console.log("DATA", datas);
+          // console.log("DATA", datas);
           if (datas?.response?.UserData) {
             dispatch(setAgentData(datas?.response?.UserData));
           }

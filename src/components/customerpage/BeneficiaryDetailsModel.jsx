@@ -8,6 +8,11 @@ import apiClient from "../../services/apiClient";
 import { ADD_BENEFICIARY, BANK_VERIFICATION } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  fetchSingleCustomer,
+  setCustomersLoading,
+} from "../../stores/CustomerRedux";
 
 const initialBeneficiaryData = {
   fullName: "",
@@ -22,6 +27,7 @@ const initialBeneficiaryData = {
 };
 
 const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState(initialBeneficiaryData);
   const [formErrors, setFormErrors] = useState({
     fullName: "",
@@ -45,17 +51,6 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  //form validation
-
-  // const verifyForm = () => {
-  //   const errors = validateForm();
-  //   if (Object.keys(errors).length === 0) {
-  //     console.log("susceesfully verify form");
-  //   } else {
-  //     setFormErrors(errors);
-  //   }
-  // };
 
   const validateForm = () => {
     const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
@@ -183,6 +178,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   };
 
   const add_beneficiary_api = async (data, success_cb, error_cb) => {
+    dispatch(setCustomersLoading(true));
     await apiClient
       .post(ADD_BENEFICIARY, data)
       .then((response) => {
@@ -191,6 +187,9 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           String(response?.data?.code) === "201" &&
           response.data.status === true
         ) {
+          fetchSingleCustomer(id);
+          dispatch(setCustomersLoading(false));
+
           toast(
             response?.data?.message
               ? response?.data?.message
@@ -214,10 +213,9 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             }
           );
         }
-        setLoad(false);
+        dispatch(setCustomersLoading(false));
       })
       .catch((error) => {
-        console.log("error");
         toast(
           error?.response?.data?.message
             ? error?.response?.data?.message
@@ -228,7 +226,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             type: "error",
           }
         );
-        setLoad(false);
+        dispatch(setCustomersLoading(false));
       });
   };
   const checkBank_varification_api = async (success_cb, error_cb) => {
@@ -257,34 +255,20 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
     if (Object.keys(errors).length === 0) {
       if (validateBankDetails()) {
         try {
-          setLoad(true);
-          checkBank_varification_api(
-            (res) => {
-              const beneficiaryData = {
-                custom_id: id,
-                FirstName: formData.fullName,
-                beneficiary_email: formData.email,
-                beneficiary_address: formData.ben_address,
-                beneficiary_phone: formData?.ben_mobile,
-                payment_info: res,
-              };
-              add_beneficiary_api(beneficiaryData);
-              setLoad(false);
+          const beneficiaryData = {
+            custom_id: id,
+            FirstName: formData.fullName,
+            beneficiary_email: formData.email,
+            beneficiary_address: formData.ben_address,
+            beneficiary_phone: formData?.ben_mobile,
+            payment_info: {
+              type: "BANK",
+              bankAccount: formData?.accountNumber,
+              ifsc_code: formData?.ifsc_code,
+              upi_code: "",
             },
-            (error) => {
-              toast(
-                error?.response?.data?.message
-                  ? error?.response?.data?.message
-                  : "Something Wrong",
-                {
-                  theme: "dark",
-                  hideProgressBar: true,
-                  type: "error",
-                }
-              );
-              setLoad(false);
-            }
-          );
+          };
+          add_beneficiary_api(beneficiaryData);
         } catch (error) {
           setLoad(false);
           console.log(error);
@@ -322,7 +306,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
         <form>
           {/* Your form fields go here */}
           <label htmlFor="fullname" className="text-sm text-[#5E6366] ">
-            Full Name
+            Full Name <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1 mb-2">
             <input
@@ -339,7 +323,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           </div>
 
           <label htmlFor="email" className="text-sm text-[#5E6366] ">
-            Beneficiary Email{" "}
+            Beneficiary Email <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
             <input
@@ -355,17 +339,9 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             )}
           </div>
           <label htmlFor="phoneNumber" className="text-sm text-[#5E6366] ">
-            Phone Number
+            Phone Number <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
-            {/* <input
-              id="phoneNumber"
-              name="ben_mobile"
-              value={formData.ben_mobile}
-              type="text"
-              className="w-full bg-[#EFF1F9] border-none rounded-lg"
-              onChange={handleChang}
-            /> */}
             <MobileInput formData={formData} setFormData={setFormData} />
             {formErrors.ben_mobile && (
               <div className="text-red-700 text-xs">
@@ -374,7 +350,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             )}
           </div>
           <label htmlFor="ben_address" className="text-sm text-[#5E6366] ">
-            Address{" "}
+            Address <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
             <textarea
@@ -391,7 +367,8 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             )}
           </div>
           <label htmlFor="accountNumber" className="text-sm text-[#5E6366] ">
-            Beneficiary’s account number
+            Beneficiary’s account number{" "}
+            <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
             <input
@@ -442,7 +419,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           </div>
 
           <label htmlFor="ifsc_code" className="text-sm text-[#5E6366] ">
-            IFSC code
+            IFSC code <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
             <input

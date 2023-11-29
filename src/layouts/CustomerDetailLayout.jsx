@@ -1,4 +1,6 @@
+import _ from "lodash";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Link,
   NavLink,
@@ -6,40 +8,26 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import Card from "../components/common/Card/Card";
 import CustomerIcon from "../assets/svg/customerIcon.svg";
-import { useSelector } from "react-redux";
-import { FETCH_SINGLE_CUSTOMER_DATA } from "../services/apiConstant";
+import Card from "../components/common/Card/Card";
 import apiClient from "../services/apiClient";
-import _ from "lodash";
+import { FETCH_SINGLE_CUSTOMER_DATA } from "../services/apiConstant";
+import { fetchSingleCustomer } from "../stores/CustomerRedux";
 
 function CustomersDetailsLayout(props) {
-  const [customerData, setCustomerData] = useState("");
-  // const customersData = useSelector(
-  //   (state) => state?.customersData?.customersData
-  // );
+  const dispatch = useDispatch();
   const location = useLocation();
   const params = useParams();
   const id = params?.id;
-  // const customerData = customersData.find(
-  //   (customer) => customer?.Customer_id === id
-  // );
+  // const [customerData, setCustomerData] = useState("");
+  const customersData = useSelector(
+    (state) => state?.customersData?.singleCustomerData
+  );
+  console.log("log data", customersData);
 
-  const fetchSingleCustoemer = async (customer_id) => {
-    await apiClient
-      .get(FETCH_SINGLE_CUSTOMER_DATA + "?custom_id=" + customer_id)
-      .then((response) => {
-        const mydata = response?.data?.response.UserData;
-        console.log(response);
-        setCustomerData(mydata);
-      })
-      .catch((error) => {
-        // console.log(error);
-      });
-  };
   useEffect(() => {
     if (!_.isEmpty(id)) {
-      fetchSingleCustoemer(id);
+      dispatch(fetchSingleCustomer(id));
     }
   }, [id]);
 
@@ -61,12 +49,12 @@ function CustomersDetailsLayout(props) {
                 <img src={CustomerIcon} alt="customer-icon" />
                 <div className="ms-4">
                   <h3 className="font-bold text-sm sm:text-base">
-                    {customerData?.Customer_data?.FirstName +
-                      customerData?.Customer_data?.LastName}
+                    {customersData?.Customer_data?.FirstName +
+                      customersData?.Customer_data?.LastName}
                   </h3>
                   <p>
                     <span className="text-[#8B8D97]">Added on</span>{" "}
-                    {new Date(customerData?.created_At).toLocaleDateString(
+                    {new Date(customersData?.created_At).toLocaleDateString(
                       "en-US",
                       { day: "numeric", month: "short", year: "numeric" }
                     )}
@@ -75,17 +63,17 @@ function CustomersDetailsLayout(props) {
               </div>
               <div>
                 <p className="text-[#8B8D97]">Email ID</p>
-                <p>{customerData?.Email}</p>
+                <p>{customersData?.Email}</p>
               </div>
             </div>
             <div className="grid grid-rows-2 gap-3">
               <div>
                 <p className="text-[#8B8D97]">Phone Number</p>
-                <p>{customerData?.mobile}</p>
+                <p>{customersData?.mobile}</p>
               </div>
               <div>
                 <p className="text-[#8B8D97]">Address</p>
-                <p>{customerData?.Customer_data?.Address}</p>
+                <p>{customersData?.Customer_data?.Address}</p>
               </div>
             </div>
           </div>
@@ -93,7 +81,7 @@ function CustomersDetailsLayout(props) {
           <div className="flex sm:flex-row gap-4 sm:w-[45%] flex-col grow">
             {/* <div className="flex flex-row flex-wrap gap-4 w-full md:w-[90%] lg:w-[75%]"> */}{" "}
             <Card
-              data={customerData?.BenificaryCollection?.length || 0}
+              data={customersData?.BenificaryCollection?.length || 0}
               title={"Total Beneficiaries"}
               width="sm:w-[50%] "
             />
@@ -112,7 +100,8 @@ function CustomersDetailsLayout(props) {
               <NavLink
                 to=""
                 className={
-                  location.pathname === "/dashboard/customers/customer-details"
+                  location.pathname ===
+                  `/dashboard/customers/customer-details/${id}`
                     ? "content_border text-primary font-bold mr-3 sm:mr-14 py-4"
                     : ""
                 }
@@ -123,7 +112,7 @@ function CustomersDetailsLayout(props) {
                 to="transactions"
                 className={
                   location.pathname ===
-                  "/dashboard/customers/customer-details/transactions"
+                  `/dashboard/customers/customer-details/${id}/transactions`
                     ? "content_border text-primary font-bold ml-3 sm:ml-14 py-4"
                     : ""
                 }

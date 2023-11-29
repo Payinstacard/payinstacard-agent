@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCustomers } from "../../stores/CustomerRedux";
+import { FiBriefcase } from "react-icons/fi";
 
 function CustomersTable(props) {
   const { agentData } = useSelector((state) => state.agentData);
@@ -77,9 +78,11 @@ function CustomersTable(props) {
   // }, []);
 
   React.useEffect(() => {
+    // if (agentData.firebase_uid) {
     dispatch(fetchCustomers(agentData?.firebase_uid));
-    console.log("id=>=>", agentData?.firebase_uid);
-  }, []);
+    // console.log("id=>=>", agentData?.firebase_uid);
+    // }
+  }, [agentData?.firebase_uid]);
 
   const customersData = useSelector(
     (state) => state?.customersData?.customersData
@@ -341,7 +344,7 @@ function CustomersTable(props) {
     },
   ];
   return (
-    <div className="mx-2 sm:mx-0">
+    <div className="">
       {/* <PageTitle buttonText="Add New Customer" title="Customers" url="add" /> */}
       <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
       {load ? (

@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
 import delete_beneficiary_icon from "../../assets/svg/delete_beneficiary.svg";
+import { useSelector } from "react-redux";
+import BeneficiaryItem from "./BeneficiaryItem";
 
 function BeneficiaryAccounts(props) {
   const [isModalOpen, setModalOpen] = useState(false);
+  const customersData = useSelector(
+    (state) => state?.customersData?.singleCustomerData
+  );
+  console.log("log data", customersData);
   const openModal = () => {
     setModalOpen(true);
   };
@@ -32,59 +38,12 @@ function BeneficiaryAccounts(props) {
       <div>
         <BeneficiaryDetailsModel isOpen={isModalOpen} onClose={closeModal} />
       </div>
-
-      <div className="text-xs sm:text-sm custom-box-shadow p-4 sm:p-8 rounded-lg">
-        <div className="flex justify-between border-b pb-2 sm:pb-4 mb-2 sm:mb-4 items-center">
-          <h1 className="text-base sm:text-lg font-bold">ID: PAYINSTA123</h1>
-          <button>
-            <img src={delete_beneficiary_icon} className="w-8 sm:w-11" />
-          </button>
-        </div>
-        <div className="flex flex-wrap mb-2">
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Full Name</p>
-            <p className="font-bold text-sm sm:text-base">Putta Manikanta</p>
-          </div>
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">
-              Beneficiary Email
-            </p>
-            <p className="font-bold text-sm sm:text-base">
-              kljsdflkjsd@gmail.com
-            </p>
-          </div>
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">
-              Beneficiary Phone Number
-            </p>
-            <p className="font-bold text-sm sm:text-base">9812435678</p>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <p className="text-gray-500 text-sm mb-0 sm:mb-1">
-            Beneficiary Address
-          </p>
-          <p className="font-bold text-sm sm:text-base">
-            AddressAddress AddressAddressAddress
-          </p>
-        </div>
-
-        <div className="flex flex-wrap">
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Payment Type</p>
-            <p className="font-bold text-sm sm:text-base">Bank</p>
-          </div>
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">Account No</p>
-            <p className="font-bold text-sm sm:text-base">123456789812</p>
-          </div>
-          <div className="md:w-[30%] w-full mb-1 sm:mb-3">
-            <p className="text-gray-500 text-sm mb-0 sm:mb-1">IFSC</p>
-            <p className="font-bold text-sm sm:text-base">SBIN35678</p>
-          </div>
-        </div>
-      </div>
+      <BeneficiaryItem />
+      {/* {customersData?.BenificaryCollection &&
+        customersData?.BenificaryCollection?.length > 0 &&
+        customersData?.BenificaryCollection?.map((key, item) => (
+          <BeneficiaryItem key={key} item={item} />
+        ))} */}
     </div>
   );
 }

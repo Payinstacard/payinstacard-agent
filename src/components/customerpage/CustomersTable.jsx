@@ -22,6 +22,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCustomers } from "../../stores/CustomerRedux";
 import { FiBriefcase } from "react-icons/fi";
+import { type } from "@testing-library/user-event/dist/type";
 
 function CustomersTable(props) {
   const { agentData } = useSelector((state) => state.agentData);
@@ -78,15 +79,89 @@ function CustomersTable(props) {
   // }, []);
 
   React.useEffect(() => {
-    // if (agentData.firebase_uid) {
-    dispatch(fetchCustomers(agentData?.firebase_uid));
-    // console.log("id=>=>", agentData?.firebase_uid);
-    // }
+    if (agentData?.firebase_uid) {
+      dispatch(fetchCustomers(agentData?.firebase_uid));
+    }
   }, [agentData?.firebase_uid]);
 
   const customersData = useSelector(
     (state) => state?.customersData?.customersData
   );
+
+  // const customersData = [
+  //   {
+  //     Agent_objectid: "65570149bd2c450af22378eb",
+  //     BenificaryCollection: [],
+  //     Customer_data: {
+  //       FirstName: "John",
+  //       LastName: "Doe",
+  //       Address: "123 Main St",
+  //       Pincode: "12345",
+  //       State: "California",
+  //     },
+  //     Customer_id: "AGCUS-sKZRrLSt5",
+  //     Email: "john.doe@example.com",
+  //     created_At: "2023-11-27T10:13:10.632Z",
+  //     disabled: false,
+  //     emailVerified: false,
+  //     mobile: "+1234567890",
+  //     paymentDisabled: false,
+  //     transactions: [{ total_amount: 150 }, { total_amount: 300 }],
+  //     transfers: [],
+  //     updated_At: "2023-11-27T10:13:10.632Z",
+  //     verified: false,
+  //     __v: 0,
+  //     _id: "65646bb6a20923abe59c0bdb",
+  //   },
+  //   {
+  //     Agent_objectid: "78901234abcd567890efghij",
+  //     BenificaryCollection: [],
+  //     Customer_data: {
+  //       FirstName: "Jane",
+  //       LastName: "Smith",
+  //       Address: "456 Oak St",
+  //       Pincode: "54321",
+  //       State: "New York",
+  //     },
+  //     Customer_id: "AGCUS-uVYXwNp2r",
+  //     Email: "jane.smith@example.com",
+  //     created_At: "2023-11-28T08:45:20.123Z",
+  //     disabled: false,
+  //     emailVerified: true,
+  //     mobile: "+9876543210",
+  //     paymentDisabled: false,
+  //     transactions: [{ total_amount: 200 }, { total_amount: 250 }],
+  //     transfers: [],
+  //     updated_At: "2023-11-28T08:45:20.123Z",
+  //     verified: true,
+  //     __v: 0,
+  //     _id: "78901234abcd567890efghij",
+  //   },
+  //   {
+  //     Agent_objectid: "xyz987654321abc123def456",
+  //     BenificaryCollection: [],
+  //     Customer_data: {
+  //       FirstName: "Alice",
+  //       LastName: "Johnson",
+  //       Address: "789 Pine St",
+  //       Pincode: "67890",
+  //       State: "Texas",
+  //     },
+  //     Customer_id: "AGCUS-qWenFp8r7",
+  //     Email: "alice.johnson@example.com",
+  //     created_At: "2023-11-29T15:20:45.567Z",
+  //     disabled: true,
+  //     emailVerified: true,
+  //     mobile: "+1122334455",
+  //     paymentDisabled: true,
+  //     transactions: [{ total_amount: 50 }, { total_amount: 100 }],
+  //     transfers: [],
+  //     updated_At: "2023-11-29T15:20:45.567Z",
+  //     verified: true,
+  //     __v: 0,
+  //     _id: "xyz987654321abc123def456",
+  //   },
+  // ];
   React.useEffect(() => {
     let mapData = customersData.map((item, index) => {
       return { ...item, ["Index"]: customersData.length - index };
@@ -114,39 +189,7 @@ function CustomersTable(props) {
         );
       });
     }
-    if (currentFilterBy !== false) {
-      mapData = mapData.filter((item) => {
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - 30);
-        let transactions_in_last_month = item.transactions.some(
-          (transaction) => {
-            const transactionDate = new Date(transaction.created_At);
-            return transactionDate >= currentDate;
-          }
-        );
 
-        if (currentFilterBy === "activeuser") {
-          return transactions_in_last_month;
-        } else if (currentFilterBy === "totaluser") {
-          return !item.disabled === true;
-        } else if (currentFilterBy === "inactiveuser") {
-          return !transactions_in_last_month && !item.disabled === true;
-        } else if (currentFilterBy === "suspendeduser") {
-          return item.disabled === true;
-        } else if (currentFilterBy === "kycuser") {
-          return item.kyc_status === true;
-        } else if (currentFilterBy === "approvalpendinguser") {
-          return (
-            item.kyc_status === false &&
-            item.kyc_details.aadhaarVerified === true &&
-            item.kyc_details._PANVerified === true &&
-            !item.disabled === true
-          );
-        } else {
-          return true;
-        }
-      });
-    }
     setFilteredItems(mapData.reverse());
   }, [customersData, filterText, currentFilterBy, dateRange]);
 
@@ -343,6 +386,20 @@ function CustomersTable(props) {
       ),
     },
   ];
+
+  const getTotalPayment = () => {
+    let totalPayment = 0;
+    customersData.forEach((obj) => {
+      if (!_.isEmpty(obj.transactions)) {
+        obj.transactions.forEach((transaction) => {
+          totalPayment += Number(transaction.total_amount);
+        });
+      }
+    });
+
+    return totalPayment;
+  };
+
   return (
     <div className="">
       {/* <PageTitle buttonText="Add New Customer" title="Customers" url="add" /> */}
@@ -383,7 +440,7 @@ function CustomersTable(props) {
                   {/* {props?.number
             ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
             : props?.data} */}
-                  &#8377;20,000
+                  &#8377;{getTotalPayment()}
                 </p>
               </div>
               {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}

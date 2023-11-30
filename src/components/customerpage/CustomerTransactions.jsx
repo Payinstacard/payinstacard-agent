@@ -12,7 +12,10 @@ import Pagination from "../common/Table/Pagination";
 import TableFilterComponent from "../common/Table/TableFilterComponent";
 import Card from "../common/Card/Card";
 import { getDateString } from "../../services/helper";
-import { downloadCSVOfCustomers } from "../../services/customersApis";
+import {
+  downloadCSVOfCustomerTransactions,
+  downloadCSVOfCustomers,
+} from "../../services/customersApis";
 import Export from "../common/Table/Export";
 import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
 import apiClient from "../../services/apiClient";
@@ -20,6 +23,7 @@ import { FETCH_CUSTOMER } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import View from "../../assets/svg/view.svg";
 import downLoadIconAgent from "../../assets/svg/downLoadIconAgent.svg";
+import { useSelector } from "react-redux";
 
 function CustomerTransactions(props) {
   const [data, setData] = useState([]);
@@ -37,116 +41,145 @@ function CustomerTransactions(props) {
   const [filteredItems, setFilteredItems] = useState([]);
 
   //dumy data
-  const dummyCustomerTransactions = [
-    {
-      transactionId: "T123456789872",
-      created_At: "2023-11-08T13:06:49.915Z",
-      status: "Successful",
-      beneficiary: {
-        mobile: "9876543210",
-        ifsc: "SBIN0025487",
+
+  const customersData = useSelector(
+    (state) => state?.customersData?.singleCustomerData
+  );
+
+  console.log("transc==>", customersData);
+
+  const customersDummyData = {
+    Agent_objectid: "65570149bd2c450af22378eb",
+    BenificaryCollection: [
+      {
+        Customer_id: "6565c7fbb7b65e21cab03c67",
+        beneficiary_address: "diyogi, uttrakhand",
+        beneficiary_email: "liodas@gmail.com",
+        beneficiary_id: "LIOD773BCFFBADE57",
+        beneficiary_name: "PAYINSTA CARD",
+        beneficiary_phone: "+919737502747",
+        created_at: "1701328516733",
+        payment_info: {
+          type: "BANK",
+          upi_code: "",
+          bankAccount: "10000969945",
+          ifsc_code: "IDFB0010204",
+        },
+        updated_at: "1701328516733",
+        __v: 0,
+        _id: "6568368471c0fde2e7c50581",
       },
-      transactedAmount: "10,000",
+    ],
+    Customer_data: {
+      FirstName: "karan",
+      LastName: "harsora",
+      Address: "Bhavnagar",
+      Pincode: "364001",
+      State: "Gujarat",
+      // ... other customer data properties
     },
-    {
-      transactionId: "T987654321001",
-      created_At: "2023-11-09T14:30:00.000Z",
-      status: "Pending",
-      beneficiary: {
-        mobile: "9876543222",
-        ifsc: "ICIC0012345",
+    Customer_id: "AGCUS-x9ObQ8R7J",
+    Email: "karan.infinitysoftech@gmail.com",
+    created_At: "2023-11-28T10:59:07.091Z",
+    disabled: false,
+    emailVerified: false,
+    mobile: "+919737502747",
+    paymentDisabled: false,
+    transactions: [
+      {
+        total_amount: "200",
+        transactionId: "T123456789872",
+        created_At: "2023-11-08T13:06:49.915Z",
+        status: "Successful",
+        beneficiary: { mobile: "9876543210", ifsc: "SBIN0025487" },
       },
-      transactedAmount: "5,000",
-    },
-    {
-      transactionId: "T567890123456",
-      created_At: "2023-11-10T10:45:00.000Z",
-      status: "Failed",
-      beneficiary: {
-        mobile: "9876543333",
-        ifsc: "HDFC0056789",
+      {
+        total_amount: "150",
+        transactionId: "T123456789873",
+        created_At: "2023-11-09T14:30:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "8765432109", ifsc: "HDFC0012345" },
       },
-      transactedAmount: "2,000",
-    },
-    // Add 7 more entries...
-    {
-      transactionId: "T123456789801",
-      created_At: "2023-11-11T12:15:00.000Z",
-      status: "Successful",
-      beneficiary: {
-        mobile: "9876543444",
-        ifsc: "AXIS0098765",
+      {
+        total_amount: "120",
+        transactionId: "T123456789874",
+        created_At: "2023-11-10T16:45:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "7654321098", ifsc: "ICIC0012345" },
       },
-      transactedAmount: "8,000",
-    },
-    {
-      transactionId: "T987654321002",
-      created_At: "2023-11-12T16:00:00.000Z",
-      status: "Pending",
-      beneficiary: {
-        mobile: "9876543555",
-        ifsc: "KOTAK0023456",
+      {
+        total_amount: "90",
+        transactionId: "T123456789875",
+        created_At: "2023-11-12T10:15:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "6543210987", ifsc: "AXIS0012345" },
       },
-      transactedAmount: "15,000",
-    },
-    {
-      transactionId: "T567890123457",
-      created_At: "2023-11-13T09:30:00.000Z",
-      status: "Successful",
-      beneficiary: {
-        mobile: "9876543666",
-        ifsc: "IDBI0087654",
+      {
+        total_amount: "80",
+        transactionId: "T123456789876",
+        created_At: "2023-11-15T12:30:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "5432109876", ifsc: "BOB0012345" },
       },
-      transactedAmount: "12,000",
-    },
-    {
-      transactionId: "T123456789802",
-      created_At: "2023-11-14T11:45:00.000Z",
-      status: "Failed",
-      beneficiary: {
-        mobile: "9876543777",
-        ifsc: "SBI0012345",
+      {
+        total_amount: "70",
+        transactionId: "T123456789877",
+        created_At: "2023-11-18T09:45:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "4321098765", ifsc: "PNB0012345" },
       },
-      transactedAmount: "3,000",
-    },
-    {
-      transactionId: "T987654321003",
-      created_At: "2023-11-15T14:00:00.000Z",
-      status: "Successful",
-      beneficiary: {
-        mobile: "9876543888",
-        ifsc: "PNB0076543",
+      {
+        total_amount: "60",
+        transactionId: "T123456789878",
+        created_At: "2023-11-20T14:00:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "3210987654", ifsc: "SBI0012345" },
       },
-      transactedAmount: "7,000",
-    },
-    {
-      transactionId: "T567890123458",
-      created_At: "2023-11-16T08:00:00.000Z",
-      status: "Pending",
-      beneficiary: {
-        mobile: "9876543999",
-        ifsc: "CANARA0032109",
+      {
+        total_amount: "50",
+        transactionId: "T123456789879",
+        created_At: "2023-11-22T11:30:00.000Z",
+        status: "Pending",
+        beneficiary: { mobile: "2109876543", ifsc: "UBI0012345" },
       },
-      transactedAmount: "9,000",
-    },
-  ];
-  const fetchAllCustomers = async () => {
-    await apiClient
-      .get(FETCH_CUSTOMER)
-      .then((response) => {
-        setData([...response?.data?.response?.AgentCustomers_array]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setData(dummyCustomerTransactions);
+      {
+        total_amount: "40",
+        transactionId: "T123456789880",
+        created_At: "2023-11-25T15:45:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "1098765432", ifsc: "IDBI0012345" },
+      },
+      {
+        total_amount: "30",
+        transactionId: "T123456789881",
+        created_At: "2023-11-27T10:00:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "0987654321", ifsc: "RBL0012345" },
+      },
+      {
+        total_amount: "20",
+        transactionId: "T123456789882",
+        created_At: "2023-11-28T13:15:00.000Z",
+        status: "Failed",
+        beneficiary: { mobile: "9876543210", ifsc: "HSBC0012345" },
+      },
+      {
+        total_amount: "10",
+        transactionId: "T123456789883",
+        created_At: "2023-11-30T09:30:00.000Z",
+        status: "Successful",
+        beneficiary: { mobile: "8765432109", ifsc: "CITI0012345" },
+      },
+    ],
+    transfers: [],
+    updated_At: "2023-11-28T10:59:07.091Z",
+    verified: false,
+    __v: 4,
+    _id: "6565c7fbb7b65e21cab03c67",
   };
-  useEffect(() => {
-    fetchAllCustomers();
-  }, []);
 
   React.useEffect(() => {
-    let mapData = data.map((item, index) => {
+    let mapData = customersDummyData?.transactions?.map((item, index) => {
       return { ...item, ["Index"]: data.length - index };
     });
 
@@ -165,46 +198,52 @@ function CustomerTransactions(props) {
     }
     if (filterText !== "") {
       mapData = mapData.filter((item) => {
-        let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
+        console.log("item", item);
+        // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
         return (
-          name?.toLowerCase().includes(filterText?.toLowerCase()) ||
-          item?.mobile?.toLowerCase().includes(filterText?.toLowerCase())
+          item?.total_amount
+            ?.toLowerCase()
+            .includes(filterText?.toLowerCase()) ||
+          item?.beneficiary?.mobile
+            ?.toLowerCase()
+            .includes(filterText?.toLowerCase()) ||
+          item?.transactionId?.toLowerCase().includes(filterText?.toLowerCase())
         );
       });
     }
-    if (currentFilterBy !== false) {
-      mapData = mapData.filter((item) => {
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - 30);
-        let transactions_in_last_month = item?.transactions?.some(
-          (transaction) => {
-            const transactionDate = new Date(transaction.created_At);
-            return transactionDate >= currentDate;
-          }
-        );
+    // if (currentFilterBy !== false) {
+    //   mapData = mapData.filter((item) => {
+    //     const currentDate = new Date();
+    //     currentDate.setDate(currentDate.getDate() - 30);
+    //     let transactions_in_last_month = item?.transactions?.some(
+    //       (transaction) => {
+    //         const transactionDate = new Date(transaction.created_At);
+    //         return transactionDate >= currentDate;
+    //       }
+    //     );
 
-        if (currentFilterBy === "activeuser") {
-          return transactions_in_last_month;
-        } else if (currentFilterBy === "totaluser") {
-          return !item.disabled === true;
-        } else if (currentFilterBy === "inactiveuser") {
-          return !transactions_in_last_month && !item.disabled === true;
-        } else if (currentFilterBy === "suspendeduser") {
-          return item.disabled === true;
-        } else if (currentFilterBy === "kycuser") {
-          return item.kyc_status === true;
-        } else if (currentFilterBy === "approvalpendinguser") {
-          return (
-            item.kyc_status === false &&
-            item.kyc_details.aadhaarVerified === true &&
-            item.kyc_details._PANVerified === true &&
-            !item.disabled === true
-          );
-        } else {
-          return true;
-        }
-      });
-    }
+    //     if (currentFilterBy === "activeuser") {
+    //       return transactions_in_last_month;
+    //     } else if (currentFilterBy === "totaluser") {
+    //       return !item.disabled === true;
+    //     } else if (currentFilterBy === "inactiveuser") {
+    //       return !transactions_in_last_month && !item.disabled === true;
+    //     } else if (currentFilterBy === "suspendeduser") {
+    //       return item.disabled === true;
+    //     } else if (currentFilterBy === "kycuser") {
+    //       return item.kyc_status === true;
+    //     } else if (currentFilterBy === "approvalpendinguser") {
+    //       return (
+    //         item.kyc_status === false &&
+    //         item.kyc_details.aadhaarVerified === true &&
+    //         item.kyc_details._PANVerified === true &&
+    //         !item.disabled === true
+    //       );
+    //     } else {
+    //       return true;
+    //     }
+    //   });
+    // }
     setFilteredItems(mapData.reverse());
   }, [data, filterText, currentFilterBy, dateRange]);
 
@@ -252,9 +291,8 @@ function CustomerTransactions(props) {
           </div>
           <div>
             <Export
-              onExport={
-                () => console.log("downloadCSVofcCustomers")
-                // downloadCSVOfCustomers(filteredItems, selectedRows)
+              onExport={() =>
+                downloadCSVOfCustomerTransactions(filteredItems, selectedRows)
               }
             />
           </div>
@@ -275,6 +313,18 @@ function CustomerTransactions(props) {
 
     return 0;
   };
+  const amountSortFun = (rowA, rowB) => {
+    const dateA = Number(rowA.total_amount);
+    const dateB = Number(rowB.total_amount);
+    if (dateA > dateB) {
+      return 1;
+    }
+    if (dateB > dateA) {
+      return -1;
+    }
+
+    return 0;
+  };
 
   const columns = [
     {
@@ -285,7 +335,7 @@ function CustomerTransactions(props) {
     },
     {
       name: "Transaction ID",
-      sortable: "true",
+      // sortable: "true",
       cell: (row, index) => (
         <div>
           <NavLink
@@ -306,7 +356,7 @@ function CustomerTransactions(props) {
         </div>
       ),
       grow: 1,
-      sortable: true,
+      // sortable: true,
       //   sortFunction: caseInsensitiveSort,
     },
     {
@@ -332,32 +382,35 @@ function CustomerTransactions(props) {
     {
       name: "Amount",
       grow: 0,
-      cell: (row) => <div>{row?.transactedAmount}</div>,
+      sortable: "true",
+      cell: (row) => <div>{row?.total_amount}</div>,
       style: { textAlign: "center", display: "block" },
+      sortFunction: amountSortFun,
     },
     {
       name: "Status",
       cell: (row) => {
         if (row?.status === "Successful") {
           return (
-            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-200 text-green-800">
+            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-medium bg-green-200 text-green-800">
               <span> &#8226;</span> Successful
             </span>
           );
         } else if (row?.status === "Pending") {
           return (
-            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-200 text-red-800">
+            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-medium bg-red-200 text-red-800">
               <span> &#8226;</span> Pending
             </span>
           );
         } else {
           return (
-            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-200 text-red-800">
+            <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-medium bg-red-200 text-red-800">
               <span> &#8226;</span> Failed
             </span>
           );
         }
       },
+      sortable: "true",
       center: "true",
       width: "130px",
     },

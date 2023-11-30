@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LogoPng from "../../assets/svg/payinstaLogo.svg";
 import Button from "../common/forms/Button";
 import Input from "../common/forms/Input";
@@ -9,6 +9,7 @@ const initialValues = {
   email: "",
 };
 function ForgotPasswordForm({}) {
+  const navigate = useNavigate();
   const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues: initialValues,
     validationSchema: ForgotPasswordPageSchema,
@@ -17,7 +18,7 @@ function ForgotPasswordForm({}) {
     },
   });
   return (
-    <div class="w-[100%] md:w-[50%] flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+    <div className="w-[100%] md:w-[50%] flex flex-col items-center justify-center px-6 py-12 lg:px-8">
       <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
         <img className="" src={LogoPng} alt="Your Company" />
         <h1 className="mt-6 text-[40px] font-bold leading-9 tracking-tight text-gray-900 text-[#1E293B]">
@@ -57,35 +58,13 @@ function ForgotPasswordForm({}) {
 
           <Button type="submit" label="Submit" />
           <Button
-            // type="submit"
             outlined={true}
-            label={
-              <>
-                {/* <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 25 25"
-                    fill="none"
-                  >
-                    <path
-                      d="M12.9286 5.64288L6.5 12.0715L12.9286 18.5"
-                      stroke="currentColor"
-                      strokeWidth="2.06633"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M19.3571 12.0716H6.5"
-                      stroke="currentColor"
-                      strokeWidth="2.06633"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg> */}
-                <Link to="/"> Back to Login</Link>
-              </>
-            }
+            buttonActions={{
+              onClick: () => {
+                navigate("/");
+              },
+            }}
+            label="Back to Login"
           />
         </form>
       </div>

@@ -464,7 +464,7 @@ function AddNewCustomer() {
         <div>
           <Link
             to={"/dashboard/customers"}
-            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-4 md:px-8 py-[2px] md:py-1 mr-4 min-[1000px]:mr-5"
+            className="border border-primary hover:bg-primary hover:text-[#FFFFFF] font-medium rounded-md px-8 py-1.5 mr-4 min-[1000px]:mr-5"
           >
             <span className="mr-2">&#8592;</span> Back
           </Link>

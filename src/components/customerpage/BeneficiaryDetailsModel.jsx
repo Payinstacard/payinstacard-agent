@@ -13,6 +13,7 @@ import {
   fetchSingleCustomer,
   setCustomersLoading,
 } from "../../stores/CustomerRedux";
+import { useEffect } from "react";
 
 const initialBeneficiaryData = {
   fullName: "",
@@ -46,7 +47,8 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
   const handleChang = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedValue = name === "ifsc_code" ? value.toUpperCase() : value;
+    setFormData({ ...formData, [name]: updatedValue });
   };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -187,9 +189,8 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           String(response?.data?.code) === "201" &&
           response.data.status === true
         ) {
-          fetchSingleCustomer(id);
           dispatch(setCustomersLoading(false));
-
+          dispatch(fetchSingleCustomer(id));
           toast(
             response?.data?.message
               ? response?.data?.message
@@ -200,7 +201,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
               type: "success",
             }
           );
-          onclose();
+          onClose();
         } else {
           toast(
             response?.data?.message
@@ -229,6 +230,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
         dispatch(setCustomersLoading(false));
       });
   };
+
   const checkBank_varification_api = async (success_cb, error_cb) => {
     await apiClient
       .post(BANK_VERIFICATION, {
@@ -292,12 +294,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
       <div className="bg-white w-[80%] min-[540px]:w-[60%] md:w-[40%] h-[74%]  overflow-auto p-4 min-[549px]:p-8 rounded-lg shadow-lg z-10">
         <p className="flex justify-end">
           <button type="button" className="flex justify-end" onClick={onClose}>
-            <img
-              src={CrossBox}
-              alt=""
-              className="w-[60%] min-[540px]:w-full"
-              onClick={onClose}
-            />
+            <img src={CrossBox} alt="" className="w-[60%] min-[540px]:w-full" />
           </button>
         </p>
         <h1 className="text-[20px] min-[375px]:text-[28px] text-[#45464E] my-2 min-[540px]:my-4">

@@ -19,17 +19,26 @@ function CustomersDetailsLayout(props) {
   const location = useLocation();
   const params = useParams();
   const id = params?.id;
-  // const [customerData, setCustomerData] = useState("");
+  const [customerData, setCustomerData] = useState("");
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
   );
-  console.log("log data", customersData);
 
   useEffect(() => {
     if (!_.isEmpty(id)) {
       dispatch(fetchSingleCustomer(id));
     }
   }, [id]);
+
+  const getTotalPayment = () => {
+    let totalPayments = 0;
+    if (!_.isEmpty(customersData.transactions)) {
+      customersData?.transactions.forEach((transaction) => {
+        totalPayments += Number(transaction.total_amount);
+      });
+    }
+    return `₹${totalPayments}`;
+  };
 
   return (
     <div className="mt-4 sm:mt-10">
@@ -50,9 +59,10 @@ function CustomersDetailsLayout(props) {
                 <div className="ms-4">
                   <h3 className="font-bold text-sm sm:text-base">
                     {customersData?.Customer_data?.FirstName +
+                      " " +
                       customersData?.Customer_data?.LastName}
                   </h3>
-                  <p>
+                  <p className="break-all">
                     <span className="text-[#8B8D97]">Added on</span>{" "}
                     {new Date(customersData?.created_At).toLocaleDateString(
                       "en-US",
@@ -63,17 +73,19 @@ function CustomersDetailsLayout(props) {
               </div>
               <div>
                 <p className="text-[#8B8D97]">Email ID</p>
-                <p>{customersData?.Email}</p>
+                <p className="break-all">{customersData?.Email}</p>
               </div>
             </div>
-            <div className="grid grid-rows-2 gap-3">
+            <div className="grid grid-rows-2 gap-3 justify-start md:justify-end">
               <div>
                 <p className="text-[#8B8D97]">Phone Number</p>
-                <p>{customersData?.mobile}</p>
+                <p className="break-all">{customersData?.mobile}</p>
               </div>
               <div>
                 <p className="text-[#8B8D97]">Address</p>
-                <p>{customersData?.Customer_data?.Address}</p>
+                <p className="break-all">
+                  {customersData?.Customer_data?.Address}
+                </p>
               </div>
             </div>
           </div>
@@ -86,7 +98,7 @@ function CustomersDetailsLayout(props) {
               width="sm:w-[50%] "
             />
             <Card
-              data="&#8377;20,000"
+              data={getTotalPayment()}
               title={"Total Payments"}
               width="sm:w-[50%]"
             />

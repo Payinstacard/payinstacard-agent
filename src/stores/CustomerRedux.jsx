@@ -72,7 +72,7 @@ export const fetchCustomers = (id) => {
 
       const response = await apiClient.get(FETCH_CUSTOMER);
       const customersData = response?.data?.response?.AgentCustomers_array;
-      // console.log("data", customersData);
+      console.log("data", customersData);
 
       dispatch(setCustomersData(customersData));
       dispatch(setCustomersLoading(false));

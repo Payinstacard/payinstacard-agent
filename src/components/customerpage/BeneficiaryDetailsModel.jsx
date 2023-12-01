@@ -40,7 +40,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
     ifsc_code: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
   const id = params?.id;
@@ -272,12 +272,13 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           };
           add_beneficiary_api(beneficiaryData);
         } catch (error) {
-          setLoad(false);
+          // setLoad(false);
+          dispatch(setCustomersLoading(false));
           console.log(error);
         }
       }
-
-      setLoad(true);
+      dispatch(setCustomersLoading(false));
+      // setLoad(true);
     }
   };
 

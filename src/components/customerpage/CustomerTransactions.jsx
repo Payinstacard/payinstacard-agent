@@ -31,7 +31,10 @@ function CustomerTransactions(props) {
     startDate: null,
     endDate: null,
   });
-  const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(false);
+  const loading = useSelector(
+    (state) => state?.customersData?.customersLoading
+  );
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
@@ -448,7 +451,7 @@ function CustomerTransactions(props) {
           data={filteredItems}
           pagination
           paginationComponent={Pagination}
-          progressPending={load}
+          progressPending={loading}
           progressComponent={<Loader />}
           fixedHeader
           subHeader

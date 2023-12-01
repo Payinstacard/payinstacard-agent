@@ -10,6 +10,8 @@ import MobileField from "../common/forms/MobileField";
 import Loader from "../common/Loader/Loader";
 import GreenCheck from "../../assets/svg/GREENcheckbox.svg";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
+import { setCustomersLoading } from "../../stores/CustomerRedux";
 
 const initialErrors = {
   firstName: "",
@@ -41,12 +43,16 @@ function AddNewCustomer() {
   const [verify, setVerify] = useState(false);
   const [timer, setTimer] = useState(30);
   const [isTimerActive, setIsTimerActive] = useState(false);
-  const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(false);
+  const loading = useSelector(
+    (state) => state?.customersData?.customersLoading
+  );
   const [otp, setOtp] = useState("");
   const params = useParams();
   const [pincodeError, setPincodeError] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const id = params.id;
 
@@ -119,7 +125,8 @@ function AddNewCustomer() {
     } else if (mobileRegex.test(data.mobileNo)) {
       setValidation({ ...validation, mobileNo: "" });
 
-      setLoad(true);
+      // setLoad(true);
+      dispatch(setCustomersLoading(true));
       try {
         console.log("api call");
         await apiClient
@@ -152,7 +159,8 @@ function AddNewCustomer() {
                 type: "warning",
               });
             }
-            setLoad(false);
+            // setLoad(false);
+            dispatch(setCustomersLoading(false));
           })
           .catch((error) => {
             console.log(error);
@@ -166,7 +174,8 @@ function AddNewCustomer() {
               hideProgressBar: true,
               type: "error",
             });
-            setLoad(false);
+            // setLoad(false);
+            dispatch(setCustomersLoading(false));
           });
       } catch (error) {
         console.log(error);
@@ -191,8 +200,8 @@ function AddNewCustomer() {
       });
     } else if (mobileRegex.test(data.mobileNo)) {
       setValidation({ ...validation, mobileNo: "" });
-
-      setLoad(true);
+      dispatch(setCustomersLoading(true));
+      // setLoad(true);
       try {
         await apiClient
           .post(RESEND_OTP, {
@@ -250,7 +259,8 @@ function AddNewCustomer() {
             //   });
             // }
 
-            setLoad(false);
+            // setLoad(false);
+            dispatch(setCustomersLoading(false));
           })
           .catch((error) => {
             console.log(error);
@@ -264,7 +274,8 @@ function AddNewCustomer() {
               hideProgressBar: true,
               type: "error",
             });
-            setLoad(false);
+            dispatch(setCustomersLoading(false));
+            // setLoad(false);
           });
       } catch (error) {
         console.log(error);
@@ -284,7 +295,8 @@ function AddNewCustomer() {
     if (otp == "") {
       setValidation({ ...validation, otp: "Enter OTP" });
     } else {
-      setLoad(true);
+      // setLoad(true);
+      dispatch(setCustomersLoading(true));
       try {
         await apiClient
           .post(VERIFY_OTP, {
@@ -292,7 +304,8 @@ function AddNewCustomer() {
             otp: otp,
           })
           .then((response) => {
-            setLoad(false);
+            // setLoad(false);
+            dispatch(setCustomersLoading(false));
             console.log(response);
             setData({
               ...data,
@@ -336,7 +349,8 @@ function AddNewCustomer() {
               hideProgressBar: true,
               type: "error",
             });
-            setLoad(false);
+            // setLoad(false);
+            dispatch(setCustomersLoading(false));
           });
       } catch (error) {
         console.log(error);
@@ -356,12 +370,14 @@ function AddNewCustomer() {
         pincode: "Pincode should be number",
       });
     } else if (data.pincode.length == 6) {
-      setLoad(true);
+      // setLoad(true);
+      dispatch(setCustomersLoading(true));
       await fetch(`https://api.postalpincode.in/pincode/${data?.pincode}`)
         .then((response) => response.json())
         .then((response) => {
           console.log("data", response);
-          setLoad(false);
+          // setLoad(false);
+          dispatch(setCustomersLoading(false));
           setData({
             ...data,
             state: response[0]?.PostOffice[0]?.State,
@@ -375,7 +391,8 @@ function AddNewCustomer() {
           // setPincodeError("Invalid Pincode");
           setValidation({ ...validation, pincode: "Invalid Pincode" });
 
-          setLoad(false);
+          // setLoad(false);
+          dispatch(setCustomersLoading(false));
           console.error("Error:", error);
           // Handle errors here
         });
@@ -406,7 +423,8 @@ function AddNewCustomer() {
         verified: data.mobileVerified,
       };
       const endPoint = id ? `${ADD_CUSTOMER}?customerId=${id}` : ADD_CUSTOMER;
-      setLoad(true);
+      // setLoad(true);
+      dispatch(setCustomersLoading(true));
       await apiClient
         .post(endPoint, customerData)
         .then((response) => {
@@ -438,7 +456,8 @@ function AddNewCustomer() {
               }
             );
           }
-          setLoad(false);
+          // setLoad(false);
+          dispatch(setCustomersLoading(false));
         })
         .catch((error) => {
           console.log("error");
@@ -452,14 +471,15 @@ function AddNewCustomer() {
               type: "error",
             }
           );
-          setLoad(false);
+          // setLoad(false);
+          dispatch(setCustomersLoading(false));
         });
     }
   };
 
   return (
     <div className="m-2">
-      {load && <Loader />}
+      {loading && <Loader />}
       <div className="flex flex-row justify-between md:justify-normal	items-center mt-4 md:mt-0 ">
         <div>
           <Link

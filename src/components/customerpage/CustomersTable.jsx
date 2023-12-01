@@ -31,7 +31,7 @@ function CustomersTable(props) {
     startDate: null,
     endDate: null,
   });
-  const [load, setLoad] = useState(false);
+  // const [load, setLoad] = useState(false);
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
@@ -40,6 +40,9 @@ function CustomersTable(props) {
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
   const dispatch = useDispatch();
+  const loading = useSelector(
+    (state) => state?.customersData?.customersLoading
+  );
   // const fetchAllCustomers = async () => {
   //   setLoad(true);
 
@@ -230,6 +233,7 @@ function CustomersTable(props) {
               onChange={handleValueChange}
               useRange={false}
               maxDate={new Date()}
+              popoverDirection="down"
               primaryColor={"blue"}
               inputClassName="w-[265px] px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base h-[35px] sm:h-[42px] rounded-md border-0 focus:ring-0 font-normal bg-white-100 dark:placeholder:text-black-100"
               toggleClassName="absolute bg-primary hover:bg-blue-700 rounded-r-md text-white right-0 h-full px-2 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
@@ -404,7 +408,7 @@ function CustomersTable(props) {
     <div className="">
       {/* <PageTitle buttonText="Add New Customer" title="Customers" url="add" /> */}
       <PageTitle buttonText="Add New Customer" title="Customers" url="add" />
-      {load ? (
+      {loading ? (
         <Loader />
       ) : (
         <>
@@ -453,7 +457,7 @@ function CustomersTable(props) {
               data={filteredItems}
               pagination
               paginationComponent={Pagination}
-              progressPending={load}
+              progressPending={loading}
               progressComponent={<Loader />}
               fixedHeader
               subHeader

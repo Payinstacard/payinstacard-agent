@@ -4,7 +4,7 @@ import MenuItem from "./MenuItem";
 
 import { ReactComponent as DashboardSvg } from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
 import { ReactComponent as Customers } from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
-import { ReactComponent as Transactions } from "../../assets/svg/ProtectedLayoutImages/sidebar/Transactions.svg";
+import { ReactComponent as Profile } from "../../assets/svg/ProtectedLayoutImages/sidebar/Profiles.svg";
 import { ReactComponent as LogOut } from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
 import { useAuth } from "../../stores/AuthContext";
 import { BsArrowLeftCircle } from "react-icons/bs";
@@ -34,9 +34,9 @@ function Sidebar() {
       icon: <Customers />,
     },
     {
-      title: "Transactions",
-      path: "/dashboard/transactions",
-      icon: <Transactions />,
+      title: "profile",
+      path: "/dashboard/profile",
+      icon: <Profile />,
     },
     // { title: "Users", path: "/dashboard/users", src: <CgProfile /> },
     // {
@@ -73,7 +73,7 @@ function Sidebar() {
         <div className="h-full flex flex-col justify-between">
           <ul
             // className="py-10 px-6"
-            className={`${isSideBarExpand ? "py-0 px-6" : "py-0 px-3"}`}
+            className={`${isSideBarExpand ? "py-0" : "py-0 px-3"}`}
           >
             {Menus.map((menu, index) => (
               <MenuItem

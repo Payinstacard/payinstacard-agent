@@ -14,6 +14,9 @@ import CustomersDetailsLayout from "../layouts/CustomerDetailLayout";
 import BeneficiaryAccounts from "../components/customerpage/BeneficiaryAccounts";
 import CustomerTransactions from "../components/customerpage/CustomerTransactions";
 import CustomersTable from "../components/customerpage/CustomersTable";
+import ProfileLayout from "../layouts/ProfileLayout";
+import PersonalInfo from "../components/profilepage/PersonalInfo";
+import BankInfo from "../components/profilepage/BankInfo";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -87,8 +90,18 @@ export const router = createBrowserRouter([
           },
 
           {
-            path: "transactions",
-            element: <h1>This is Transactions page</h1>,
+            path: "profile",
+            element: <ProfileLayout />,
+            children: [
+              {
+                path: "",
+                element: <PersonalInfo />,
+              },
+              {
+                path: "bankinfo",
+                element: <BankInfo />,
+              },
+            ],
           },
         ],
       },

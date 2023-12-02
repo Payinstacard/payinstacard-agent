@@ -13,7 +13,7 @@ const CustomPhoneNumberInput = ({ name, value, onChange }) => {
     />
   );
 };
-function MobileField({ name, value, disabled, onChange }) {
+function MobileField({ name, value, disabled, onChange, placeholder = "" }) {
   return (
     <PhoneInput
       disabled={disabled}
@@ -22,6 +22,7 @@ function MobileField({ name, value, disabled, onChange }) {
       value={value}
       onChange={(val) => onChange({ target: { name: name, value: val } })}
       // inputComponent={CustomPhoneNumberInput}
+      placeholder={placeholder}
       className="inputMobile bg-[#EFF1F999] rounded-lg border-0 w-full px-4"
     />
   );

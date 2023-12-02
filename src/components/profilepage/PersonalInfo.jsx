@@ -197,7 +197,7 @@ function PersonalInfo(props) {
       <div className="md:w-[80%] mx-auto  mb-6 md:mb-16">
         <div>
           <div className="w-[90%] md:flex md:justify-between">
-            <div className="md:w-[45%]">
+            <div className="md:w-[45%] mb-4 md:mb-0">
               <div>
                 <p className="text-[14px] text-[#5E6366] mb-1">
                   Base commission
@@ -207,7 +207,7 @@ function PersonalInfo(props) {
                 </div>
               </div>
             </div>
-            <div className="md:w-[45%]">
+            <div className="md:w-[45%] mb-3 md:mb-0">
               <div>
                 <p className="text-[14px] text-[#5E6366] mb-1">
                   Markup  Commission
@@ -229,7 +229,7 @@ function PersonalInfo(props) {
       <div className="md:w-[80%] mx-auto ">
         <div className="flex flex-wrap gap-8 md:gap-16">
           {agentData?.Documents.map((docUrl, index) => (
-            <DocumentCard docUrl={docUrl} key={index} />
+            <DocumentCard key={"doc" + index} docUrl={docUrl} />
           ))}
         </div>
       </div>

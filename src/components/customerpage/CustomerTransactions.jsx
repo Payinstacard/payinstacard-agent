@@ -441,7 +441,8 @@ function CustomerTransactions(props) {
       <PageTitle
         buttonText="Make New Transaction"
         title="Transactions"
-        url="#"
+        url={`/dashboard/customers/customer-details/${customersData?.Customer_id}/make-new-transaction`}
+        // url="../make-new-transaction"
       />
 
       <div className="agent-table react-data-table mt-3 sm:mt-10">

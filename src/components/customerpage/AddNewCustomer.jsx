@@ -127,69 +127,125 @@ function AddNewCustomer() {
 
       // setLoad(true);
       dispatch(setCustomersLoading(true));
+
+      // try {
+      //   console.log("api call");
+      //   await apiClient
+      //     .post(SEND_OTP, {
+      //       phone: data.mobileNo,
+      //     })
+      //     .then((response) => {
+      //       setVerify(true);
+      //       setIsEdit(true);
+      //       setIsTimerActive(true);
+      //       setTimer(30);
+      //       console.log(response);
+      //       let message = response.data.message;
+      //       const type = response.data.response.type;
+
+      //       if (type === "success") {
+      //         const message =
+      //           response?.data?.response?.message || response?.data?.message;
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "success",
+      //         });
+      //       } else {
+      //         console.log(message);
+      //         setVerify(false);
+      //         setIsTimerActive(false);
+
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "warning",
+      //         });
+      //       }
+      //       // setLoad(false);
+      //       dispatch(setCustomersLoading(false));
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //       let message =
+      //         error?.response?.data?.message ||
+      //         error?.data?.response?.data?.message;
+      //       setVerify(false);
+      //       setIsTimerActive(false);
+      //       toast(message, {
+      //         theme: "dark",
+      //         hideProgressBar: true,
+      //         type: "error",
+      //       });
+      //       // setLoad(false);
+      //       dispatch(setCustomersLoading(false));
+      //     });
+      // } catch (error) {
+      //   console.log(error);
+      //   toast(error?.message ?? "Something wrong", {
+      //     theme: "dark",
+      //     hideProgressBar: true,
+      //     type: "error",
+      //   });
+      // }
+
       try {
         console.log("api call");
-        await apiClient
-          .post(SEND_OTP, {
-            phone: data.mobileNo,
-          })
-          .then((response) => {
-            setVerify(true);
-            setIsEdit(true);
-            setIsTimerActive(true);
-            setTimer(30);
-            console.log(response);
-            let message = response.data.message;
+        const response = await apiClient.post(SEND_OTP, {
+          phone: data.mobileNo,
+        });
 
-            if (response.data.status) {
-              console.log(message);
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "success",
-              });
-            } else {
-              console.log(message);
-              setVerify(false);
-              setIsTimerActive(false);
+        setVerify(true);
+        setIsEdit(true);
+        setIsTimerActive(true);
+        setTimer(30);
+        console.log(response);
 
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "warning",
-              });
-            }
-            // setLoad(false);
-            dispatch(setCustomersLoading(false));
-          })
-          .catch((error) => {
-            console.log(error);
-            let message =
-              error?.response?.data?.message ||
-              error?.data?.response?.data?.message;
-            setVerify(false);
-            setIsTimerActive(false);
-            toast(message, {
-              theme: "dark",
-              hideProgressBar: true,
-              type: "error",
-            });
-            // setLoad(false);
-            dispatch(setCustomersLoading(false));
+        const message = response?.data?.message;
+        const type = response?.data?.response?.type;
+        const code = response?.data?.code;
+
+        if (code === 200 && type === "success") {
+          toast("OTP has been sent successfully.", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "success",
           });
+        } else {
+          console.log(message);
+          setVerify(false);
+          setIsTimerActive(false);
+
+          toast("Failed to send OTP. Please try again later.", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "warning",
+          });
+        }
+
+        dispatch(setCustomersLoading(false));
       } catch (error) {
         console.log(error);
-        toast(error?.message ?? "Something wrong", {
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong. Please try again later.";
+        setVerify(false);
+        setIsTimerActive(false);
+        toast("Something went wrong. Please try again later.", {
           theme: "dark",
           hideProgressBar: true,
           type: "error",
         });
+
+        dispatch(setCustomersLoading(false));
       }
     } else {
       setValidation({ ...validation, mobileNo: "Enter valid Mobile" });
       return;
     }
   };
+
   const resentOTP = async () => {
     if (data.mobileNo.length === 0) {
       setValidation({ ...validation, mobileNo: "Please Enter Mobile Number" });
@@ -201,89 +257,148 @@ function AddNewCustomer() {
     } else if (mobileRegex.test(data.mobileNo)) {
       setValidation({ ...validation, mobileNo: "" });
       dispatch(setCustomersLoading(true));
+
       // setLoad(true);
+      // try {
+      //   await apiClient
+      //     .post(RESEND_OTP, {
+      //       phone: data.mobileNo,
+      //     })
+      //     .then((response) => {
+      //       setVerify(true);
+      //       setIsTimerActive(true);
+      //       setTimer(30);
+      //       console.log(response);
+      //       setValidation({
+      //         ...validation,
+      //         otp: "",
+      //       });
+      //       setOtp("");
+      //       const type = response.data.response.type;
+
+      //       if (type === "success") {
+      //         const message =
+      //           response?.data?.response?.message || response?.data?.message;
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "success",
+      //         });
+      //       } else {
+      //         const message = "Please try again";
+
+      //         setIsEdit(false);
+      //         setVerify(false);
+      //         setIsTimerActive(false);
+
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "warning",
+      //         });
+      //       }
+      //       // if (response.data.status) {
+      //       //   console.log(message);
+      //       //   toast(message, {
+      //       //     theme: "dark",
+      //       //     hideProgressBar: true,
+      //       //     type: "success",
+      //       //   });
+      //       // } else {
+      //       //   console.log(message);
+      //       //   setVerify(false);
+      //       //   setIsTimerActive(false);
+
+      //       //   toast(message, {
+      //       //     theme: "dark",
+      //       //     hideProgressBar: true,
+      //       //     type: "warning",
+      //       //   });
+      //       // }
+
+      //       // setLoad(false);
+      //       dispatch(setCustomersLoading(false));
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //       let message =
+      //         error?.response?.data?.message ||
+      //         error?.data?.response?.data?.message;
+      //       setVerify(false);
+      //       setIsTimerActive(false);
+      //       toast(message, {
+      //         theme: "dark",
+      //         hideProgressBar: true,
+      //         type: "error",
+      //       });
+      //       dispatch(setCustomersLoading(false));
+      //       // setLoad(false);
+      //     });
+      // } catch (error) {
+      //   console.log(error);
+      //   toast(error?.message ?? "Something wrong", {
+      //     theme: "dark",
+      //     hideProgressBar: true,
+      //     type: "error",
+      //   });
+      // }
+
       try {
-        await apiClient
-          .post(RESEND_OTP, {
-            phone: data.mobileNo,
-          })
-          .then((response) => {
-            setVerify(true);
-            setIsTimerActive(true);
-            setTimer(30);
-            console.log(response);
-            setValidation({
-              ...validation,
-              otp: "",
-            });
-            setOtp("");
-            const type = response.data.response.type;
+        const response = await apiClient.post(RESEND_OTP, {
+          phone: data.mobileNo,
+        });
 
-            if (type === "success") {
-              const message =
-                response?.data?.response?.message || response?.data?.message;
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "success",
-              });
-            } else {
-              const message = "Please try again";
+        setVerify(true);
+        setIsTimerActive(true);
+        setTimer(30);
+        console.log(response);
+        setValidation({
+          ...validation,
+          otp: "",
+        });
+        setOtp("");
 
-              setIsEdit(false);
-              setVerify(false);
-              setIsTimerActive(false);
+        const type = response.data.response.type;
+        const code = response?.data?.code;
 
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "warning",
-              });
-            }
-            // if (response.data.status) {
-            //   console.log(message);
-            //   toast(message, {
-            //     theme: "dark",
-            //     hideProgressBar: true,
-            //     type: "success",
-            //   });
-            // } else {
-            //   console.log(message);
-            //   setVerify(false);
-            //   setIsTimerActive(false);
-
-            //   toast(message, {
-            //     theme: "dark",
-            //     hideProgressBar: true,
-            //     type: "warning",
-            //   });
-            // }
-
-            // setLoad(false);
-            dispatch(setCustomersLoading(false));
-          })
-          .catch((error) => {
-            console.log(error);
-            let message =
-              error?.response?.data?.message ||
-              error?.data?.response?.data?.message;
-            setVerify(false);
-            setIsTimerActive(false);
-            toast(message, {
-              theme: "dark",
-              hideProgressBar: true,
-              type: "error",
-            });
-            dispatch(setCustomersLoading(false));
-            // setLoad(false);
+        if (code === 200 && type === "success") {
+          const message =
+            response?.data?.response?.message || response?.data?.message;
+          toast("OTP resent successfully.", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "success",
           });
+        } else {
+          const message =
+            response?.data?.response?.message || "Please try again";
+
+          setIsEdit(false);
+          setVerify(false);
+          setIsTimerActive(false);
+
+          toast("Failed to resend OTP. Please try again later.", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "warning",
+          });
+        }
+
+        dispatch(setCustomersLoading(false));
       } catch (error) {
         console.log(error);
-        toast(error?.message ?? "Something wrong", {
+        const message =
+          error?.response?.data?.message ||
+          error?.data?.response?.data?.message ||
+          "Something went wrong. Please try again later.";
+        setVerify(false);
+        setIsTimerActive(false);
+        toast("Something went wrong. Please try again later.", {
           theme: "dark",
           hideProgressBar: true,
           type: "error",
         });
+        dispatch(setCustomersLoading(false));
       }
     } else {
       setValidation({ ...validation, mobileNo: "Enter valid Mobile" });
@@ -297,63 +412,120 @@ function AddNewCustomer() {
     } else {
       // setLoad(true);
       dispatch(setCustomersLoading(true));
+      // try {
+      //   await apiClient
+      //     .post(VERIFY_OTP, {
+      //       phone: data?.mobileNo,
+      //       otp: otp,
+      //     })
+      //     .then((response) => {
+      //       // setLoad(false);
+      //       dispatch(setCustomersLoading(false));
+      //       console.log(response);
+      //       setData({
+      //         ...data,
+      //         mobileVerified: true,
+      //       });
+      //       setValidation({ ...validation, otp: "" });
+      //       setIsEdit(false);
+
+      //       const type = response.data.response.type;
+      //       const message =
+      //         response?.data?.response?.message || response?.data?.message;
+
+      //       if (type === "success") {
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "success",
+      //         });
+      //       } else {
+      //         toast(message, {
+      //           theme: "dark",
+      //           hideProgressBar: true,
+      //           type: "warning",
+      //         });
+      //       }
+
+      //       // toast(message, {
+      //       //   theme: "dark",
+      //       //   hideProgressBar: true,
+      //       //   type: "success",
+      //       // });
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //       let message =
+      //         error?.response?.data?.message ||
+      //         error?.data?.response?.data?.message;
+      //       setValidation({ ...validation, otp: message });
+      //       toast(message, {
+      //         theme: "dark",
+      //         hideProgressBar: true,
+      //         type: "error",
+      //       });
+      //       // setLoad(false);
+      //       dispatch(setCustomersLoading(false));
+      //     });
+      // } catch (error) {
+      //   console.log(error);
+      // }
+
       try {
-        await apiClient
-          .post(VERIFY_OTP, {
-            phone: data?.mobileNo,
-            otp: otp,
-          })
-          .then((response) => {
-            // setLoad(false);
-            dispatch(setCustomersLoading(false));
-            console.log(response);
-            setData({
-              ...data,
-              mobileVerified: true,
-            });
-            setValidation({ ...validation, otp: "" });
-            setIsEdit(false);
+        const response = await apiClient.post(VERIFY_OTP, {
+          phone: data?.mobileNo,
+          otp: otp,
+        });
 
-            const type = response.data.response.type;
-            const message =
-              response?.data?.response?.message || response?.data?.message;
+        dispatch(setCustomersLoading(false));
+        console.log(response);
 
-            if (type === "success") {
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "success",
-              });
-            } else {
-              toast(message, {
-                theme: "dark",
-                hideProgressBar: true,
-                type: "warning",
-              });
-            }
+        setData((prevData) => ({
+          ...prevData,
+          mobileVerified: response.data.response.type === "success",
+        }));
 
-            // toast(message, {
-            //   theme: "dark",
-            //   hideProgressBar: true,
-            //   type: "success",
-            // });
-          })
-          .catch((error) => {
-            console.log(error);
-            let message =
-              error?.response?.data?.message ||
-              error?.data?.response?.data?.message;
-            setValidation({ ...validation, otp: message });
-            toast(message, {
-              theme: "dark",
-              hideProgressBar: true,
-              type: "error",
-            });
-            // setLoad(false);
-            dispatch(setCustomersLoading(false));
+        setValidation({ ...validation, otp: "" });
+        setIsEdit(false);
+
+        const type = response.data.response.type;
+        const message =
+          response?.data?.response?.message || response?.data?.message;
+        const code = response?.data?.code;
+
+        const toastOptions = {
+          theme: "dark",
+          hideProgressBar: true,
+        };
+
+        if (code === 200 && type === "success") {
+          toast("OTP successfully verified.", {
+            ...toastOptions,
+            type: "success",
           });
+        } else {
+          toast("OTP verification failed. Please try again.", {
+            ...toastOptions,
+            type: "warning",
+          });
+        }
       } catch (error) {
         console.log(error);
+
+        let message =
+          error?.response?.data?.message ||
+          error?.data?.response?.data?.message ||
+          "Something went wrong. Please try again later.";
+
+        // setValidation({ ...validation, otp: message });
+
+        toast("Something went wrong. Please try again later.", {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "error",
+        });
+
+        dispatch(setCustomersLoading(false));
       }
     }
   };

@@ -17,6 +17,8 @@ import CustomersTable from "../components/customerpage/CustomersTable";
 import ProfileLayout from "../layouts/ProfileLayout";
 import PersonalInfo from "../components/profilepage/PersonalInfo";
 import BankInfo from "../components/profilepage/BankInfo";
+import CustomerDetails from "../components/customerpage/CustomerDetails";
+import MakeCustomerTransaction from "../components/customerpage/MakeNewCustomerTransaction";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -67,17 +69,41 @@ export const router = createBrowserRouter([
                 path: "add",
                 element: <AddNewCustomer />,
               },
+              // {
+              //   path: "customer-details/:id",
+              //   element: <CustomersDetailsLayout />,
+              //   children: [
+              //     {
+              //       path: "",
+              //       element: <BeneficiaryAccounts />,
+              //     },
+              //     {
+              //       path: "transactions",
+              //       element: <CustomerTransactions />,
+              //     },
+              //   ],
+              // },
               {
                 path: "customer-details/:id",
                 element: <CustomersDetailsLayout />,
                 children: [
                   {
                     path: "",
-                    element: <BeneficiaryAccounts />,
+                    element: <CustomerDetails />,
+                    children: [
+                      {
+                        path: "",
+                        element: <BeneficiaryAccounts />,
+                      },
+                      {
+                        path: "transactions",
+                        element: <CustomerTransactions />,
+                      },
+                    ],
                   },
                   {
-                    path: "transactions",
-                    element: <CustomerTransactions />,
+                    path: "make-new-transaction",
+                    element: <MakeCustomerTransaction />,
                   },
                 ],
               },

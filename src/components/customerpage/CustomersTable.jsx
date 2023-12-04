@@ -371,12 +371,16 @@ function CustomersTable(props) {
       // button: "true",
       cell: (row) => (
         <>
-          <button
-            className="bg-primary text-white py-1.5 px-3.5 mr-2 rounded"
-            onClick={() => console.log("clicked")}
+          <NavLink
+            to={`customer-details/${row?.Customer_id}/make-new-transaction`}
           >
-            Pay
-          </button>
+            <button
+              className="bg-primary text-white py-1.5 px-3.5 mr-2 rounded"
+              onClick={() => console.log("clicked")}
+            >
+              Pay
+            </button>
+          </NavLink>
           {/* <button>
             <img src={Edit} alt="" className="w-8 h-8 mr-2" />
           </button> */}

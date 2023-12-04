@@ -9,6 +9,7 @@ export const FETCH_AGENT_DATA = "/api/v2/agents/agents/get-details-agent";
 export const BANK_VERIFICATION = "/api/v2/agents/verify/bankVerify";
 
 export const ADD_BENEFICIARY = "/api/v2/agents/agents/create-benificary";
+export const DELETE_BENEFICIARY = "/api/v2/agents/agents/delete-beneficiary";
 
 export const SEND_OTP = "/api/v2/agents/otp/send";
 export const RESEND_OTP = "/api/v2/agents/otp/resend";

@@ -19,6 +19,8 @@ import PersonalInfo from "../components/profilepage/PersonalInfo";
 import BankInfo from "../components/profilepage/BankInfo";
 import CustomerDetails from "../components/customerpage/CustomerDetails";
 import MakeCustomerTransaction from "../components/customerpage/MakeNewCustomerTransaction";
+import Transactions from "../components/transactionpage/Transactions";
+import TransactionsTable from "../components/transactionpage/TransactionsTable";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -114,7 +116,20 @@ export const router = createBrowserRouter([
               // },
             ],
           },
-
+          {
+            path: "transactions",
+            element: <Transactions />,
+            children: [
+              {
+                path: "",
+                element: <TransactionsTable />,
+              },
+              // {
+              //   path: "",
+              //   element: <AddNewCustomer />,
+              // },
+            ],
+          },
           {
             path: "profile",
             element: <ProfileLayout />,

@@ -72,16 +72,33 @@ const MakeCustomerTransaction = () => {
     }
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {};
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      errors.amount = "Please enter a valid amount.";
+      isValid = false;
+    }
+    if (_.isEmpty(payInfo)) {
+      errors.beneficiary = "Please select a beneficiary account.";
+      isValid = false;
+    }
+    setFormErrors(errors);
+
+    return isValid;
+  };
+
   const handlePayment = () => {
     // Logic for payment success/failure
     // Set paymentStatus accordingly
-    if (false) {
-      setPaymentStatus("success");
-    } else {
-      setPaymentStatus("fail");
+    if (validateForm()) {
+      if (true) {
+        setPaymentStatus("success");
+      } else {
+        setPaymentStatus("fail");
+      }
+      setShowPopup(true); //show according to api call response
     }
-
-    setShowPopup(true);
   };
 
   const closePopup = () => {
@@ -94,7 +111,7 @@ const MakeCustomerTransaction = () => {
       <div className="flex flex-row justify-between md:justify-normal	items-center mt-4 md:mt-0 ">
         <div>
           <Link
-            to={"/dashboard/customers"}
+            to={`/dashboard/customers/customer-details/${customersData?.Customer_id}/transactions`}
             className="border border-primary hover:bg-primary text-sm sm:text-base hover:text-[#FFFFFF] font-medium rounded-md px-6  sm:px-8 py-1.5 mr-4 min-[1000px]:mr-5"
           >
             <span className="mr-2">&#8592;</span> Back
@@ -139,6 +156,7 @@ const MakeCustomerTransaction = () => {
               <input
                 type="text"
                 name="amount"
+                maxlength="9"
                 value={amount || 0}
                 placeholder="&#8377;1000"
                 onChange={handleAmount}
@@ -183,16 +201,16 @@ const MakeCustomerTransaction = () => {
             </div>
           </div>
           <div className="mt-6 sm:mt-14 md:mt-2">
-            <div className="bg-[#F6F7FB] p-8 rounded-[0.625rem] font-bold">
+            <div className="bg-[#F6F7FB] p-6 min-[390px]:p-8 rounded-[0.625rem] font-bold md:w-[280px] min-[920px]:w-[330px] lg:w-[370px]">
               <h2 className="text-lg mb-6 text-[#525252]">Payment Details</h2>
-              <p className="flex justify-between my-3 mr-10">
+              <p className="flex justify-between my-3 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
                 <span className="text-sm text-[#525252]">Amount</span>
                 <span className="text-base font-bold">
                   &#8377;{amount || 0}
                 </span>
               </p>
-              <p className="flex justify-between my-3 pb-3 border-b-2 pr-10">
-                <span className="mr-16 text-[#525252]">
+              <p className="flex justify-between my-3 pb-3 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
+                <span className="text-[#525252]">
                   Convinence Fees (
                   {agentData?.Commission?.markupPercentage +
                     agentData?.Commission?.BasePersentage || 1.8}
@@ -202,7 +220,7 @@ const MakeCustomerTransaction = () => {
                   &#8377;{_.isNaN(convieFee) ? 0 : convieFee}
                 </span>
               </p>
-              <p className="flex justify-between my-3 pb-2 border-b-2 pr-10">
+              <p className="flex justify-between my-3 pb-2 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
                 <span className="text-[#525252]">Total Amount</span>
                 <span className="text-base font-bold">
                   &#8377;{_.isNaN(totalAmount) ? 0 : totalAmount}
@@ -213,6 +231,7 @@ const MakeCustomerTransaction = () => {
                 <Button
                   label={`Pay ₹${_.isNaN(totalAmount) ? 0 : totalAmount}`}
                   disabled={!amount > 0 || _.isEmpty(payInfo)}
+                  onClick={handlePayment}
                 />
               </div>
             </div>

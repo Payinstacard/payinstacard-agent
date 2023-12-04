@@ -43,7 +43,7 @@ function Input(props) {
                 setShowPassword(!showPassword);
               }}
             >
-              <div className="flex items-center justify-center rounded-tl rounded-bl z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+              <div className="flex items-center justify-center rounded-tl rounded-bl z-10 bg-gray-100 text-gray-600 text-lg h-full w-full cursor-pointer">
                 <img src={EyeIcon} al="" />
               </div>
             </div>

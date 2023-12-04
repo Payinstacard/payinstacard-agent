@@ -1,8 +1,72 @@
 import React, { useState } from "react";
 import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
 import delete_beneficiary_icon from "../../assets/svg/delete_beneficiary.svg";
+import { useDispatch } from "react-redux";
+import {
+  fetchSingleCustomer,
+  setCustomersLoading,
+} from "../../stores/CustomerRedux";
+import apiClient from "../../services/apiClient";
+import { DELETE_BENEFICIARY } from "../../services/apiConstant";
+import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 function BeneficiaryItem({ key, item }) {
+  console.log("item", item);
+  const params = useParams();
+  const id = params?.id;
+  const dispatch = useDispatch();
+  const deleteBeneficiary = async () => {
+    dispatch(setCustomersLoading(true));
+    await apiClient
+      .post(DELETE_BENEFICIARY, { beneficiary_id: item?._id })
+      .then((response) => {
+        console.log("delete respo=>", response);
+        // setFormData(initialBeneficiaryData);
+        if (
+          String(response?.data?.code) === "201" &&
+          response.data.status === true
+        ) {
+          dispatch(setCustomersLoading(false));
+          dispatch(fetchSingleCustomer(id));
+          toast(
+            response?.data?.message
+              ? response?.data?.message
+              : "Customer Beneficiary deleted Successfully",
+            {
+              theme: "dark",
+              hideProgressBar: true,
+              type: "success",
+            }
+          );
+        } else {
+          toast(
+            response?.data?.message
+              ? response?.data?.message
+              : "Something Wrong",
+            {
+              theme: "dark",
+              hideProgressBar: true,
+              type: "error",
+            }
+          );
+        }
+        dispatch(setCustomersLoading(false));
+      })
+      .catch((error) => {
+        toast(
+          error?.response?.data?.message
+            ? error?.response?.data?.message
+            : "Something Wrong",
+          {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          }
+        );
+        dispatch(setCustomersLoading(false));
+      });
+  };
   return (
     <div
       className="text-xs sm:text-sm custom-box-shadow p-4 sm:p-8 rounded-lg mb-4 sm:mb-8"
@@ -12,7 +76,7 @@ function BeneficiaryItem({ key, item }) {
         <h1 className="text-base sm:text-lg font-bold">
           ID: {item?.beneficiary_id}
         </h1>
-        <button>
+        <button onClick={deleteBeneficiary}>
           <img src={delete_beneficiary_icon} className="w-8 sm:w-11" />
         </button>
       </div>

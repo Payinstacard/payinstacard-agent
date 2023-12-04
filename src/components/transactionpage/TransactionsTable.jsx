@@ -28,8 +28,10 @@ import footerImg from "../../assets/img/Footer_cleanup.png";
 import headerImg from "../../assets/img/Header_cleanup.png";
 import logo from "../../assets/img/Logo.png";
 import html2pdf from "html2pdf.js";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import transactionWatch from "../../assets/svg/view.svg";
 
-function CustomerTransactions(props) {
+function TransactionsTable(props) {
   const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
@@ -52,8 +54,6 @@ function CustomerTransactions(props) {
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
   );
-
-  console.log("transc==>", customersData);
 
   const customersDummyData = {
     Agent_objectid: "65570149bd2c450af22378eb",
@@ -92,6 +92,7 @@ function CustomerTransactions(props) {
     emailVerified: false,
     mobile: "+919737502747",
     paymentDisabled: false,
+
     transactions: [
       {
         total_amount: "200",
@@ -99,6 +100,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-08T13:06:49.915Z",
         status: "Successful",
         beneficiary: { mobile: "9876543210", ifsc: "SBIN0025487" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "150",
@@ -106,6 +111,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-09T14:30:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "8765432109", ifsc: "HDFC0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "120",
@@ -113,6 +122,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-10T16:45:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "7654321098", ifsc: "ICIC0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "90",
@@ -120,6 +133,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-12T10:15:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "6543210987", ifsc: "AXIS0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "80",
@@ -127,6 +144,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-15T12:30:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "5432109876", ifsc: "BOB0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "70",
@@ -134,6 +155,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-18T09:45:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "4321098765", ifsc: "PNB0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "60",
@@ -141,6 +166,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-20T14:00:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "3210987654", ifsc: "SBI0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "50",
@@ -148,6 +177,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-22T11:30:00.000Z",
         status: "Pending",
         beneficiary: { mobile: "2109876543", ifsc: "UBI0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "40",
@@ -155,6 +188,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-25T15:45:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "1098765432", ifsc: "IDBI0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "30",
@@ -162,6 +199,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-27T10:00:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "0987654321", ifsc: "RBL0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "20",
@@ -169,6 +210,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-28T13:15:00.000Z",
         status: "Failed",
         beneficiary: { mobile: "9876543210", ifsc: "HSBC0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
       {
         total_amount: "10",
@@ -176,6 +221,10 @@ function CustomerTransactions(props) {
         created_At: "2023-11-30T09:30:00.000Z",
         status: "Successful",
         beneficiary: { mobile: "8765432109", ifsc: "CITI0012345" },
+        contact_info: {
+          fullName: "Manikanta Putta",
+          mobile: "9876543210",
+        },
       },
     ],
     transfers: [],
@@ -281,7 +330,7 @@ function CustomerTransactions(props) {
               onFilter={(e) => setFilterText(e.target.value)}
               onClear={handleClear}
               filterText={filterText}
-              bgColor="bg-[#EFF0F2]"
+              bgColor="bg-white"
             />
           </div>
           <div className="w-[290px]">
@@ -292,7 +341,7 @@ function CustomerTransactions(props) {
               useRange={false}
               maxDate={new Date()}
               primaryColor={"blue"}
-              inputClassName="w-[265px] px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base h-[35px] sm:h-[42px] rounded-md border-0 focus:ring-0 font-normal bg-[#EFF0F2] dark:placeholder:text-black-100"
+              inputClassName="w-[265px] px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base h-[35px] sm:h-[42px] rounded-md border-0 focus:ring-0 font-normal bg-white dark:placeholder:text-black-100"
               toggleClassName="absolute bg-primary hover:bg-blue-700 rounded-r-md text-white right-0 h-full px-2 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
             />
           </div>
@@ -459,6 +508,17 @@ function CustomerTransactions(props) {
       //   sortFunction: caseInsensitiveSort,
     },
     {
+      name: "Contact Information",
+      grow: 1,
+      cell: (row) => (
+        <div>
+          <p>{row?.contact_info?.fullName}</p>
+          <p>{row?.contact_info?.mobile}</p>
+        </div>
+      ),
+      style: { textAlign: "left", display: "block" },
+    },
+    {
       name: "Transaction Date",
       grow: 1,
       selector: (row) => getDateString(row.created_At),
@@ -488,6 +548,7 @@ function CustomerTransactions(props) {
     },
     {
       name: "Status",
+      grow: 1,
       cell: (row) => {
         if (row?.status === "Successful") {
           return (
@@ -525,6 +586,11 @@ function CustomerTransactions(props) {
           <Link
           // to={`add/${row?.Customer_id}`}
           >
+            <img src={transactionWatch} alt="" className="w-8 h-8 mr-2" />
+          </Link>
+          <Link
+          // to={`add/${row?.Customer_id}`}
+          >
             <img
               src={downLoadIconAgent}
               alt=""
@@ -537,14 +603,66 @@ function CustomerTransactions(props) {
     },
   ];
 
+  const getTotalPayment = () => {
+    let totalPayment = 0;
+    customersData.forEach((obj) => {
+      if (!_.isEmpty(obj.transactions)) {
+        obj.transactions.forEach((transaction) => {
+          totalPayment += Number(transaction.total_amount);
+        });
+      }
+    });
+
+    return totalPayment;
+  };
+
   return (
     <div className="mt-10">
       <PageTitle
         buttonText="Make New Transaction"
         title="Transactions"
-        url={`/dashboard/customers/customer-details/${customersData?.Customer_id}/make-new-transaction`}
+        // url={`/dashboard/customers/customer-details/${customersData?.Customer_id}/make-new-transaction`}
         // url="../make-new-transaction"
       />
+      <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
+        {/** CARD #1 */}
+        <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+          <div className="mr-0 min-[510px]:mr-3">
+            <div className="flex justify-between">
+              <p className="text-xs sm:text-sm text-[#464748] py-3">
+                Total Transactions
+              </p>
+              <button>
+                <HiOutlineDotsVertical className="text-[#464748]" />
+              </button>
+            </div>
+            <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+              243
+            </p>
+          </div>
+        </div>
+        {/** CARD #2 */}
+        <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+          <div className="mr-0 min-[510px]:mr-3">
+            <div className="flex justify-between">
+              <p className="text-xs sm:text-sm text-[#464748] py-3">
+                Total Payments
+              </p>
+              <button>
+                <HiOutlineDotsVertical className="text-[#464748]" />
+              </button>
+            </div>
+            <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+              {/* {props?.number
+            ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
+            : props?.data} */}
+              {/* &#8377;{getTotalPayment()} */}
+              &#8377;127127
+            </p>
+          </div>
+          {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
+        </div>
+      </div>
 
       <div className="agent-table react-data-table mt-3 sm:mt-10">
         {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
@@ -569,4 +687,4 @@ function CustomerTransactions(props) {
   );
 }
 
-export default CustomerTransactions;
+export default TransactionsTable;

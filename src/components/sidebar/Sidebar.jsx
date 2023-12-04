@@ -6,6 +6,7 @@ import { ReactComponent as DashboardSvg } from "../../assets/svg/ProtectedLayout
 import { ReactComponent as Customers } from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
 import { ReactComponent as Profile } from "../../assets/svg/ProtectedLayoutImages/sidebar/Profiles.svg";
 import { ReactComponent as LogOut } from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
+import { ReactComponent as Transaction } from "../../assets/svg/transactionIcon.svg";
 import { useAuth } from "../../stores/AuthContext";
 import { BsArrowLeftCircle } from "react-icons/bs";
 // import DashboardSvg from "../svgcomponents/DashboardSvg";
@@ -34,7 +35,12 @@ function Sidebar() {
       icon: <Customers />,
     },
     {
-      title: "profile",
+      title: "Transactions",
+      path: "/dashboard/transactions",
+      icon: <Transaction />,
+    },
+    {
+      title: "Profile",
       path: "/dashboard/profile",
       icon: <Profile />,
     },

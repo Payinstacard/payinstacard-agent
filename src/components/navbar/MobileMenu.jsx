@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import HamburgerButton from "../common/HamburgerMenuButton/HamburgerButton";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import DashboardIcon from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
-import Customers from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
-import Transactions from "../../assets/svg/ProtectedLayoutImages/sidebar/Transactions.svg";
 import { useAuth } from "../../stores/AuthContext";
+import { ReactComponent as DashboardSvg } from "../../assets/svg/ProtectedLayoutImages/sidebar/DashBoard.svg";
+import { ReactComponent as Customers } from "../../assets/svg/ProtectedLayoutImages/sidebar/Sales.svg";
+import { ReactComponent as Profile } from "../../assets/svg/ProtectedLayoutImages/sidebar/Profiles.svg";
+import { ReactComponent as LogOut } from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
+import { ReactComponent as Withdraw } from "../../assets/svg/withdrawIcon.svg";
+
+import { ReactComponent as Transaction } from "../../assets/svg/transactionIcon.svg";
+import { ReactComponent as Report } from "../../assets/svg/reportsIcon.svg";
 
 function MobileMenu(props) {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -22,17 +27,32 @@ function MobileMenu(props) {
     {
       title: "Dashboard",
       path: "/dashboard",
-      src: DashboardIcon,
+      icon: <DashboardSvg />,
     },
     {
       title: "Customers",
       path: "/dashboard/customers",
-      src: Customers,
+      icon: <Customers />,
     },
     {
       title: "Transactions",
       path: "/dashboard/transactions",
-      src: Transactions,
+      icon: <Transaction />,
+    },
+    {
+      title: "Withdraw",
+      path: "/dashboard/withdraw",
+      icon: <Withdraw />,
+    },
+    {
+      title: "Reports",
+      path: "/dashboard/reports",
+      icon: <Report />,
+    },
+    {
+      title: "Profile",
+      path: "/dashboard/profile",
+      icon: <Profile />,
     },
     // { title: "Users", path: "/dashboard/users", src: <CgProfile /> },
     // {

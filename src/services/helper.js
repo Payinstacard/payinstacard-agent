@@ -9,6 +9,19 @@ export function getDateString(date, time = false) {
   const day = dateTime.getDate();
   const month = dateTime.getMonth() + 1; // Months are zero-based
   const year = dateTime.getFullYear();
+  const hours = dateTime.getHours();
+  const min = dateTime.getMinutes();
+  // Determine am/pm
+  const ampm = hours >= 12 ? "pm" : "am";
+
+  // Convert to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Create the formatted time string
+  const formattedTime = `${formattedHours}:${
+    min < 10 ? "0" : ""
+  }${min} ${ampm}`;
+
   const formattedDate = `${day.toString().padStart(2, "0")}-${month
     .toString()
     .padStart(2, "0")}-${year}`;
@@ -17,7 +30,7 @@ export function getDateString(date, time = false) {
     const time = dateTime.toLocaleTimeString();
     returnString += " " + time;
   }
-  return returnString;
+  return returnString + ` - ${formattedTime}`;
 
   // // Format the date portion
   // const dateOptions = { year: "numeric", month: "short", day: "2-digit" };

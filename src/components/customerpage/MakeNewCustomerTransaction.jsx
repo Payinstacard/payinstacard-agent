@@ -1,14 +1,15 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import MobileField from "../common/forms/MobileField";
 import Button from "../common/forms/Button";
 import { useState, useEffect } from "react";
 import PaymentStatusPopUp from "./PaymentStatusPopUp";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
+import { fetchSingleCustomer } from "../../stores/CustomerRedux";
+import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
 
 const MakeCustomerTransaction = () => {
-  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
@@ -19,13 +20,29 @@ const MakeCustomerTransaction = () => {
   const [totalAmount, setTotalAmount] = useState(0);
 
   const [paymentStatus, setPaymentStatus] = useState(""); // 'success' or 'failed'
+  const [isModalOpen, setModalOpen] = useState(false);
+  const params = useParams();
+  const id = params.id;
+  const dispatch = useDispatch();
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const agentData = useSelector((state) => state?.agentData?.agentData);
+
+  useEffect(() => {
+    dispatch(fetchSingleCustomer(id));
+  }, [id]);
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
   );
-  if (_.isEmpty(agentData) || _.isEmpty(customersData?.Customer_id)) {
-    navigate("/dashboard/customers");
-  }
+  // if (_.isEmpty(agentData) || _.isEmpty(customersData?.Customer_id)) {
+  //   navigate("/dashboard/customers");
+  // }
   useEffect(() => {
     if (!_.isEmpty(customersData?.Customer_id)) {
       setFormValues({
@@ -156,7 +173,7 @@ const MakeCustomerTransaction = () => {
               <input
                 type="text"
                 name="amount"
-                maxlength="9"
+                maxLength="9"
                 value={amount || 0}
                 placeholder="&#8377;1000"
                 onChange={handleAmount}
@@ -170,33 +187,47 @@ const MakeCustomerTransaction = () => {
               <label className="block mb-2">
                 Beneficiary <span className="text-red-500 ">*</span>
               </label>
-              <select
-                name="beneficiary"
-                // value={formValues?.beneficiary || ""}
-                onChange={(e) => selectBeneficiary(e)}
-                className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
-              >
-                <option value="">Select beneficiary account</option>
+              {customersData?.BenificaryCollection?.length > 0 ? (
+                <>
+                  <select
+                    name="beneficiary"
+                    // value={formValues?.beneficiary || ""}
+                    onChange={(e) => selectBeneficiary(e)}
+                    className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
+                  >
+                    <option disabled selected>
+                      Select beneficiary account
+                    </option>
 
-                {customersData?.BenificaryCollection &&
-                  customersData?.BenificaryCollection?.map((benItem) => {
-                    return (
-                      <option
-                        key={benItem.beneficiary_id}
-                        value={JSON.stringify({
-                          paydatas: benItem.payment_info,
-                          bend_ids: benItem.beneficiary_id,
-                          name: benItem.beneficiary_name,
-                          address: benItem.beneficiary_address,
-                        })}
-                      >
-                        {benItem.beneficiary_id} - {benItem?.beneficiary_name}
-                      </option>
-                    );
-                  })}
-              </select>
-              {!_.isEmpty(formErrors?.beneficiary) && (
-                <p className="text-red-800">{formErrors.beneficiary}</p>
+                    {customersData?.BenificaryCollection &&
+                      customersData?.BenificaryCollection?.map((benItem) => {
+                        return (
+                          <option
+                            key={benItem.beneficiary_id}
+                            value={JSON.stringify({
+                              paydatas: benItem.payment_info,
+                              bend_ids: benItem.beneficiary_id,
+                              name: benItem.beneficiary_name,
+                              address: benItem.beneficiary_address,
+                            })}
+                          >
+                            {benItem.beneficiary_id} -{" "}
+                            {benItem?.beneficiary_name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  {!_.isEmpty(formErrors?.beneficiary) && (
+                    <p className="text-red-800">{formErrors.beneficiary}</p>
+                  )}
+                </>
+              ) : (
+                <button
+                  onClick={openModal}
+                  className="bg-primary hover:bg-primarylight text-white rounded-lg px-4 py-2 shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring focus:border-primary"
+                >
+                  Add Beneficiary
+                </button>
               )}
             </div>
           </div>
@@ -237,6 +268,9 @@ const MakeCustomerTransaction = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <BeneficiaryDetailsModel isOpen={isModalOpen} onClose={closeModal} />
       </div>
       {/* Display Popup */}
       {showPopup && (

@@ -21,6 +21,10 @@ import CustomerDetails from "../components/customerpage/CustomerDetails";
 import MakeCustomerTransaction from "../components/customerpage/MakeNewCustomerTransaction";
 import Transactions from "../components/transactionpage/Transactions";
 import TransactionsTable from "../components/transactionpage/TransactionsTable";
+import Reports from "../components/reportpage/Reports";
+import ReportsCharts from "../components/reportpage/ReportsCharts";
+import Withdraw from "../components/withdraw/Withdraw";
+import WithdrawTable from "../components/withdraw/WithdrawTable";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -123,6 +127,34 @@ export const router = createBrowserRouter([
               {
                 path: "",
                 element: <TransactionsTable />,
+              },
+              // {
+              //   path: "",
+              //   element: <AddNewCustomer />,
+              // },
+            ],
+          },
+          {
+            path: "withdraw",
+            element: <Withdraw />,
+            children: [
+              {
+                path: "",
+                element: <WithdrawTable />,
+              },
+              // {
+              //   path: "",
+              //   element: <AddNewCustomer />,
+              // },
+            ],
+          },
+          {
+            path: "reports",
+            element: <Reports />,
+            children: [
+              {
+                path: "",
+                element: <ReportsCharts />,
               },
               // {
               //   path: "",

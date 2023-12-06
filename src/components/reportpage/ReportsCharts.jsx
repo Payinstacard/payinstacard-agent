@@ -31,6 +31,11 @@ import html2pdf from "html2pdf.js";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import transactionWatch from "../../assets/svg/view.svg";
 import ReportSupportIcon from "../../assets/svg/reportSupportIcon.svg";
+import ReportLineChart from "./ReportLineChart";
+import ReportPiehart from "./ReportPiehart";
+import blueDot from "../../assets/svg/bluePoint.svg";
+import greenDot from "../../assets/svg/greenBullet.svg";
+import ReportBarChart from "./ReportBarChart";
 
 function ReportsCharts(props) {
   const [data, setData] = useState([]);
@@ -697,7 +702,47 @@ function ReportsCharts(props) {
           {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
         </div>
       </div>
-      <div className="">this is chart</div>
+      <ReportBarChart />
+      <div className="sm:flex sm:justify-between">
+        <div className="sm:w-[65%] rounded-lg">
+          <ReportLineChart />
+        </div>
+        <div className="sm:w-[30%] mt-10 sm:mt-0 relative">
+          <ReportPiehart />
+          <div className="absolute w-full top-5 left-4">
+            <div className="flex gap-2 items-center">
+              <span>
+                <img src={blueDot} alt="" className="w-[10px] h-[10px]" />
+              </span>
+              <span className="text-[20px] font-semibold	">Total</span>
+            </div>
+          </div>
+          <div className="absolute w-full bottom-2 flex justify-around">
+            <div>
+              <div className=" flex items-center gap-2">
+                <img src={blueDot} alt="" className="w-[8px] h-[8px]" />
+                <div className="text-[12px]  text-[#858585] font-semibold	">
+                  Completed
+                </div>
+              </div>
+              <div className="text-[18px] text-[#212529] font-bold text-center">
+                63%
+              </div>
+            </div>
+            <div>
+              <div className=" flex items-center gap-2">
+                <img src={greenDot} alt="" className="w-[8px] h-[8px]" />
+                <div className="text-[12px] text-[#858585] font-semibold	">
+                  Pending
+                </div>
+              </div>
+              <div className="text-[18px] text-[#212529] font-bold text-center	">
+                25%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

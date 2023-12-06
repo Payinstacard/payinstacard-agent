@@ -1,5 +1,4 @@
 export const createImageFromInitials = (size, name, color) => {
-  console.log(size);
   if (name == null) return;
   name = getInitials(name);
 
@@ -10,10 +9,10 @@ export const createImageFromInitials = (size, name, color) => {
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, size, size);
 
-  context.fillStyle = `${color}50`;
+  context.fillStyle = `${color}`;
   context.fillRect(0, 0, size, size);
 
-  context.fillStyle = color;
+  context.fillStyle = "#fff";
   context.textBaseline = "middle";
   context.textAlign = "center";
   context.font = `${size / 2}px Roboto`;
@@ -24,10 +23,10 @@ export const createImageFromInitials = (size, name, color) => {
 
 export const getRandomColor = () => {
   var letters = "0123456789ABCDEF";
-  var color = "#";
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
+  var color = "#F4755B";
+  // for (var i = 0; i < 6; i++) {
+  //   color += letters[Math.floor(Math.random() * 16)];
+  // }
   return color;
 };
 

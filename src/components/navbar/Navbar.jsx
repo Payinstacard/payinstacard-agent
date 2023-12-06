@@ -34,6 +34,11 @@ function Navbar(props) {
                 onClick={() =>
                   setIsNotificationPopupOpen(!IsNotificationPopupOpen)
                 }
+                className={`${
+                  IsNotificationPopupOpen
+                    ? "border-2 border-[#00006b] rounded-[50%]"
+                    : ""
+                }`}
               />
             </span>
             <Profile />

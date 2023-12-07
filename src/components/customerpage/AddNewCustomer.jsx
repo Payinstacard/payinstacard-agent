@@ -113,7 +113,7 @@ function AddNewCustomer() {
   const handleInputChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-  const mobileRegex = /^(|\+91)?[789]\d{9}$/;
+  const mobileRegex = /^(|\+91)?[6789]\d{9}$/;
   const validateMobile = async () => {
     if (data.mobileNo.length === 0) {
       setValidation({ ...validation, mobileNo: "Please Enter Mobile Number" });

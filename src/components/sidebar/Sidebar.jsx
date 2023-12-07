@@ -80,7 +80,7 @@ function Sidebar() {
       <div
         className={`${
           isSideBarExpand ? "w-60 p-4" : "w-fit p-3"
-        } bg-white shadow-lg h-[calc(100vh-100px)] sticky top-0 hidden sm:block relative duration-300 border-r max-h-[1017px]`}
+        } bg-white shadow-lg h-[calc(100vh-100px)] sticky top-0 hidden sm:block relative duration-300 border-r max-h-[1017px] scroll`}
       >
         <BsArrowLeftCircle
           className={`${
@@ -88,7 +88,7 @@ function Sidebar() {
           } absolute text-2xl  cursor-pointer top-6 -right-3`}
           onClick={() => setIsSideBarExpand(!isSideBarExpand)}
         />
-        <div className="h-full flex flex-col justify-between">
+        <div className="h-full flex flex-col justify-between overflow-auto">
           <ul
             // className="py-10 px-6"
             className={`${isSideBarExpand ? "py-0" : "py-0 px-3"}`}

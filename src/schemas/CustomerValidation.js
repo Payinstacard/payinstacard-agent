@@ -45,7 +45,7 @@ const validate = (formData) => {
 
   if (!mobileNo || _.isEmpty(mobileNo)) {
     newErrors = { ...newErrors, mobileNo: "Mobile number is required" };
-  } else if (!/^(|\+91)?[789]\d{9}$/.test(mobileNo)) {
+  } else if (!/^(|\+91)?[6789]\d{9}$/.test(mobileNo)) {
     newErrors = {
       ...newErrors,
       mobileNo: "Invalid mobile number.",

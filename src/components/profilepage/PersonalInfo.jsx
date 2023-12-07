@@ -56,10 +56,10 @@ function PersonalInfo(props) {
             <p className="text-[20px] text-[#00006B] font-bold">
               Agent ID ({agentData?.Customer_data?.Agent_id})
             </p>
-            <button className="flex bg-[#00006B] px-8 py-3 gap-3 items-center rounded self-start">
+            {/* <button className="flex bg-[#00006B] px-8 py-3 gap-3 items-center rounded self-start">
               <img src={editPencil} alt="" />
               <span className="text-white">Edit Profile Picture</span>
-            </button>
+            </button> */}
           </div>
         </div>
         {/**agent details sections */}

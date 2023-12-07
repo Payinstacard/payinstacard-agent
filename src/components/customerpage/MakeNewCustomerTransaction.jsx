@@ -150,7 +150,7 @@ const MakeCustomerTransaction = () => {
                 value={formValues?.name || ""}
                 placeholder="Full Name"
                 onChange={(e) => handleInputChange(e)}
-                className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
+                className="text-base block border-0 bg-[#E1E7F2] w-full rounded-lg py-2.5"
                 disabled
               />
             </div>

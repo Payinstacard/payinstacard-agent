@@ -23,7 +23,9 @@ function MobileField({ name, value, disabled, onChange, placeholder = "" }) {
       onChange={(val) => onChange({ target: { name: name, value: val } })}
       // inputComponent={CustomPhoneNumberInput}
       placeholder={placeholder}
-      className="inputMobile bg-[#EFF1F999] rounded-lg border-0 w-full px-4"
+      className={`inputMobile ${
+        disabled && name === "mobile" ? "bg-[#E1E7F2]" : "bg-[#EFF1F999]"
+      } rounded-lg border-0 w-full px-4`}
     />
   );
 }

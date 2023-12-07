@@ -288,10 +288,13 @@ function ReportBarChart() {
   };
   return (
     <div className="p-4 bg-white rounded-lg mb-10">
-      <div className="flex items-center">
+      <div className="flex flex-col min-[900px]:flex-row items-center justify-between mb-3">
         <h1 className="text-lg font-medium">Customers Report</h1>
-        <div className="flex items-center ml-auto p-4">
-          <div className="mr-4 ">Customers</div>
+        <div className="flex flex-col gap-2 min-[450px]:flex-row items-center p-2 min-[450px]:p-4">
+          <div className="flex items-center gap-1">
+            <div className="w-[10px] h-[10px] bg-[#00006B] rounded-[2px]"></div>
+            <div className="mr-4 ">Customers</div>
+          </div>
           <div className="flex bg-gray-100">
             <button
               className={`py-1 px-6 mr-2 ${

@@ -15,13 +15,16 @@ export const options = {
 
 function ReportPiehart() {
   return (
-    <Chart
-      chartType="PieChart"
-      data={data}
-      options={options}
-      width={"100%"}
-      height={"400px"}
-    />
+    <div className="p-4 bg-white rounded-lg ">
+      <Chart
+        chartType="PieChart"
+        data={data}
+        options={options}
+        width={"100%"}
+        height={"300px"}
+        className=" "
+      />
+    </div>
   );
 }
 

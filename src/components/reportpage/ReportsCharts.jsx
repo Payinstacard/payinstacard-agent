@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import PageTitle from "../common/PageTitle/PageTitle";
 
 import _ from "lodash";
 import DataTable from "react-data-table-component";
 import { Link, NavLink } from "react-router-dom";
-import Datepicker from "react-tailwindcss-datepicker";
 import Delete from "../../assets/svg/delete.svg";
 import Edit from "../../assets/svg/edit.svg";
 import Loader from "../common/Loader/Loader";
@@ -36,6 +35,9 @@ import ReportPiehart from "./ReportPiehart";
 import blueDot from "../../assets/svg/bluePoint.svg";
 import greenDot from "../../assets/svg/greenBullet.svg";
 import ReportBarChart from "./ReportBarChart";
+import Datepicker from "react-datepicker";
+import calendarIcon from "../../assets/svg/calendarIconForChart.svg";
+import "react-datepicker/dist/react-datepicker.css";
 
 function ReportsCharts(props) {
   const [data, setData] = useState([]);
@@ -54,6 +56,45 @@ function ReportsCharts(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+
+  const StartDateCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      className={`${
+        value ? "w-[130px]" : "w-[82px]"
+      } flex items-center justify-between  pl-2 pr-[6px] py-1 border border-[#858585] rounded-[5px]`}
+      onClick={onClick}
+      ref={ref}
+    >
+      <span className=""> {value ? value : "From"}</span>
+      <span>
+        {value ? (
+          <span onClick={() => setStartDate()}>&#10006;</span>
+        ) : (
+          <img src={calendarIcon} alt="" />
+        )}
+      </span>
+    </button>
+  ));
+  const EndDateCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      className={`${
+        value ? "w-[130px]" : "w-[82px]"
+      } flex items-center justify-between  pl-2 pr-[6px] py-1 border border-[#858585] rounded-[5px]`}
+      onClick={onClick}
+      ref={ref}
+    >
+      <span> {value ? value : "To"}</span>
+      <span>
+        {value ? (
+          <span onClick={() => setEndDate()}>&#10006;</span>
+        ) : (
+          <img src={calendarIcon} alt="" />
+        )}
+      </span>
+    </button>
+  ));
 
   //dumy data
 
@@ -622,6 +663,8 @@ function ReportsCharts(props) {
     return totalPayment;
   };
 
+  console.log("stDate==>", startDate, "endDate==>", endDate);
+
   return (
     <div className="mt-10">
       {/** header and support section */}
@@ -641,8 +684,8 @@ function ReportsCharts(props) {
           {/* </button> */}
         </div>
       </div>
-
-      <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
+      {/* Report card sections */}
+      <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-10 mt-4 sm:mb-10 sm:mt-6">
         {/** CARD #1 */}
         <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
           <div className="mr-0 min-[510px]:mr-3">
@@ -702,14 +745,48 @@ function ReportsCharts(props) {
           {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
         </div>
       </div>
+      {/**Report chart sections */}
       <ReportBarChart />
-      <div className="sm:flex sm:justify-between">
-        <div className="sm:w-[65%] rounded-lg">
+      <div className="min-[1025px]:flex min-[1025px]:justify-between">
+        <div className="min-[1025px]:w-[63%] rounded-lg relative mb-10 min-[1025px]:mb-0">
           <ReportLineChart />
+          <div className="absolute w-full top-4 min-[500px]:top-9 min-[640px]:top-4 min-[800px]:top-9 flex justify-around items-center flex-col min-[500px]:flex-row min-[640px]:flex-col  min-[800px]:flex-row min-[640px]:items-center ">
+            <div className="flex gap-2 items-center mb-1 min-[800px]:mb-0">
+              <span>
+                <img
+                  src={blueDot}
+                  alt=""
+                  className="min-[500px]:w-[10px] min-[500px]:h-[10px]"
+                />
+              </span>
+              <span className="text-[16px] min-[500px]:text-[20px] font-semibold	">
+                Total Amount
+              </span>
+            </div>
+            <div className="flex gap-3">
+              <Datepicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                customInput={<StartDateCustomInput />}
+              />
+              <Datepicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                customInput={<EndDateCustomInput />}
+              />
+            </div>
+          </div>
         </div>
-        <div className="sm:w-[30%] mt-10 sm:mt-0 relative">
+        <div className="min-[1025px]:w-[35%] mt-10 sm:mt-0 relative self-start">
           <ReportPiehart />
-          <div className="absolute w-full top-5 left-4">
+          <div className="absolute  top-5 left-8">
             <div className="flex gap-2 items-center">
               <span>
                 <img src={blueDot} alt="" className="w-[10px] h-[10px]" />

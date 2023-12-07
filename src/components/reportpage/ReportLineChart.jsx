@@ -39,20 +39,21 @@ export const options = {
     isHtml: true,
   },
   vAxis: { format: "₹" },
+  chartArea: { left: 50, top: 90, height: "70%", width: "100%" },
 };
 
 function ReportLineChart() {
   return (
-    <>
+    <div className="p-4 bg-white rounded-lg mb-10">
       <Chart
         chartType="LineChart"
         width="100%"
-        height="400px"
+        height="450px"
         data={data}
         options={options}
         className=""
       />
-    </>
+    </div>
   );
 }
 export default ReportLineChart;

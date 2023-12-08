@@ -6,13 +6,30 @@ import { useState, useEffect } from "react";
 import PaymentStatusPopUp from "./PaymentStatusPopUp";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
-import { fetchSingleCustomer } from "../../stores/CustomerRedux";
+import {
+  fetchSingleCustomer,
+  setCustomersLoading,
+} from "../../stores/CustomerRedux";
 import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
+import forge from "node-forge";
+import CryptoJS from "crypto-js";
+import { useRef } from "react";
+import { toast } from "react-toastify";
+import { useAuth } from "../../stores/AuthContext";
+import public_key from "../../public_key";
+import { useForm } from "react-hook-form";
+import apiClient from "../../services/apiClient";
+import {
+  AIRPAY_PAYMENT,
+  BASE_URL,
+  airpay_payment,
+} from "../../services/apiConstant";
 
 const MakeCustomerTransaction = () => {
   const [formValues, setFormValues] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
+  const { getAccessToken, currentUser, get_wallet_lim } = useAuth();
 
   const [payInfo, setPayInfo] = useState(""); // beneficiary selection
   const [amount, setAmount] = useState(0); // amount input
@@ -24,6 +41,22 @@ const MakeCustomerTransaction = () => {
   const params = useParams();
   const id = params.id;
   const dispatch = useDispatch();
+  const formRef = useRef({});
+  const inputRef = useRef({});
+  const keyref = useRef({});
+  const tokenRef = useRef({});
+  const { rent } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    control,
+    reset,
+    setValue,
+    value,
+  } = useForm();
+
   const openModal = () => {
     setModalOpen(true);
   };
@@ -118,6 +151,104 @@ const MakeCustomerTransaction = () => {
     }
   };
 
+  const onSubmit = async (data, event) => {
+    // event.preventDefault();
+    if (validateForm()) {
+      const payableAmount = amount.toString();
+      const paymentData = payInfo;
+      const Paydata = {
+        Amount: amount,
+        TotalAmount: totalAmount.toString(),
+        paymentType: rent || "House Rent", // "agent rent"
+        paymentInfo: {
+          beneficier_id: paymentData.bend_ids,
+          name: paymentData?.name, // "beneficiary name"
+          address: paymentData?.address,
+          type: paymentData?.paydatas?.type || "", // "agent payment"
+          bankAccount: paymentData?.paydatas?.bankAccount || "",
+          ifsc_code: paymentData?.paydatas?.ifsc_code || "",
+          upi_code: paymentData?.paydatas?.upi_code || "",
+        },
+        conviFees: convieFee.toString(),
+      };
+      console.log("paymentdata", Paydata);
+
+      //forge.random.getBytesSync(16)
+      const binaryKEy = forge.random.getBytesSync(16).toString();
+
+      const symmetricKey = forge.util.bytesToHex(binaryKEy);
+
+      const key = symmetricKey;
+      // Encrypt
+      const ciphertext = CryptoJS.AES.encrypt(
+        JSON.stringify(Paydata),
+        key
+      ).toString();
+
+      const encryptData = (paymentData) => {
+        // Replace with the server's public key
+        // const symmetricKey = forge.random.getBytesSync(16);
+        // Convert the public key to a Forge RSA public key object
+        const publicKeyForge = forge.pki.publicKeyFromPem(public_key);
+
+        // Encrypt the data using RSA_PKCS1_OAEP_PADDING and sha256 hash
+        const encrypted = publicKeyForge.encrypt(key, "RSA-OAEP", {
+          md: forge.md.sha256.create(),
+        });
+
+        // Convert the encrypted bytes to a Base64-encoded string
+        const encryptedBase64 = forge.util.encode64(encrypted);
+
+        return encryptedBase64;
+      };
+
+      const encryptedDAta = {
+        payData: encryptData(Paydata),
+      };
+
+      try {
+        dispatch(setCustomersLoading(true));
+        const form = formRef.current;
+
+        // Access the input element using the ref
+        const inputElement = inputRef.current;
+
+        const keysElement = keyref.current;
+
+        // Get the updated value
+
+        const updatedValue = forge.util.encode64(ciphertext);
+
+        console.log("updatedvalue", updatedValue);
+        const tokens = tokenRef.current;
+        tokens.value = await getAccessToken();
+        // Set the value of the input element
+        inputElement.value = updatedValue;
+        keysElement.value = encryptData(Paydata, public_key);
+
+        //Submit the form
+        form.submit();
+        // await apiClient
+        //   .post(AIRPAY_PAYMENT, { Paydata, key })
+        //   .then((response) => {
+        //     console.log("response", response);
+        //   });
+        dispatch(setCustomersLoading(false));
+        if (true) {
+          setPaymentStatus("success");
+        } else {
+          setPaymentStatus("fail");
+        }
+        setShowPopup(true); //show according to api call response
+      } catch (error) {
+        dispatch(setCustomersLoading(false));
+        console.log(error);
+
+        toast.error("Something went Wronggg !");
+      }
+    }
+  };
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -140,134 +271,142 @@ const MakeCustomerTransaction = () => {
         <h2 className="text-lg text-[#45464E] font-medium">
           Make New Transaction
         </h2>
-        <div className="text-sm md:flex mt-5 min-[1230px]:mt-12 min-[390px]:mx-5 md:mx-0 min-[920px]:mx-5 min-[1230px]:mx-28">
-          <div className="md:mr-10 min-[920px]:mr-14 md:w-[45%]">
-            <div className="mb-5">
-              <label className="block mb-2">Customer Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formValues?.name || ""}
-                placeholder="Full Name"
-                onChange={(e) => handleInputChange(e)}
-                className="text-base block border-0 bg-[#E1E7F2] w-full rounded-lg py-2.5"
-                disabled
-              />
-            </div>
-            <div className="mb-5">
-              <label className="block mb-2">Mobile Number</label>
-              <div className="inputWithButton">
-                <MobileField
-                  name="mobile"
-                  placeholder="Mobile Number"
-                  value={formValues?.mobile || ""}
+        <form
+          action=""
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-[2rem] lg:min-w-[350px] "
+        >
+          <div className="text-sm md:flex mt-5 min-[1230px]:mt-12 min-[390px]:mx-5 md:mx-0 min-[920px]:mx-5 min-[1230px]:mx-28">
+            <div className="md:mr-10 min-[920px]:mr-14 md:w-[45%]">
+              <div className="mb-5">
+                <label className="block mb-2">Customer Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formValues?.name || ""}
+                  placeholder="Full Name"
                   onChange={(e) => handleInputChange(e)}
+                  className="text-base block border-0 bg-[#E1E7F2] w-full rounded-lg py-2.5"
                   disabled
                 />
               </div>
-            </div>
-            <div className="mb-5">
-              <label className="block mb-2">
-                Enter Amount <span className="text-red-500 ">*</span>
-              </label>
-              <input
-                type="text"
-                name="amount"
-                maxLength="9"
-                value={amount || 0}
-                placeholder="&#8377;1000"
-                onChange={handleAmount}
-                className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
-              />
-              {!_.isEmpty(formErrors?.amount) && (
-                <p className="text-red-800">{formErrors.amount}</p>
-              )}
-            </div>
-            <div className="mb-5">
-              <label className="block mb-2">
-                Beneficiary <span className="text-red-500 ">*</span>
-              </label>
-              {customersData?.BenificaryCollection?.length > 0 ? (
-                <>
-                  <select
-                    name="beneficiary"
-                    // value={formValues?.beneficiary || ""}
-                    onChange={(e) => selectBeneficiary(e)}
-                    className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
-                  >
-                    <option disabled selected>
-                      Select beneficiary account
-                    </option>
-
-                    {customersData?.BenificaryCollection &&
-                      customersData?.BenificaryCollection?.map((benItem) => {
-                        return (
-                          <option
-                            key={benItem.beneficiary_id}
-                            value={JSON.stringify({
-                              paydatas: benItem.payment_info,
-                              bend_ids: benItem.beneficiary_id,
-                              name: benItem.beneficiary_name,
-                              address: benItem.beneficiary_address,
-                            })}
-                          >
-                            {benItem.beneficiary_id} -{" "}
-                            {benItem?.beneficiary_name}
-                          </option>
-                        );
-                      })}
-                  </select>
-                  {!_.isEmpty(formErrors?.beneficiary) && (
-                    <p className="text-red-800">{formErrors.beneficiary}</p>
-                  )}
-                </>
-              ) : (
-                <button
-                  onClick={openModal}
-                  className="bg-primary hover:bg-primarylight text-white rounded-lg px-4 py-2 shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring focus:border-primary"
-                >
-                  Add Beneficiary
-                </button>
-              )}
-            </div>
-          </div>
-          <div className="mt-6 sm:mt-14 md:mt-2">
-            <div className="bg-[#F6F7FB] p-6 min-[390px]:p-8 rounded-[0.625rem] font-bold md:w-[280px] min-[920px]:w-[330px] lg:w-[370px]">
-              <h2 className="text-lg mb-6 text-[#525252]">Payment Details</h2>
-              <p className="flex justify-between my-3 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
-                <span className="text-sm text-[#525252]">Amount</span>
-                <span className="text-base font-bold">
-                  &#8377;{amount || 0}
-                </span>
-              </p>
-              <p className="flex justify-between my-3 pb-3 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
-                <span className="text-[#525252]">
-                  Convinence Fees (
-                  {agentData?.Commission?.markupPercentage +
-                    agentData?.Commission?.BasePersentage || 1.8}
-                  %):
-                </span>
-                <span className="text-base font-bold">
-                  &#8377;{_.isNaN(convieFee) ? 0 : convieFee}
-                </span>
-              </p>
-              <p className="flex justify-between my-3 pb-2 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
-                <span className="text-[#525252]">Total Amount</span>
-                <span className="text-base font-bold">
-                  &#8377;{_.isNaN(totalAmount) ? 0 : totalAmount}
-                </span>
-              </p>
-
-              <div className="mt-10">
-                <Button
-                  label={`Pay ₹${_.isNaN(totalAmount) ? 0 : totalAmount}`}
-                  disabled={!amount > 0 || _.isEmpty(payInfo)}
-                  onClick={handlePayment}
+              <div className="mb-5">
+                <label className="block mb-2">Mobile Number</label>
+                <div className="inputWithButton">
+                  <MobileField
+                    name="mobile"
+                    placeholder="Mobile Number"
+                    value={formValues?.mobile || ""}
+                    onChange={(e) => handleInputChange(e)}
+                    disabled
+                  />
+                </div>
+              </div>
+              <div className="mb-5">
+                <label className="block mb-2">
+                  Enter Amount <span className="text-red-500 ">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="amount"
+                  maxLength="9"
+                  value={amount || 0}
+                  placeholder="&#8377;1000"
+                  onChange={handleAmount}
+                  className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
                 />
+                {!_.isEmpty(formErrors?.amount) && (
+                  <p className="text-red-800">{formErrors.amount}</p>
+                )}
+              </div>
+              <div className="mb-5">
+                <label className="block mb-2">
+                  Beneficiary <span className="text-red-500 ">*</span>
+                </label>
+                {customersData?.BenificaryCollection?.length > 0 ? (
+                  <>
+                    <select
+                      name="beneficiary"
+                      // value={formValues?.beneficiary || ""}
+                      onChange={(e) => selectBeneficiary(e)}
+                      className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
+                    >
+                      <option disabled selected>
+                        Select beneficiary account
+                      </option>
+
+                      {customersData?.BenificaryCollection &&
+                        customersData?.BenificaryCollection?.map((benItem) => {
+                          return (
+                            <option
+                              key={benItem.beneficiary_id}
+                              value={JSON.stringify({
+                                paydatas: benItem.payment_info,
+                                bend_ids: benItem.beneficiary_id,
+                                name: benItem.beneficiary_name,
+                                address: benItem.beneficiary_address,
+                              })}
+                            >
+                              {benItem.beneficiary_id} -{" "}
+                              {benItem?.beneficiary_name}
+                            </option>
+                          );
+                        })}
+                    </select>
+                    {!_.isEmpty(formErrors?.beneficiary) && (
+                      <p className="text-red-800">{formErrors.beneficiary}</p>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    onClick={openModal}
+                    className="bg-primary hover:bg-primarylight text-white rounded-lg px-4 py-2 shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring focus:border-primary"
+                  >
+                    Add Beneficiary
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="mt-6 sm:mt-14 md:mt-2">
+              <div className="bg-[#F6F7FB] p-6 min-[390px]:p-8 rounded-[0.625rem] font-bold md:w-[280px] min-[920px]:w-[330px] lg:w-[370px]">
+                <h2 className="text-lg mb-6 text-[#525252]">Payment Details</h2>
+                <p className="flex justify-between my-3 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
+                  <span className="text-sm text-[#525252]">Amount</span>
+                  <span className="text-base font-bold">
+                    &#8377;{amount || 0}
+                  </span>
+                </p>
+                <p className="flex justify-between my-3 pb-3 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
+                  <span className="text-[#525252]">
+                    Convinence Fees (
+                    {agentData?.Commission?.markupPercentage +
+                      agentData?.Commission?.BasePersentage || 1.8}
+                    %):
+                  </span>
+                  <span className="text-base font-bold">
+                    &#8377;{_.isNaN(convieFee) ? 0 : convieFee}
+                  </span>
+                </p>
+                <p className="flex justify-between my-3 pb-2 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
+                  <span className="text-[#525252]">Total Amount</span>
+                  <span className="text-base font-bold">
+                    &#8377;{_.isNaN(totalAmount) ? 0 : totalAmount}
+                  </span>
+                </p>
+
+                <div className="mt-10">
+                  <Button
+                    type="submit"
+                    label={`Pay ₹${_.isNaN(totalAmount) ? 0 : totalAmount}`}
+                    disabled={!amount > 0 || _.isEmpty(payInfo)}
+                    // onClick={(event) => onSubmit(event)}
+                    // onClick={handlePayment}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
       <div>
         <BeneficiaryDetailsModel isOpen={isModalOpen} onClose={closeModal} />
@@ -276,6 +415,12 @@ const MakeCustomerTransaction = () => {
       {showPopup && (
         <PaymentStatusPopUp type={paymentStatus} onClose={closePopup} />
       )}
+      <form ref={formRef} method="POST" action={BASE_URL + AIRPAY_PAYMENT}>
+        <input type="hidden" name="token" ref={tokenRef} value="" />
+
+        <input type="hidden" name="payData" value="" ref={inputRef} />
+        <input type="hidden" name="key" value="" ref={keyref} />
+      </form>
     </div>
   );
 };

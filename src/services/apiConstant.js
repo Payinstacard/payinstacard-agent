@@ -17,3 +17,5 @@ export const VERIFY_OTP = "/api/v2/agents/otp/verify";
 export const FETCH_CUSTOMER_DATA = "/api/v2/agents/agents/customer-data";
 export const FETCH_SINGLE_CUSTOMER_DATA =
   "/api/v2/agents/agents/fetchsingle-customer";
+
+export const AIRPAY_PAYMENT = "/api/v2/agents/agents/airpay_post";

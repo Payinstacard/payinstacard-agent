@@ -21,6 +21,10 @@ export function AuthContextProvider({ children, userData }) {
   const dispatch = useDispatch();
   const [loading, setLoding] = useState(true);
 
+  function getAccessToken() {
+    return user?.getIdToken(true);
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       let userSessionTimeout = null;
@@ -69,6 +73,7 @@ export function AuthContextProvider({ children, userData }) {
       user,
       logout,
       loginCurrentUser,
+      getAccessToken,
       logoutCurrentUser,
       loading,
     }),

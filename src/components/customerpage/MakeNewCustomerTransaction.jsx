@@ -14,7 +14,6 @@ import BeneficiaryDetailsModel from "./BeneficiaryDetailsModel";
 import forge from "node-forge";
 import CryptoJS from "crypto-js";
 import { useRef } from "react";
-import { toast } from "react-toastify";
 import { useAuth } from "../../stores/AuthContext";
 import public_key from "../../public_key";
 import { useForm } from "react-hook-form";
@@ -26,9 +25,10 @@ import {
 } from "../../services/apiConstant";
 
 const MakeCustomerTransaction = () => {
+  const navigate = useNavigate();
   const [formValues, setFormValues] = useState({});
   const [formErrors, setFormErrors] = useState({});
-  const [showPopup, setShowPopup] = useState(false);
+  // const [showPopup, setShowPopup] = useState(false);
   const { getAccessToken, currentUser, get_wallet_lim } = useAuth();
 
   const [payInfo, setPayInfo] = useState(""); // beneficiary selection
@@ -138,36 +138,40 @@ const MakeCustomerTransaction = () => {
     return isValid;
   };
 
-  const handlePayment = () => {
-    // Logic for payment success/failure
-    // Set paymentStatus accordingly
-    if (validateForm()) {
-      if (true) {
-        setPaymentStatus("success");
-      } else {
-        setPaymentStatus("fail");
-      }
-      setShowPopup(true); //show according to api call response
-    }
-  };
+  // const handlePayment = () => {
+  //   // Logic for payment success/failure
+  //   // Set paymentStatus accordingly
+  //   if (validateForm()) {
+  //     if (true) {
+  //       setPaymentStatus("success");
+  //     } else {
+  //       setPaymentStatus("fail");
+  //     }
+  //     setShowPopup(true); //show according to api call response
+  //   }
+  // };
 
   const onSubmit = async (data, event) => {
-    // event.preventDefault();
+    event.preventDefault();
     if (validateForm()) {
       const payableAmount = amount.toString();
       const paymentData = payInfo;
       const Paydata = {
         Amount: amount,
         TotalAmount: totalAmount.toString(),
-        paymentType: rent || "House Rent", // "agent rent"
+        // paymentType: rent, // "agent rent"
+        paymentType: "agentrent",
+        customerId: customersData?.Customer_id,
         paymentInfo: {
           beneficier_id: paymentData.bend_ids,
           name: paymentData?.name, // "beneficiary name"
           address: paymentData?.address,
-          type: paymentData?.paydatas?.type || "", // "agent payment"
+          type: "agentpayment", // "agent payment"
           bankAccount: paymentData?.paydatas?.bankAccount || "",
           ifsc_code: paymentData?.paydatas?.ifsc_code || "",
           upi_code: paymentData?.paydatas?.upi_code || "",
+          base_commision: agentData?.Commission?.BasePersentage,
+          markup_commision: agentData?.Commission?.markupPercentage,
         },
         conviFees: convieFee.toString(),
       };
@@ -229,29 +233,32 @@ const MakeCustomerTransaction = () => {
         //Submit the form
         form.submit();
         // await apiClient
-        //   .post(AIRPAY_PAYMENT, { Paydata, key })
+        //   .post(AIRPAY_PAYMENT, {
+        //     PayData: updatedValue,
+        //     key: encryptData(Paydata, public_key),
+        //     token: await getAccessToken(),
+        //   })
         //   .then((response) => {
         //     console.log("response", response);
         //   });
         dispatch(setCustomersLoading(false));
         if (true) {
-          setPaymentStatus("success");
+          navigate("success"); //show according to api call response
         } else {
-          setPaymentStatus("fail");
+          navigate("failed");
         }
-        setShowPopup(true); //show according to api call response
+        // setShowPopup(true);
       } catch (error) {
         dispatch(setCustomersLoading(false));
         console.log(error);
-
-        toast.error("Something went Wronggg !");
       }
+      // navigate("success");
     }
   };
 
-  const closePopup = () => {
-    setShowPopup(false);
-  };
+  // const closePopup = () => {
+  //   setShowPopup(false);
+  // };
 
   return (
     <div className="lg:m-2">
@@ -412,9 +419,9 @@ const MakeCustomerTransaction = () => {
         <BeneficiaryDetailsModel isOpen={isModalOpen} onClose={closeModal} />
       </div>
       {/* Display Popup */}
-      {showPopup && (
+      {/* {showPopup && (
         <PaymentStatusPopUp type={paymentStatus} onClose={closePopup} />
-      )}
+      )} */}
       <form ref={formRef} method="POST" action={BASE_URL + AIRPAY_PAYMENT}>
         <input type="hidden" name="token" ref={tokenRef} value="" />
 

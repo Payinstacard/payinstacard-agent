@@ -16,7 +16,7 @@ function MenuItem(props) {
   return (
     <li className="mt-2">
       <NavLink
-        end
+        // end
         to={props.menu.path}
         // className={({ isActive, isPending }) => {
         //   let linkClass = "";
@@ -40,10 +40,10 @@ function MenuItem(props) {
         className={({ isActive, isPending }) => {
           let linkClass = "";
           if (
-            location.pathname === "/dashboard" &&
-            props.menu.path === "/dashboard"
+            props.menu.path === "/dashboard" &&
+            location.pathname !== props.menu.path
           ) {
-            linkClass = activeButtonStyles;
+            isActive = false;
           }
 
           return `${

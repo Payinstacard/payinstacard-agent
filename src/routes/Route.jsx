@@ -25,6 +25,11 @@ import Reports from "../components/reportpage/Reports";
 import ReportsCharts from "../components/reportpage/ReportsCharts";
 import Withdraw from "../components/withdraw/Withdraw";
 import WithdrawTable from "../components/withdraw/WithdrawTable";
+import PaymentSuccess from "../components/customerpage/PaymentSuccess";
+import PaymentFailure from "../components/customerpage/PaymentFailure";
+import PaymentVerifyWrapper from "../components/customerpage/PaymentVerifyWrapper";
+import { Children } from "react";
+import NewTransactionLayout from "../layouts/NewTransactionLayout";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -46,17 +51,17 @@ export const router = createBrowserRouter([
             element: <HomePage />,
           },
           {
-            path: "/login",
+            path: "login",
             element: <Login />,
           },
           {
-            path: "/forgotpassword",
+            path: "forgotpassword",
             element: <ForgotPassword />,
           },
         ],
       },
       {
-        path: "/dashboard",
+        path: "dashboard",
         element: <ProtectedLayout />,
         children: [
           {
@@ -75,20 +80,6 @@ export const router = createBrowserRouter([
                 path: "add",
                 element: <AddNewCustomer />,
               },
-              // {
-              //   path: "customer-details/:id",
-              //   element: <CustomersDetailsLayout />,
-              //   children: [
-              //     {
-              //       path: "",
-              //       element: <BeneficiaryAccounts />,
-              //     },
-              //     {
-              //       path: "transactions",
-              //       element: <CustomerTransactions />,
-              //     },
-              //   ],
-              // },
               {
                 path: "customer-details/:id",
                 element: <CustomersDetailsLayout />,
@@ -109,15 +100,36 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: "make-new-transaction",
-                    element: <MakeCustomerTransaction />,
+                    element: <NewTransactionLayout />,
+                    children: [
+                      {
+                        path: "",
+                        element: <MakeCustomerTransaction />,
+                      },
+                      {
+                        path: "success",
+                        element: <PaymentSuccess />,
+                      },
+                      {
+                        path: "failed",
+                        element: <PaymentFailure />,
+                      },
+                    ],
                   },
+                  // {
+                  //   path: "paymentverify",
+                  //   element: <PaymentVerifyWrapper />,
+                  // },
+                  // {
+                  //   path: "success",
+                  //   element: <PaymentSuccess />,
+                  // },
+                  // {
+                  //   path: "failed",
+                  //   element: <PaymentFailure />,
+                  // },
                 ],
               },
-              // temporary remove edit customer functionality
-              // {
-              //   path: "edit/:id",
-              //   element: <AddNewCustomer />,
-              // },
             ],
           },
           {
@@ -128,10 +140,6 @@ export const router = createBrowserRouter([
                 path: "",
                 element: <TransactionsTable />,
               },
-              // {
-              //   path: "",
-              //   element: <AddNewCustomer />,
-              // },
             ],
           },
           {
@@ -142,10 +150,6 @@ export const router = createBrowserRouter([
                 path: "",
                 element: <WithdrawTable />,
               },
-              // {
-              //   path: "",
-              //   element: <AddNewCustomer />,
-              // },
             ],
           },
           {
@@ -156,10 +160,6 @@ export const router = createBrowserRouter([
                 path: "",
                 element: <ReportsCharts />,
               },
-              // {
-              //   path: "",
-              //   element: <AddNewCustomer />,
-              // },
             ],
           },
           {

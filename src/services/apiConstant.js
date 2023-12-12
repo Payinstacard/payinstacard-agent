@@ -19,4 +19,4 @@ export const FETCH_SINGLE_CUSTOMER_DATA =
   "/api/v2/agents/agents/fetchsingle-customer";
 
 export const AIRPAY_PAYMENT_TEST = "/api/v2/agents/agents/airpay_post";
-export const AIRPAY_PAYMENT = "payment/airpay_post";
+export const AIRPAY_PAYMENT = "/payment/airpay_post";

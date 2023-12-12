@@ -231,16 +231,18 @@ const MakeCustomerTransaction = () => {
         keysElement.value = encryptData(Paydata, public_key);
 
         //Submit the form
-        // form.submit();
-        await apiClient
-          .post(AIRPAY_PAYMENT, {
-            payData: updatedValue,
-            key: encryptData(Paydata, public_key),
-            token: await getAccessToken(),
-          })
-          .then((response) => {
-            console.log("response", response);
-          });
+        console.log("form", form);
+
+        form.submit();
+        // await apiClient
+        //   .post(AIRPAY_PAYMENT, {
+        //     payData: updatedValue,
+        //     key: encryptData(Paydata, public_key),
+        //     token: await getAccessToken(),
+        //   })
+        //   .then((response) => {
+        //     console.log("response", response);
+        //   });
         dispatch(setCustomersLoading(false));
         // if (true) {
         //   navigate("success"); //show according to api call response

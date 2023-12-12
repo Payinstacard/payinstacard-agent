@@ -231,22 +231,22 @@ const MakeCustomerTransaction = () => {
         keysElement.value = encryptData(Paydata, public_key);
 
         //Submit the form
-        form.submit();
-        // await apiClient
-        //   .post(AIRPAY_PAYMENT, {
-        //     PayData: updatedValue,
-        //     key: encryptData(Paydata, public_key),
-        //     token: await getAccessToken(),
-        //   })
-        //   .then((response) => {
-        //     console.log("response", response);
-        //   });
+        // form.submit();
+        await apiClient
+          .post(AIRPAY_PAYMENT, {
+            payData: updatedValue,
+            key: encryptData(Paydata, public_key),
+            token: await getAccessToken(),
+          })
+          .then((response) => {
+            console.log("response", response);
+          });
         dispatch(setCustomersLoading(false));
-        if (true) {
-          navigate("success"); //show according to api call response
-        } else {
-          navigate("failed");
-        }
+        // if (true) {
+        //   navigate("success"); //show according to api call response
+        // } else {
+        //   navigate("failed");
+        // }
         // setShowPopup(true);
       } catch (error) {
         dispatch(setCustomersLoading(false));
@@ -267,12 +267,14 @@ const MakeCustomerTransaction = () => {
         <div>
           <Link
             to={`/dashboard/customers/customer-details/${customersData?.Customer_id}/transactions`}
-            className="border border-primary hover:bg-primary text-sm sm:text-base hover:text-[#FFFFFF] font-medium rounded-md px-6  sm:px-8 py-1.5 mr-4 min-[1000px]:mr-5"
+            className="border border-primary hover:bg-primary text-sm min-[390px]:text-base hover:text-[#FFFFFF] font-medium rounded-md px-4 min-[390px]:px-8 py-1.5 mr-4 min-[1000px]:mr-5"
           >
             <span className="mr-2">&#8592;</span> Back
           </Link>
         </div>
-        <h2 className="text-xl font-semibold ">Make Transaction</h2>
+        <h2 className="text-base min-[390px]:text-xl font-semibold ">
+          Make Transaction
+        </h2>
       </div>
       <div className=" bg-white rounded-md h-full flex-1 px-2 min-[390px]:px-5 min-[920px]:px-10 py-5 md:py-10 pt-7 md:pt-14 mt-4 md:mt-8">
         <h2 className="text-lg text-[#45464E] font-medium">
@@ -338,7 +340,7 @@ const MakeCustomerTransaction = () => {
                       onChange={(e) => selectBeneficiary(e)}
                       className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
                     >
-                      <option disabled selected>
+                      <option disabled selected className="text-[16px]">
                         Select beneficiary account
                       </option>
 
@@ -353,6 +355,7 @@ const MakeCustomerTransaction = () => {
                                 name: benItem.beneficiary_name,
                                 address: benItem.beneficiary_address,
                               })}
+                              className="text-[12px] min-[500px]:text-[16px]"
                             >
                               {benItem.beneficiary_id} -{" "}
                               {benItem?.beneficiary_name}

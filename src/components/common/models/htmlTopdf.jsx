@@ -6,7 +6,7 @@ import html2pdf from "html2pdf.js";
 
 export const downloadTrasactionReceipt = (payData) => {
   // Convert the ISO timestamp to a Date object
-  const date = new Date(payData?.created_At);
+  // const date = new Date(payData?.created_At);
 
   // Define an array of month names
   const monthNames = [
@@ -25,12 +25,13 @@ export const downloadTrasactionReceipt = (payData) => {
   ];
 
   // Get the month, day, and year from the Date object
-  const month = monthNames[date.getMonth()];
-  const day = date.getDate();
-  const year = date.getFullYear();
+  // const month = monthNames[date.getMonth()];
+  // const day = date.getDate();
+  // const year = date.getFullYear();
 
   // Create the formatted date string
-  const formattedDate = `${month} ${day}, ${year}`;
+  // const formattedDate = `${month} ${day}, ${year}`;
+  console.log("paydata==>", payData);
 
   //creating html file for invoice
 
@@ -40,7 +41,9 @@ export const downloadTrasactionReceipt = (payData) => {
             <header style="position: relative; padding: 60px 40px 0">
                 <img src="${logo}" width="112" alt="payinstacard" style="">
               <img src="${headerImg}" alt="heder" style="position: absolute; top: 0; left:0; right: 0; bottom: 0; z-index: -1; width: 100%;">
-              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${payData?.transactionId}</div>
+              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${
+                payData?.keyid
+              }</div>
           </header>
           <div style=" margin: 40px;">
             <div style="display: flex; justify-content: space-between;">
@@ -48,11 +51,17 @@ export const downloadTrasactionReceipt = (payData) => {
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Transaction Information</span></h6>
                
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${payData?.transactionId}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${
+                      payData?.orderData?.PaymentTransactionId
+                    }</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Date:
-                    </span> ${formattedDate}</p>
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${payData?.total_amount}</p>                  
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${payData?.status}
+                    </span> ${`none`}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${
+                      payData?.amount
+                    }</p>                  
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${
+                      payData?.orderData?.OrderPaymentStatusText
+                    }
                     </p>
                 </div>
               </div>
@@ -60,9 +69,9 @@ export const downloadTrasactionReceipt = (payData) => {
               <div style="font-size: 14px;">
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Beneficiary Information</span></h6>
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${payData?.beneficiary?.mobile}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${`none`}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">IFSC:
-                    </span> ${payData?.beneficiary?.ifsc}</p>
+                    </span> ${`none`}</p>
                 </div>
               </div>
             </div>

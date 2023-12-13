@@ -23,6 +23,7 @@ import {
   BASE_URL,
   airpay_payment,
 } from "../../services/apiConstant";
+import Loader from "../common/Loader/Loader";
 
 const MakeCustomerTransaction = () => {
   const navigate = useNavigate();
@@ -72,6 +73,9 @@ const MakeCustomerTransaction = () => {
   }, [id]);
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
+  );
+  const customersLoading = useSelector(
+    (state) => state?.customersData?.customersLoading
   );
   // if (_.isEmpty(agentData) || _.isEmpty(customersData?.Customer_id)) {
   //   navigate("/dashboard/customers");
@@ -138,22 +142,10 @@ const MakeCustomerTransaction = () => {
     return isValid;
   };
 
-  // const handlePayment = () => {
-  //   // Logic for payment success/failure
-  //   // Set paymentStatus accordingly
-  //   if (validateForm()) {
-  //     if (true) {
-  //       setPaymentStatus("success");
-  //     } else {
-  //       setPaymentStatus("fail");
-  //     }
-  //     setShowPopup(true); //show according to api call response
-  //   }
-  // };
-
   const onSubmit = async (data, event) => {
     event.preventDefault();
     if (validateForm()) {
+      dispatch(setCustomersLoading(true));
       const payableAmount = amount.toString();
       const paymentData = payInfo;
       const Paydata = {
@@ -211,7 +203,6 @@ const MakeCustomerTransaction = () => {
       };
 
       try {
-        dispatch(setCustomersLoading(true));
         const form = formRef.current;
 
         // Access the input element using the ref
@@ -243,28 +234,16 @@ const MakeCustomerTransaction = () => {
         //   .then((response) => {
         //     console.log("response", response);
         //   });
-        dispatch(setCustomersLoading(false));
-        // if (true) {
-        //   navigate("success"); //show according to api call response
-        // } else {
-        //   navigate("failed");
-        // }
-        // setShowPopup(true);
       } catch (error) {
         dispatch(setCustomersLoading(false));
         console.log(error);
       }
-      // navigate("success");
     }
   };
 
-  // const closePopup = () => {
-  //   setShowPopup(false);
-  // };
-
   return (
     <div className="lg:m-2">
-      {/* {loading && <Loader />} */}
+      {customersLoading && <Loader />}
       <div className="flex flex-row justify-between md:justify-normal	items-center mt-4 md:mt-0 ">
         <div>
           <Link
@@ -389,12 +368,7 @@ const MakeCustomerTransaction = () => {
                   </span>
                 </p>
                 <p className="flex justify-between my-3 pb-3 border-b-2 min-[390px]:pr-10 md:pr-2 min-[920px]:pr-10">
-                  <span className="text-[#525252]">
-                    Convinence Fees (
-                    {agentData?.Commission?.markupPercentage +
-                      agentData?.Commission?.BasePersentage || 1.8}
-                    %):
-                  </span>
+                  <span className="text-[#525252]">Convinence Fees</span>
                   <span className="text-base font-bold">
                     &#8377;{_.isNaN(convieFee) ? 0 : convieFee}
                   </span>

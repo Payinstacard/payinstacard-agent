@@ -25,8 +25,11 @@ import jsPDF from "jspdf";
 //   QueryClientProvider,
 // } from "@tanstack/react-query";
 // import logo from "../../assets/payinstacard log_pblue_pblue (1) 2.png";
-import { AIRPAY_PAYMENT } from "../../services/apiConstant";
+import { AIRPAY_PAYMENT, BASE_URL } from "../../services/apiConstant";
+import { VERIFY_AIRPAY_PAYMENT } from "../../services/apiConstant";
 import FeedBackModal from "./FeedBackModal";
+import { useQuery } from "react-query";
+import Loader from "../common/Loader/Loader";
 
 const PaymentVerifyWrapper = () => {
   // const queryClient = useQueryClient();
@@ -36,6 +39,7 @@ const PaymentVerifyWrapper = () => {
   const { orderkeyid } = useParams();
   const navigate = useNavigate();
   const reportTemplateRef = useRef(null);
+  const [res, setRes] = useState({});
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -59,14 +63,17 @@ const PaymentVerifyWrapper = () => {
   }, []);
 
   // const { isLoading, isError, data, error, status } = useQuery({
-  const { isLoading, isError, data, error, status } = useState({
+  const { isLoading, isError, data, error, status } = useQuery({
     queryKey: ["fetch_order"],
     queryFn: async () => {
       try {
         const token = await getAccessToken();
-        const response = await fetch(apiClient + AIRPAY_PAYMENT, {
+        const response = await fetch(BASE_URL + VERIFY_AIRPAY_PAYMENT, {
           method: "POST",
-          body: JSON.stringify({ OrderKeyId: orderkeyid }),
+          body: JSON.stringify({
+            OrderKeyId: orderkeyid,
+            paymentType: "agent",
+          }),
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -74,7 +81,9 @@ const PaymentVerifyWrapper = () => {
         });
 
         const responseJson = await response.json();
-        console.log(responseJson);
+        console.log("res==>", responseJson);
+        setRes(responseJson);
+
         if (_.isEmpty(responseJson)) {
           return toast.error("Something went wrong !!");
         }
@@ -97,21 +106,22 @@ const PaymentVerifyWrapper = () => {
       }
     },
   });
+  console.log("data=>", data, "erro=>", error, "status=>", status);
 
   if (isLoading) {
-    return <span>Loading...</span>;
+    return <Loader />;
   }
 
-  if (isError) {
-    let status = error.message === "Cancelled" ? 2 : 0;
-    //PAYG
-    // return <PaymentFailure2 reasonStatus={parseInt(data.OrderStatus)}  keyid={orderkeyid} /> ;
+  // if (isError) {
+  //   let status = error.message === "Cancelled" ? 2 : 0;
+  //   //PAYG
+  //   // return <PaymentFailure2 reasonStatus={parseInt(data.OrderStatus)}  keyid={orderkeyid} /> ;
 
-    // AIRPAY
-    return (
-      <PaymentFailure2 reasonStatus={parseInt(status)} keyid={orderkeyid} />
-    );
-  }
+  //   // AIRPAY
+  //   return (
+  //     <PaymentFailure2 reasonStatus={parseInt(status)} keyid={orderkeyid} />
+  //   );
+  // }
 
   const payment = {
     tanentInfo: "ss",
@@ -126,40 +136,31 @@ const PaymentVerifyWrapper = () => {
       {/* {data.OrderId}
 
       <button onClick={()=>generatePDF()} >Submit</button> */}
-
       <div className="App"></div>
       {/* <PDFViewer style={{ width: '100%', height: '100vh' }}>
       <PdfReciept payment={data} />
     </PDFViewer> */}
-      {isOpenModal && (
+      {/* {isOpenModal && (
         <FeedBackModal
           isOpenModal={isOpenModal}
           setIsOpenModal={setIsOpenModal}
           className="z-40"
         />
+      )} */}
+      {status === "success" ? (
+        <PaymentSuccess
+          keyid={orderkeyid}
+          amount={data.OrderAmount}
+          orderData={data}
+        />
+      ) : (
+        <PaymentFailure
+          reasonStatus={res.message}
+          keyid={orderkeyid}
+          amount={res?.response?.OrderAmount}
+          orderData={res?.response}
+        />
       )}
-
-      <div>
-        {status === "success" && (
-          <div>
-            {" "}
-            {data.OrderStatus === "1" ? (
-              <PaymentSuccess
-                keyid={orderkeyid}
-                amount={data.OrderAmount}
-                orderData={data}
-              />
-            ) : (
-              <PaymentFailure
-                reasonStatus={parseInt(data.OrderStatus)}
-                keyid={orderkeyid}
-                amount={data.OrderAmount}
-                orderData={data}
-              />
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 };

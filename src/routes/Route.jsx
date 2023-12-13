@@ -106,14 +106,14 @@ export const router = createBrowserRouter([
                         path: "",
                         element: <MakeCustomerTransaction />,
                       },
-                      {
-                        path: "success",
-                        element: <PaymentSuccess />,
-                      },
-                      {
-                        path: "failed",
-                        element: <PaymentFailure />,
-                      },
+                      // {
+                      //   path: "success",
+                      //   element: <PaymentSuccess />,
+                      // },
+                      // {
+                      //   path: "failed",
+                      //   element: <PaymentFailure />,
+                      // },
                     ],
                   },
                   // {
@@ -129,6 +129,18 @@ export const router = createBrowserRouter([
                   //   element: <PaymentFailure />,
                   // },
                 ],
+              },
+              {
+                path: "paymentverify/:orderkeyid",
+                element: <PaymentVerifyWrapper />,
+              },
+              {
+                path: "success",
+                element: <PaymentSuccess />,
+              },
+              {
+                path: "failed",
+                element: <PaymentFailure />,
               },
             ],
           },

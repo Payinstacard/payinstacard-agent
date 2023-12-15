@@ -9,6 +9,7 @@ import apiClient from "../services/apiClient";
 const initialState = {
   customersLoading: false,
   customersData: [],
+  agentDataWithTransactions: [],
   singleCustomerData: {},
 };
 
@@ -21,6 +22,9 @@ export const customersSlice = createSlice({
     },
     setCustomersData(state, action) {
       state.customersData = action.payload;
+    },
+    setAgentDataWithTransactions(state, action) {
+      state.agentDataWithTransactions = action.payload;
     },
     setSingleCustomerData(state, action) {
       state.singleCustomerData = {
@@ -60,6 +64,7 @@ export const customersSlice = createSlice({
 export const {
   setCustomersLoading,
   setCustomersData,
+  setAgentDataWithTransactions,
   updateTransactionArray,
   updateBeneficiaryArray,
   setSingleCustomerData,
@@ -72,9 +77,10 @@ export const fetchCustomers = (id) => {
 
       const response = await apiClient.get(FETCH_CUSTOMER);
       const customersData = response?.data?.response?.AgentCustomers_array;
-      console.log("data", customersData);
+      const agentData2 = response?.data?.response?.AgentData;
 
       dispatch(setCustomersData(customersData));
+      dispatch(setAgentDataWithTransactions(agentData2));
       dispatch(setCustomersLoading(false));
     } catch (error) {
       dispatch(setCustomersLoading(false));

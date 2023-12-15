@@ -33,7 +33,8 @@ const PaymentFailure = (props) => {
             Your payment of ₹{props?.amount || 0} was Unsuccessful.
           </p>
           <p className="text-[#FF4F5B] text-[1rem] sm:text-[1.2rem] font-bold text-center">
-            Reason: {getStatusText(props?.reasonStatus) || "N/A"}
+            Reason:{" "}
+            {props?.reasonStatus === "Fail" ? "Transaction Failed" : "N/A"}
           </p>
           <p className="text-[0.8rem] sm:text-[1rem] font-[600] text-center">
             Transaction ID:{" "}

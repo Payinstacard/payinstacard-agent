@@ -90,6 +90,9 @@ function CustomersTable(props) {
   const customersData = useSelector(
     (state) => state?.customersData?.customersData
   );
+  const agentDataWithTransactions = useSelector(
+    (state) => state?.customersData?.agentDataWithTransactions
+  );
 
   // const customersData = [
   //   {
@@ -397,14 +400,12 @@ function CustomersTable(props) {
 
   const getTotalPayment = () => {
     let totalPayment = 0;
-    customersData.forEach((obj) => {
-      if (!_.isEmpty(obj.transactions)) {
-        obj.transactions.forEach((transaction) => {
-          totalPayment += Number(transaction.total_amount);
-        });
-      }
-    });
-
+    if (!_.isEmpty(agentDataWithTransactions?.transactions)) {
+      agentDataWithTransactions?.transactions.forEach((transaction) => {
+        totalPayment += Number(transaction?.OrderAmount);
+      });
+      return totalPayment;
+    }
     return totalPayment;
   };
 

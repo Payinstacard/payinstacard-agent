@@ -1,0 +1,109 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+/*Tailwindcss*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.inputWithButton {
+  position: relative;
+}
+
+.inputWithButton input {
+  /* padding-right: 60px; */
+}
+
+.inputWithButton button {
+  position: absolute;
+  background-color: #00006b;
+  color: white;
+  padding: 5px 25px 5px 25px;
+  border-radius: 8px;
+  font-size: 12px;
+  right: 10px;
+  top: 5px;
+}
+
+.react-data-table > header {
+  padding: 0;
+}
+
+.rdt_TableCol input[type="checkbox"],
+.rdt_TableRow input[type="checkbox"] {
+  color: #00006b;
+  border-radius: 4px;
+}
+
+.inputMobile input {
+  background-color: transparent;
+  border: none;
+}
+.inputMobile:hover input,
+.inputMobile:active input,
+.inputMobile:focus input,
+.inputMobile input:hover,
+.inputMobile input:active,
+.inputMobile input:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.PhoneInputInput {
+  background: #eff1f9;
+  border: none;
+  border-radius: 0.5rem;
+}
+.custom-box-shadow {
+  box-shadow: 0px 0px 8px 0px #0000001a;
+  /* box-shadow: 0px 0px 8px 0px red; */
+}
+
+.content_border {
+  position: relative;
+}
+.content_border:after {
+  content: "";
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #00006b;
+  border-radius: 8px;
+  display: block;
+  position: absolute;
+}
+
+.bg-image {
+  background-image: url(../src/assets/img/Adminagent.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+
+.scroll {
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #00006b;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+}

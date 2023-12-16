@@ -1,0 +1,11 @@
+ const public_key =  `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwSrY4ZtI4aCEHziY7GZH
+4LQ6dLdFkAmhPK6vfb0llICap5iLbozwxn2NLib4qDMRT6aByhXlwn7Ed2x8LpiF
+GMsH2yo9S72KkV2z8CV/hXTqEzfZbggnqeX/lA5P1vAr8xqXd85KTKh2eYOavbCe
+3oFFDvoYKbwdBxkoborPb2dxSClrhOnznLY8wPyYPa3qgrQO+E6QjHQA76M9Yb7i
+tNe6PUlGpoLsrQXz6a0rJu/96xYehfnuXyYBesDUt2JPHMxmPedp3080k5GYVzFH
+ug7KMmPq5CT4hTyESkPFBrK4VOxc1OgxuguGY9Svo1O1PrLythP/HomxaBItmLNL
+PQIDAQAB
+-----END PUBLIC KEY-----`
+
+export default public_key;

@@ -22,7 +22,6 @@ import MakeCustomerTransaction from "../components/customerpage/MakeNewCustomerT
 import Transactions from "../components/transactionpage/Transactions";
 import TransactionsTable from "../components/transactionpage/TransactionsTable";
 import Reports from "../components/reportpage/Reports";
-import ReportsCharts from "../components/reportpage/ReportsCharts";
 import Withdraw from "../components/withdraw/Withdraw";
 import WithdrawTable from "../components/withdraw/WithdrawTable";
 import PaymentSuccess from "../components/customerpage/PaymentSuccess";
@@ -30,6 +29,7 @@ import PaymentFailure from "../components/customerpage/PaymentFailure";
 import PaymentVerifyWrapper from "../components/customerpage/PaymentVerifyWrapper";
 import { Children } from "react";
 import NewTransactionLayout from "../layouts/NewTransactionLayout";
+import ReportsCharts from "../components/reportpage/ReportsCharts ";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");

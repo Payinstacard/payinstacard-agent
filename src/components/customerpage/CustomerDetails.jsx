@@ -13,34 +13,31 @@ import Card from "../common/Card/Card";
 // import apiClient from "../services/apiClient";
 // import { FETCH_SINGLE_CUSTOMER_DATA } from "../services/apiConstant";
 import { fetchSingleCustomer } from "../../stores/CustomerRedux";
+import Loader from "../common/Loader/Loader";
 
 const CustomerDetails = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const params = useParams();
+  // const [customersData, setCustomersData] = useState({});
+  const [load, setLoad] = useState(false);
   const id = params?.id;
+  useEffect(() => {
+    async function fetchData() {
+      if (!_.isEmpty(id)) {
+        dispatch(fetchSingleCustomer(id));
+      }
+    }
+    fetchData();
+  }, [id]);
+
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
   );
 
-  useEffect(() => {
-    if (!_.isEmpty(id)) {
-      dispatch(fetchSingleCustomer(id));
-    }
-  }, [id]);
-
-  const getTotalPayment = () => {
-    let totalPayments = 0;
-    if (!_.isEmpty(customersData?.transactions)) {
-      customersData?.transactions.forEach((transaction) => {
-        totalPayments += Number(transaction?.OrderAmount);
-      });
-      return `₹${totalPayments}`;
-    }
-
-    return `₹${totalPayments}`;
-  };
-  return (
+  return load ? (
+    <Loader />
+  ) : (
     <div className="mt-4 sm:mt-10">
       <Link
         to={"/dashboard/customers"}
@@ -98,7 +95,7 @@ const CustomerDetails = () => {
               width="sm:w-[50%] "
             />
             <Card
-              data={getTotalPayment()}
+              data={`₹${customersData?.transactionTotal}`}
               title={"Total Payments"}
               width="sm:w-[50%]"
             />

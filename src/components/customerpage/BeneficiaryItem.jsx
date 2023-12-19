@@ -11,7 +11,7 @@ import { DELETE_BENEFICIARY } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-function BeneficiaryItem({ key, item }) {
+function BeneficiaryItem({ item }) {
   console.log("item", item);
   const params = useParams();
   const id = params?.id;
@@ -68,10 +68,7 @@ function BeneficiaryItem({ key, item }) {
       });
   };
   return (
-    <div
-      className="text-xs sm:text-sm custom-box-shadow p-4 sm:p-8 rounded-lg mb-4 sm:mb-8"
-      key={key}
-    >
+    <div className="text-xs sm:text-sm custom-box-shadow p-4 sm:p-8 rounded-lg mb-4 sm:mb-8">
       <div className="flex justify-between border-b pb-2 sm:pb-4 mb-2 sm:mb-4 items-center">
         <h1 className="text-base sm:text-lg font-bold">
           ID: {item?.beneficiary_id}

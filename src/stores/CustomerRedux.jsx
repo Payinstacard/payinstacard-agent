@@ -5,7 +5,7 @@ import {
   FETCH_SINGLE_CUSTOMER_DATA,
 } from "../services/apiConstant";
 import apiClient from "../services/apiClient";
-
+import _ from "lodash";
 const initialState = {
   customersLoading: false,
   customersData: [],
@@ -98,7 +98,19 @@ export const fetchSingleCustomer = (id) => {
         FETCH_SINGLE_CUSTOMER_DATA + "?custom_id=" + id
       );
       const userData = response?.data?.response.UserData;
-
+      let totalPayments = 0;
+      if (!_.isEmpty(userData?.transactions)) {
+        userData?.transactions
+          .filter(
+            (transaction) =>
+              transaction?.OrderPaymentStatus === "200" ||
+              transaction?.OrderPaymentStatus === "201"
+          )
+          .forEach((item) => {
+            totalPayments += parseInt(item.benificary_details.TotalAmount);
+          });
+        userData.transactionTotal = totalPayments;
+      }
       dispatch(setSingleCustomerData(userData));
       dispatch(setCustomersLoading(false));
     } catch (error) {

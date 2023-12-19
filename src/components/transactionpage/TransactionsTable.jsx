@@ -15,6 +15,7 @@ import { getDateString, maskString } from "../../services/helper";
 import {
   downloadCSVOfCustomerTransactions,
   downloadCSVOfCustomers,
+  downloadCSVOfTransactions,
 } from "../../services/customersApis";
 import Export from "../common/Table/Export";
 import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
@@ -23,10 +24,11 @@ import { FETCH_CUSTOMER } from "../../services/apiConstant";
 import { toast } from "react-toastify";
 import View from "../../assets/svg/view.svg";
 import downLoadIconAgent from "../../assets/svg/downLoadIconAgent.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import transactionWatch from "../../assets/svg/view.svg";
 import { downloadTrasactionReceipt } from "./../common/models/htmlTopdf";
+import { fetchCustomers } from "../../stores/CustomerRedux";
 
 function TransactionsTable(props) {
   const [data, setData] = useState([]);
@@ -35,9 +37,6 @@ function TransactionsTable(props) {
     endDate: null,
   });
   // const [load, setLoad] = useState(false);
-  const loading = useSelector(
-    (state) => state?.customersData?.customersLoading
-  );
   const [filterText, setFilterText] = React.useState("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     React.useState(false);
@@ -45,196 +44,35 @@ function TransactionsTable(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
-
-  //dumy data
-
-  const customersData = useSelector(
-    (state) => state?.customersData?.singleCustomerData
+  const { agentData } = useSelector((state) => state.agentData);
+  const dispatch = useDispatch();
+  const loading = useSelector(
+    (state) => state?.customersData?.customersLoading
   );
 
-  const customersDummyData = {
-    Agent_objectid: "65570149bd2c450af22378eb",
-    BenificaryCollection: [
-      {
-        Customer_id: "6565c7fbb7b65e21cab03c67",
-        beneficiary_address: "diyogi, uttrakhand",
-        beneficiary_email: "liodas@gmail.com",
-        beneficiary_id: "LIOD773BCFFBADE57",
-        beneficiary_name: "PAYINSTA CARD",
-        beneficiary_phone: "+919737502747",
-        created_at: "1701328516733",
-        payment_info: {
-          type: "BANK",
-          upi_code: "",
-          bankAccount: "10000969945",
-          ifsc_code: "IDFB0010204",
-        },
-        updated_at: "1701328516733",
-        __v: 0,
-        _id: "6568368471c0fde2e7c50581",
-      },
-    ],
-    Customer_data: {
-      FirstName: "karan",
-      LastName: "harsora",
-      Address: "Bhavnagar",
-      Pincode: "364001",
-      State: "Gujarat",
-      // ... other customer data properties
-    },
-    Customer_id: "AGCUS-x9ObQ8R7J",
-    Email: "karan.infinitysoftech@gmail.com",
-    created_At: "2023-11-28T10:59:07.091Z",
-    disabled: false,
-    emailVerified: false,
-    mobile: "+919737502747",
-    paymentDisabled: false,
-
-    transactions: [
-      {
-        total_amount: "200",
-        transactionId: "T123456789872",
-        created_At: "2023-11-08T13:06:49.915Z",
-        status: "Successful",
-        beneficiary: { mobile: "9876543210", ifsc: "SBIN0025487" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "150",
-        transactionId: "T123456789873",
-        created_At: "2023-11-09T14:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "8765432109", ifsc: "HDFC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "120",
-        transactionId: "T123456789874",
-        created_At: "2023-11-10T16:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "7654321098", ifsc: "ICIC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "90",
-        transactionId: "T123456789875",
-        created_At: "2023-11-12T10:15:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "6543210987", ifsc: "AXIS0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "80",
-        transactionId: "T123456789876",
-        created_At: "2023-11-15T12:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "5432109876", ifsc: "BOB0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "70",
-        transactionId: "T123456789877",
-        created_At: "2023-11-18T09:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "4321098765", ifsc: "PNB0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "60",
-        transactionId: "T123456789878",
-        created_At: "2023-11-20T14:00:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "3210987654", ifsc: "SBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "50",
-        transactionId: "T123456789879",
-        created_At: "2023-11-22T11:30:00.000Z",
-        status: "Pending",
-        beneficiary: { mobile: "2109876543", ifsc: "UBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "40",
-        transactionId: "T123456789880",
-        created_At: "2023-11-25T15:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "1098765432", ifsc: "IDBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "30",
-        transactionId: "T123456789881",
-        created_At: "2023-11-27T10:00:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "0987654321", ifsc: "RBL0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "20",
-        transactionId: "T123456789882",
-        created_At: "2023-11-28T13:15:00.000Z",
-        status: "Failed",
-        beneficiary: { mobile: "9876543210", ifsc: "HSBC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-      {
-        total_amount: "10",
-        transactionId: "T123456789883",
-        created_At: "2023-11-30T09:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "8765432109", ifsc: "CITI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-      },
-    ],
-    transfers: [],
-    updated_At: "2023-11-28T10:59:07.091Z",
-    verified: false,
-    __v: 4,
-    _id: "6565c7fbb7b65e21cab03c67",
-  };
+  // fetching customer details
 
   React.useEffect(() => {
-    let mapData = customersDummyData?.transactions?.map((item, index) => {
-      return { ...item, ["Index"]: data.length - index };
-    }, []);
+    if (agentData?.firebase_uid) {
+      dispatch(fetchCustomers(agentData?.firebase_uid));
+    }
+  }, [agentData?.firebase_uid]);
+
+  const customersData = useSelector(
+    (state) => state?.customersData?.customersData
+  );
+
+  const agentDataWithTransactions = useSelector(
+    (state) => state?.customersData?.agentDataWithTransactions
+  );
+
+  React.useEffect(() => {
+    let mapData = agentDataWithTransactions?.transactions?.map(
+      (item, index) => {
+        return { ...item, ["Index"]: data.length - index };
+      },
+      []
+    );
 
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
       const startDate = new Date(dateRange.startDate);
@@ -251,13 +89,12 @@ function TransactionsTable(props) {
     }
     if (filterText !== "") {
       mapData = mapData.filter((item) => {
-        console.log("item", item);
         // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
         return (
-          item?.total_amount
-            ?.toLowerCase()
-            .includes(filterText?.toLowerCase()) ||
-          item?.beneficiary?.mobile
+          item?.OrderAmount?.toLowerCase().includes(
+            filterText?.toLowerCase()
+          ) ||
+          item?.benificary_details?.paymentInfo?.beneficier_id
             ?.toLowerCase()
             .includes(filterText?.toLowerCase()) ||
           item?.transactionId?.toLowerCase().includes(filterText?.toLowerCase())
@@ -297,7 +134,7 @@ function TransactionsTable(props) {
     //     }
     //   });
     // }
-    setFilteredItems(mapData.reverse());
+    setFilteredItems(mapData?.reverse());
   }, [data, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
@@ -345,7 +182,7 @@ function TransactionsTable(props) {
           <div>
             <Export
               onExport={() =>
-                downloadCSVOfCustomerTransactions(filteredItems, selectedRows)
+                downloadCSVOfTransactions(filteredItems, selectedRows)
               }
             />
           </div>
@@ -383,7 +220,7 @@ function TransactionsTable(props) {
     {
       name: "SL",
       grow: 0,
-      selector: (row, index) => <span className="mr-10">{index + 1}</span>,
+      selector: (row, index) => <span className="mr">{index + 1}</span>,
       style: { textAlign: "center", display: "block" },
     },
     {
@@ -397,11 +234,11 @@ function TransactionsTable(props) {
             className=""
             title="View"
           >
-            <p className="mb-1 font-bold border-b border-black">
+            <p className="mb-1 font-bold border-b border-black w-max">
               {/* {row?.Customer_data?.FirstName +
                 " " +
                 row?.Customer_data?.LastName} */}
-              {row?.transactionId}
+              {row?.paymentDetails?.TRANSACTIONID}
             </p>
           </NavLink>
 
@@ -409,6 +246,8 @@ function TransactionsTable(props) {
         </div>
       ),
       grow: 1,
+      width: "230px",
+
       // sortable: true,
       //   sortFunction: caseInsensitiveSort,
     },
@@ -417,8 +256,10 @@ function TransactionsTable(props) {
       grow: 1,
       cell: (row) => (
         <div>
-          <p>{row?.contact_info?.fullName}</p>
-          <p>{row?.contact_info?.mobile}</p>
+          <p className="mb-1">
+            {row?.customerData?.FirstName} {row?.customerData?.LastName}
+          </p>
+          <p>{row?.customerData?.MobileNo}</p>
         </div>
       ),
       style: { textAlign: "left", display: "block" },
@@ -437,8 +278,10 @@ function TransactionsTable(props) {
       grow: 1,
       cell: (row) => (
         <div>
-          <p>{row?.beneficiary?.mobile}</p>
-          <p>{row?.beneficiary?.ifsc}</p>
+          <p className="mb-1">
+            {row?.benificary_details?.paymentInfo?.beneficier_id}
+          </p>
+          <p>{row?.benificary_details?.paymentInfo?.ifsc_code}</p>
         </div>
       ),
       style: { textAlign: "left", display: "block" },
@@ -447,7 +290,7 @@ function TransactionsTable(props) {
       name: "Amount",
       grow: 0,
       sortable: "true",
-      cell: (row) => <div>{row?.total_amount}</div>,
+      cell: (row) => <div>{row?.OrderAmount}</div>,
       style: { textAlign: "center", display: "block" },
       sortFunction: amountSortFun,
     },
@@ -455,7 +298,10 @@ function TransactionsTable(props) {
       name: "Status",
       grow: 1,
       cell: (row) => {
-        if (row?.status === "Successful") {
+        if (
+          row?.OrderPaymentStatus === "200" ||
+          row?.OrderPaymentStatus === "201"
+        ) {
           return (
             <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg  font-medium bg-green-200 text-green-800 text-base">
               <span className="text-[20px]"> &#8226;</span> Successful
@@ -542,7 +388,7 @@ function TransactionsTable(props) {
               </button>
             </div>
             <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
-              243
+              {agentDataWithTransactions?.transactions?.length}
             </p>
           </div>
         </div>
@@ -562,7 +408,19 @@ function TransactionsTable(props) {
             ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
             : props?.data} */}
               {/* &#8377;{getTotalPayment()} */}
-              &#8377;127127
+              &#8377;
+              {agentDataWithTransactions?.transactions
+                ?.filter(
+                  (data) =>
+                    data?.OrderPaymentStatus === "200" ||
+                    data?.OrderPaymentStatus === "201"
+                )
+                .reduce(
+                  (total, transaction) =>
+                    total +
+                    parseInt(transaction.benificary_details.TotalAmount),
+                  0
+                )}
             </p>
           </div>
           {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}

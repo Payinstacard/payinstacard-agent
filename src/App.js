@@ -7,7 +7,7 @@ import Maintain from "./Maintain";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "./components/common/Loader/Loader";
-import { BASE_URL } from "./services/apiConstant";
+import { API_STATUS, BASE_URL } from "./services/apiConstant";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ function App() {
 
   async function checkApiStatus() {
     try {
-      const response = await axios.get(BASE_URL);
+      const response = await axios.get(BASE_URL + API_STATUS);
 
       console.log("response", response);
       // Check the HTTP status code to determine the API status

@@ -95,7 +95,11 @@ const CustomerDetails = () => {
               width="sm:w-[50%] "
             />
             <Card
-              data={`₹${customersData?.transactionTotal}`}
+              data={`₹${
+                customersData?.transactionTotal
+                  ? customersData?.transactionTotal
+                  : 0
+              }`}
               title={"Total Payments"}
               width="sm:w-[50%]"
             />

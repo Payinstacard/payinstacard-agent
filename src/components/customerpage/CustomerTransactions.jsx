@@ -320,8 +320,8 @@ function CustomerTransactions(props) {
     return 0;
   };
   const amountSortFun = (rowA, rowB) => {
-    const dateA = Number(rowA.total_amount);
-    const dateB = Number(rowB.total_amount);
+    const dateA = Number(rowA.OrderAmount);
+    const dateB = Number(rowB.OrderAmount);
     if (dateA > dateB) {
       return 1;
     }
@@ -344,19 +344,12 @@ function CustomerTransactions(props) {
       // sortable: "true",
       cell: (row, index) => (
         <div>
-          <NavLink
-            // to={`/dashboard/users/${row?.Customer_id}/${row?.mobile}`}
-            // to="customer-details"
-            className=""
-            title="View"
-          >
-            <p className="mb-1 font-bold border-b border-black w-max">
-              {/* {row?.Customer_data?.FirstName +
+          <p className="mb-1 font-bold border-b border-black w-max">
+            {/* {row?.Customer_data?.FirstName +
                 " " +
                 row?.Customer_data?.LastName} */}
-              {row?.paymentDetails?.TRANSACTIONID}
-            </p>
-          </NavLink>
+            {row?.paymentDetails?.TRANSACTIONID}
+          </p>
 
           {/* <p>{index}</p> */}
         </div>
@@ -364,6 +357,27 @@ function CustomerTransactions(props) {
       grow: 1,
       // sortable: true,
       //   sortFunction: caseInsensitiveSort,
+    },
+
+    {
+      name: "Beneficiary",
+      grow: 1,
+      cell: (row) => (
+        <div>
+          <p className="mb-1 w-max">
+            {row?.benificary_details?.paymentInfo?.beneficier_id}
+          </p>
+        </div>
+      ),
+      style: { textAlign: "left", display: "block" },
+    },
+    {
+      name: "Amount",
+      grow: 0,
+      sortable: "true",
+      cell: (row) => <div>&#8377;{row?.OrderAmount}</div>,
+      style: { textAlign: "center", display: "block" },
+      sortFunction: amountSortFun,
     },
     {
       name: "Transaction Date",
@@ -373,27 +387,6 @@ function CustomerTransactions(props) {
       // width: "140px",
       sortFunction: dateSortFun,
       style: { textAlign: "left", display: "block" },
-    },
-    {
-      name: "Beneficiary",
-      grow: 1,
-      cell: (row) => (
-        <div>
-          <p className="mb-1">
-            {row?.benificary_details?.paymentInfo?.beneficier_id}
-          </p>
-          <p>{row?.benificary_details?.paymentInfo?.ifsc_code}</p>
-        </div>
-      ),
-      style: { textAlign: "left", display: "block" },
-    },
-    {
-      name: "Amount",
-      grow: 0,
-      sortable: "true",
-      cell: (row) => <div>{row?.OrderAmount}</div>,
-      style: { textAlign: "center", display: "block" },
-      sortFunction: amountSortFun,
     },
     {
       name: "Status",
@@ -421,7 +414,7 @@ function CustomerTransactions(props) {
           );
         }
       },
-      sortable: "true",
+      // sortable: "true",
       center: "true",
       width: "140px",
     },

@@ -29,6 +29,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import transactionWatch from "../../assets/svg/view.svg";
 import { downloadTrasactionReceipt } from "./../common/models/htmlTopdf";
 import { fetchCustomers } from "../../stores/CustomerRedux";
+import PaymentStatusPopUp from "./PaymentStatusPopUp";
 
 function TransactionsTable(props) {
   const [data, setData] = useState([]);
@@ -45,6 +46,8 @@ function TransactionsTable(props) {
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
   const { agentData } = useSelector((state) => state.agentData);
+  const [showPopup, setShowPopup] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState();
   const dispatch = useDispatch();
   const loading = useSelector(
     (state) => state?.customersData?.customersLoading
@@ -101,39 +104,7 @@ function TransactionsTable(props) {
         );
       });
     }
-    // if (currentFilterBy !== false) {
-    //   mapData = mapData.filter((item) => {
-    //     const currentDate = new Date();
-    //     currentDate.setDate(currentDate.getDate() - 30);
-    //     let transactions_in_last_month = item?.transactions?.some(
-    //       (transaction) => {
-    //         const transactionDate = new Date(transaction.created_At);
-    //         return transactionDate >= currentDate;
-    //       }
-    //     );
 
-    //     if (currentFilterBy === "activeuser") {
-    //       return transactions_in_last_month;
-    //     } else if (currentFilterBy === "totaluser") {
-    //       return !item.disabled === true;
-    //     } else if (currentFilterBy === "inactiveuser") {
-    //       return !transactions_in_last_month && !item.disabled === true;
-    //     } else if (currentFilterBy === "suspendeduser") {
-    //       return item.disabled === true;
-    //     } else if (currentFilterBy === "kycuser") {
-    //       return item.kyc_status === true;
-    //     } else if (currentFilterBy === "approvalpendinguser") {
-    //       return (
-    //         item.kyc_status === false &&
-    //         item.kyc_details.aadhaarVerified === true &&
-    //         item.kyc_details._PANVerified === true &&
-    //         !item.disabled === true
-    //       );
-    //     } else {
-    //       return true;
-    //     }
-    //   });
-    // }
     setFilteredItems(mapData?.reverse());
   }, [data, filterText, currentFilterBy, dateRange]);
 
@@ -204,8 +175,8 @@ function TransactionsTable(props) {
     return 0;
   };
   const amountSortFun = (rowA, rowB) => {
-    const dateA = Number(rowA.total_amount);
-    const dateB = Number(rowB.total_amount);
+    const dateA = Number(rowA.OrderAmount);
+    const dateB = Number(rowB.OrderAmount);
     if (dateA > dateB) {
       return 1;
     }
@@ -233,6 +204,7 @@ function TransactionsTable(props) {
             // to="customer-details"
             className=""
             title="View"
+            onClick={() => openModelWithSatus(row)}
           >
             <p className="mb-1 font-bold border-b border-black w-max">
               {/* {row?.Customer_data?.FirstName +
@@ -265,23 +237,13 @@ function TransactionsTable(props) {
       style: { textAlign: "left", display: "block" },
     },
     {
-      name: "Transaction Date",
-      grow: 1,
-      selector: (row) => getDateString(row.created_At),
-      sortable: "true",
-      // width: "140px",
-      sortFunction: dateSortFun,
-      style: { textAlign: "left", display: "block" },
-    },
-    {
       name: "Beneficiary",
       grow: 1,
       cell: (row) => (
         <div>
-          <p className="mb-1">
+          <p className="mb-1 w-max">
             {row?.benificary_details?.paymentInfo?.beneficier_id}
           </p>
-          <p>{row?.benificary_details?.paymentInfo?.ifsc_code}</p>
         </div>
       ),
       style: { textAlign: "left", display: "block" },
@@ -290,9 +252,18 @@ function TransactionsTable(props) {
       name: "Amount",
       grow: 0,
       sortable: "true",
-      cell: (row) => <div>{row?.OrderAmount}</div>,
-      style: { textAlign: "center", display: "block" },
+      cell: (row) => <div>&#8377;{row?.OrderAmount}</div>,
+      style: { textAlign: "", display: "block" },
       sortFunction: amountSortFun,
+    },
+    {
+      name: "Transaction Date",
+      grow: 1,
+      selector: (row) => getDateString(row.created_At),
+      sortable: "true",
+      // width: "140px",
+      sortFunction: dateSortFun,
+      style: { textAlign: "left", display: "block" },
     },
     {
       name: "Status",
@@ -321,7 +292,7 @@ function TransactionsTable(props) {
           );
         }
       },
-      sortable: "true",
+      // sortable: "true",
       center: "true",
       width: "140px",
     },
@@ -334,9 +305,7 @@ function TransactionsTable(props) {
       // button: "true",
       cell: (row) => (
         <>
-          <Link
-          // to={`add/${row?.Customer_id}`}
-          >
+          <Link onClick={() => openModelWithSatus(row)}>
             <img src={transactionWatch} alt="" className="w-8 h-8 mr-2" />
           </Link>
           <Link
@@ -365,6 +334,15 @@ function TransactionsTable(props) {
     });
 
     return totalPayment;
+  };
+
+  const openModelWithSatus = (data) => {
+    setPaymentInfo(data);
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -446,6 +424,11 @@ function TransactionsTable(props) {
         />
         {/* </StyleSheetManager> */}
       </div>
+
+      {/* Display Popup */}
+      {showPopup && (
+        <PaymentStatusPopUp data={paymentInfo} onClose={closePopup} />
+      )}
     </div>
   );
 }

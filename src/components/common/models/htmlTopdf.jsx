@@ -61,7 +61,11 @@ export const downloadTrasactionReceipt = (payData) => {
                       payData?.OrderAmount
                     }</p>                  
                     <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${
-                      payData?.OrderPaymentStatusText
+                      payData?.OrderPaymentStatus === "200"
+                        ? "Success"
+                        : payData?.OrderPaymentStatus === "201"
+                        ? "Success"
+                        : "Fail"
                     }
                     </p>
                 </div>
@@ -70,8 +74,20 @@ export const downloadTrasactionReceipt = (payData) => {
               <div style="font-size: 14px;">
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Beneficiary Information</span></h6>
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Beneficiary Id: </span> ${
                       payData?.benificary_details?.paymentInfo?.beneficier_id
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Name:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.name
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Address:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.address
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">BankAccount:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.bankAccount
                     }</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">IFSC:
                     </span> ${

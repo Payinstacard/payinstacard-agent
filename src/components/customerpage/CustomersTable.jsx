@@ -363,7 +363,7 @@ function CustomersTable(props) {
         </div>
       ),
       // width: "150px",
-      sortable: true,
+      // sortable: true,
     },
     {
       name: "Actions",

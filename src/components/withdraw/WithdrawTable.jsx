@@ -24,6 +24,10 @@ import transactionWatch from "../../assets/svg/view.svg";
 import withdrawArrowIcon from "../../assets/svg/withdrawArrowIcon.svg";
 import calanderIcon from "../../assets/svg/calanderIcon.svg";
 import ReloadIcon from "../../assets/svg/reloadIcon.svg";
+import WithdrawPopup from "./WithdrawPopup";
+import { toast } from "react-toastify";
+import { WITHDRAWALS, WITHDRAW_PAYMENT } from "../../services/apiConstant";
+import apiClient from "../../services/apiClient";
 
 function WithdrawTable(props) {
   const [data, setData] = useState([]);
@@ -42,12 +46,27 @@ function WithdrawTable(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [withdrawals, setWithdrawals] = useState([]);
 
   //dumy data
 
   const customersData = useSelector(
     (state) => state?.customersData?.singleCustomerData
   );
+
+  const agentData = useSelector((state) => state?.agentData?.agentData);
+
+  // console.log("custmerdata========>", customersData);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await apiClient.get(WITHDRAWALS);
+      setWithdrawals(response.data);
+    };
+
+    fetchData();
+  }, []);
 
   const customersDummyData = {
     Agent_objectid: "65570149bd2c450af22378eb",
@@ -260,7 +279,7 @@ function WithdrawTable(props) {
     }
     if (filterText !== "") {
       mapData = mapData.filter((item) => {
-        console.log("item", item);
+        // console.log("item", item);
         // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
         return (
           item?.total_amount
@@ -620,6 +639,50 @@ function WithdrawTable(props) {
     return totalPayment;
   };
 
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+  const handleWithdraw = async (amount) => {
+    // Implement your withdrawal logic here
+    // console.log("Withdrawal amount:", amount, typeof amount);
+    try {
+      const response = await apiClient.post(WITHDRAW_PAYMENT, {
+        amount: amount,
+        agentId: agentData?._id,
+      });
+
+      let message = response.data.message;
+      const type = response.data.code;
+
+      if (type === 200) {
+        const message =
+          response?.data?.response?.message || response?.data?.message;
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "success",
+        });
+      } else {
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "warning",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast(error?.message ?? "Something wrong", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "error",
+      });
+    }
+  };
+
   return (
     <div className="mt-6 sm:mt-10">
       <h2 className="text-xl font-semibold mb-2 sm:mb-0">Withdraw</h2>
@@ -636,7 +699,10 @@ function WithdrawTable(props) {
                 <img src={ReloadIcon} alt="" />
               </div>
             </div>
-            <button className="flex items-center gap-2 px-[18.5px] min-[425px]:px-[37px] py-2 min-[425px]:py-4 bg-[#00006B] text-[14px] text-white rounded-lg ">
+            <button
+              className="flex items-center gap-2 px-[18.5px] min-[425px]:px-[37px] py-2 min-[425px]:py-4 bg-[#00006B] text-[14px] text-white rounded-lg "
+              onClick={openPopup}
+            >
               <span>Withdraw</span>
               <span>
                 <img src={withdrawArrowIcon} alt="" />
@@ -653,7 +719,9 @@ function WithdrawTable(props) {
           </div>
         </div>
       </div>
-
+      {isPopupOpen && (
+        <WithdrawPopup onClose={closePopup} onWithdraw={handleWithdraw} />
+      )}
       <div className="agent-table react-data-table mt-3 sm:mt-10">
         {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
         <DataTable

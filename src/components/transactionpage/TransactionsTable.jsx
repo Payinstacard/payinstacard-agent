@@ -52,12 +52,14 @@ function TransactionsTable(props) {
   const loading = useSelector(
     (state) => state?.customersData?.customersLoading
   );
-
+  const [load, setLoad] = useState(true);
   // fetching customer details
 
   React.useEffect(() => {
     if (agentData?.firebase_uid) {
+      setLoad(true);
       dispatch(fetchCustomers(agentData?.firebase_uid));
+      setLoad(false);
     }
   }, [agentData?.firebase_uid]);
 
@@ -106,7 +108,7 @@ function TransactionsTable(props) {
     }
 
     setFilteredItems(mapData?.reverse());
-  }, [data, filterText, currentFilterBy, dateRange]);
+  }, [agentDataWithTransactions, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -347,93 +349,88 @@ function TransactionsTable(props) {
 
   return (
     <div className="mt-10">
+      {load && <Loader />}
       <PageTitle
         buttonText="Make New Transaction"
         title="Transactions"
         // url={`/dashboard/customers/customer-details/${customersData?.Customer_id}/make-new-transaction`}
         // url="../make-new-transaction"
       />
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
-            {/** CARD #1 */}
-            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
-              <div className="mr-0 min-[510px]:mr-3">
-                <div className="flex justify-between">
-                  <p className="text-xs sm:text-sm text-[#464748] py-3">
-                    Total Transactions
-                  </p>
-                  <button>
-                    <HiOutlineDotsVertical className="text-[#464748]" />
-                  </button>
-                </div>
-                <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
-                  {agentDataWithTransactions?.transactions?.length}
-                </p>
-              </div>
+      <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
+        {/** CARD #1 */}
+        <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+          <div className="mr-0 min-[510px]:mr-3">
+            <div className="flex justify-between">
+              <p className="text-xs sm:text-sm text-[#464748] py-3">
+                Total Transactions
+              </p>
+              <button>
+                <HiOutlineDotsVertical className="text-[#464748]" />
+              </button>
             </div>
-            {/** CARD #2 */}
-            <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
-              <div className="mr-0 min-[510px]:mr-3">
-                <div className="flex justify-between">
-                  <p className="text-xs sm:text-sm text-[#464748] py-3">
-                    Total Payments
-                  </p>
-                  <button>
-                    <HiOutlineDotsVertical className="text-[#464748]" />
-                  </button>
-                </div>
-                <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
-                  {/* {props?.number
+            <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+              {agentDataWithTransactions?.transactions?.length}
+            </p>
+          </div>
+        </div>
+        {/** CARD #2 */}
+        <div className="w-[45%] min-[430px]:w-1/3 min-[900px]:w-1/4 rounded-lg  px-2 min-[510px]:px-4 py-[6px] min-[510px]:py-3 bg-white min-w-fit">
+          <div className="mr-0 min-[510px]:mr-3">
+            <div className="flex justify-between">
+              <p className="text-xs sm:text-sm text-[#464748] py-3">
+                Total Payments
+              </p>
+              <button>
+                <HiOutlineDotsVertical className="text-[#464748]" />
+              </button>
+            </div>
+            <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
+              {/* {props?.number
             ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
             : props?.data} */}
-                  {/* &#8377;{getTotalPayment()} */}
-                  &#8377;
-                  {agentDataWithTransactions?.transactions
-                    ?.filter(
-                      (data) =>
-                        data?.OrderPaymentStatus === "200" ||
-                        data?.OrderPaymentStatus === "201"
-                    )
-                    .reduce(
-                      (total, transaction) =>
-                        total +
-                        parseInt(transaction.benificary_details.TotalAmount),
-                      0
-                    )}
-                </p>
-              </div>
-              {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
-            </div>
+              {/* &#8377;{getTotalPayment()} */}
+              &#8377;
+              {agentDataWithTransactions?.transactions
+                ?.filter(
+                  (data) =>
+                    data?.OrderPaymentStatus === "200" ||
+                    data?.OrderPaymentStatus === "201"
+                )
+                .reduce(
+                  (total, transaction) =>
+                    total +
+                    parseInt(transaction.benificary_details.TotalAmount),
+                  0
+                )}
+            </p>
           </div>
+          {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}
+        </div>
+      </div>
 
-          <div className="agent-table react-data-table mt-3 sm:mt-10">
-            {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
-            <DataTable
-              columns={columns}
-              data={filteredItems}
-              pagination
-              paginationComponent={Pagination}
-              progressPending={loading}
-              progressComponent={<Loader />}
-              fixedHeader
-              subHeader
-              subHeaderComponent={subHeaderComponentMemo}
-              customStyles={customStyles}
-              selectableRows
-              onSelectedRowsChange={handleRowSelected}
-              clearSelectedRows={toggleCleared}
-            />
-            {/* </StyleSheetManager> */}
-          </div>
+      <div className="agent-table react-data-table mt-3 sm:mt-10">
+        {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
+        <DataTable
+          columns={columns}
+          data={filteredItems}
+          pagination
+          paginationComponent={Pagination}
+          // progressPending={load}
+          // progressComponent={<Loader />}
+          fixedHeader
+          subHeader
+          subHeaderComponent={subHeaderComponentMemo}
+          customStyles={customStyles}
+          selectableRows
+          onSelectedRowsChange={handleRowSelected}
+          clearSelectedRows={toggleCleared}
+        />
+        {/* </StyleSheetManager> */}
+      </div>
 
-          {/* Display Popup */}
-          {showPopup && (
-            <PaymentStatusPopUp data={paymentInfo} onClose={closePopup} />
-          )}
-        </>
+      {/* Display Popup */}
+      {showPopup && (
+        <PaymentStatusPopUp data={paymentInfo} onClose={closePopup} />
       )}
     </div>
   );

@@ -58,7 +58,7 @@ function TransactionsTable(props) {
   React.useEffect(() => {
     if (agentData?.firebase_uid) {
       setLoad(true);
-      dispatch(fetchCustomers(agentData?.firebase_uid));
+      dispatch(fetchCustomers());
       setLoad(false);
     }
   }, [agentData?.firebase_uid]);
@@ -243,7 +243,7 @@ function TransactionsTable(props) {
       grow: 1,
       cell: (row) => (
         <div>
-          <p className="mb-1 w-max">
+          <p className="mb-1 ">
             {row?.benificary_details?.paymentInfo?.beneficier_id}
           </p>
         </div>
@@ -254,7 +254,7 @@ function TransactionsTable(props) {
       name: "Amount",
       grow: 0,
       sortable: "true",
-      cell: (row) => <div>&#8377;{row?.OrderAmount}</div>,
+      cell: (row) => <div className="">&#8377;{row?.OrderAmount}</div>,
       style: { textAlign: "", display: "block" },
       sortFunction: amountSortFun,
     },

@@ -17,7 +17,7 @@ import {
 import Export from "../common/Table/Export";
 import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
 import downLoadIconAgent from "../../assets/svg/downLoadIconAgent.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import footerImg from "../../assets/img/Footer_cleanup.png";
 import headerImg from "../../assets/img/Header_cleanup.png";
 import logo from "../../assets/img/Logo.png";
@@ -31,6 +31,8 @@ import WithdrawPopup from "./WithdrawPopup";
 import { toast } from "react-toastify";
 import { WITHDRAWALS, WITHDRAW_PAYMENT } from "../../services/apiConstant";
 import apiClient from "../../services/apiClient";
+import { fetchAgent } from "../../stores/AgentRedux";
+import { fetchCustomers } from "../../stores/CustomerRedux";
 
 function WithdrawTable(props) {
   const [data, setData] = useState([]);
@@ -51,8 +53,9 @@ function WithdrawTable(props) {
   const [filteredItems, setFilteredItems] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [withdrawals, setWithdrawals] = useState([]);
-  const [load, setLoad] = useState(true);
+  const [load, setLoad] = useState(false);
   const [status, setStatus] = useState(false);
+  const dispatch = useDispatch();
 
   //dumy data
 
@@ -61,113 +64,146 @@ function WithdrawTable(props) {
   );
 
   const agentData = useSelector((state) => state?.agentData?.agentData);
+  console.log("agentData", agentData?.withdrawals);
 
-  // console.log("custmerdata========>", customersData);
-
-  useEffect(() => {
+  React.useEffect(() => {
+    console.log("-----------it run==================");
     const fetchData = async () => {
       try {
-        setLoad(true);
-        const response = await apiClient.get(WITHDRAWALS);
-        // console.log("res======>", response);
-        setWithdrawals(response?.data?.response?.data);
-        let message = response.data.message;
-        const type = response.data.code;
-
-        if (type === 200) {
-          setLoad(false);
-          const message =
-            response?.data?.response?.message || response?.data?.message;
-          // toast(message, {
-          //   theme: "dark",
-          //   hideProgressBar: true,
-          //   type: "success",
-          // });
-        } else {
-          setLoad(false);
-          // toast(message, {
-          //   theme: "dark",
-          //   hideProgressBar: true,
-          //   type: "warning",
-          // });
-        }
+        dispatch(fetchCustomers());
+        setLoad(false);
       } catch (error) {
         setLoad(false);
-        console.log(error);
-        toast("Something wrong", {
-          theme: "dark",
-          hideProgressBar: true,
-          type: "error",
-        });
+        console.error("Error fetching agent data:", error);
       }
     };
 
-    fetchData();
-  }, [status]);
+    if (agentData?.withdrawals) {
+      setWithdrawals(agentData?.withdrawals);
+      fetchData();
+    }
+  }, [agentData, status, dispatch]);
+
+  // React.useEffect(() => {
+  //   console.log("-----------it run==================");
+  //   if (agentData?.withdrawals) {
+  //     setWithdrawals(agentData?.withdrawals);
+  //     setLoad(true);
+  //     dispatch(fetchAgent());
+  //     setLoad(false);
+  //   }
+  // }, [status]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoad(true);
+  //       const response = await apiClient.get(WITHDRAWALS);
+  //       // console.log("res======>", response);
+  //       setWithdrawals(response?.data?.response?.data);
+  //       let message = response.data.message;
+  //       const type = response.data.code;
+
+  //       if (type === 200) {
+  //         setLoad(false);
+  //         const message =
+  //           response?.data?.response?.message || response?.data?.message;
+  //         // toast(message, {
+  //         //   theme: "dark",
+  //         //   hideProgressBar: true,
+  //         //   type: "success",
+  //         // });
+  //       } else {
+  //         setLoad(false);
+  //         // toast(message, {
+  //         //   theme: "dark",
+  //         //   hideProgressBar: true,
+  //         //   type: "warning",
+  //         // });
+  //       }
+  //     } catch (error) {
+  //       setLoad(false);
+  //       console.log(error);
+  //       toast("Something wrong", {
+  //         theme: "dark",
+  //         hideProgressBar: true,
+  //         type: "error",
+  //       });
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [status]);
 
   React.useEffect(() => {
-    let mapData = withdrawals.map((item, index) => {
-      return { ...item, ["Index"]: data.length - index };
-    }, []);
+    if (withdrawals) {
+      let mapData = withdrawals.map((item, index) => {
+        return { ...item, ["Index"]: data.length - index };
+      }, []);
 
-    if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
-      const startDate = new Date(dateRange.startDate);
-      startDate.setUTCHours(0, 0, 0, 0);
-      const endDate = new Date(dateRange.endDate);
-      endDate.setUTCHours(23, 59, 59, 999);
-      mapData = mapData.filter((item) => {
-        const itemDate = new Date(item.created_At);
-        return (
-          startDate.getTime() <= itemDate.getTime() &&
-          itemDate.getTime() <= endDate.getTime()
-        );
-      });
-    }
-    if (filterText !== "") {
-      mapData = mapData.filter((item) => {
-        // console.log("item", item);
-        // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
-        return (
-          item?.transferId?.toLowerCase().includes(filterText?.toLowerCase()) ||
-          item?.amount?.toLowerCase().includes(filterText?.toLowerCase()) ||
-          item?.transactionId?.toLowerCase().includes(filterText?.toLowerCase())
-        );
-      });
-    }
-    // if (currentFilterBy !== false) {
-    //   mapData = mapData.filter((item) => {
-    //     const currentDate = new Date();
-    //     currentDate.setDate(currentDate.getDate() - 30);
-    //     let transactions_in_last_month = item?.transactions?.some(
-    //       (transaction) => {
-    //         const transactionDate = new Date(transaction.created_At);
-    //         return transactionDate >= currentDate;
-    //       }
-    //     );
+      if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
+        const startDate = new Date(dateRange.startDate);
+        startDate.setUTCHours(0, 0, 0, 0);
+        const endDate = new Date(dateRange.endDate);
+        endDate.setUTCHours(23, 59, 59, 999);
+        mapData = mapData.filter((item) => {
+          const itemDate = new Date(item.created_At);
+          return (
+            startDate.getTime() <= itemDate.getTime() &&
+            itemDate.getTime() <= endDate.getTime()
+          );
+        });
+      }
+      if (filterText !== "") {
+        mapData = mapData.filter((item) => {
+          // console.log("item", item);
+          // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
+          return (
+            item?.transferId
+              ?.toLowerCase()
+              .includes(filterText?.toLowerCase()) ||
+            item?.amount?.toLowerCase().includes(filterText?.toLowerCase()) ||
+            item?.transactionId
+              ?.toLowerCase()
+              .includes(filterText?.toLowerCase())
+          );
+        });
+      }
+      // if (currentFilterBy !== false) {
+      //   mapData = mapData.filter((item) => {
+      //     const currentDate = new Date();
+      //     currentDate.setDate(currentDate.getDate() - 30);
+      //     let transactions_in_last_month = item?.transactions?.some(
+      //       (transaction) => {
+      //         const transactionDate = new Date(transaction.created_At);
+      //         return transactionDate >= currentDate;
+      //       }
+      //     );
 
-    //     if (currentFilterBy === "activeuser") {
-    //       return transactions_in_last_month;
-    //     } else if (currentFilterBy === "totaluser") {
-    //       return !item.disabled === true;
-    //     } else if (currentFilterBy === "inactiveuser") {
-    //       return !transactions_in_last_month && !item.disabled === true;
-    //     } else if (currentFilterBy === "suspendeduser") {
-    //       return item.disabled === true;
-    //     } else if (currentFilterBy === "kycuser") {
-    //       return item.kyc_status === true;
-    //     } else if (currentFilterBy === "approvalpendinguser") {
-    //       return (
-    //         item.kyc_status === false &&
-    //         item.kyc_details.aadhaarVerified === true &&
-    //         item.kyc_details._PANVerified === true &&
-    //         !item.disabled === true
-    //       );
-    //     } else {
-    //       return true;
-    //     }
-    //   });
-    // }
-    setFilteredItems(mapData.reverse());
+      //     if (currentFilterBy === "activeuser") {
+      //       return transactions_in_last_month;
+      //     } else if (currentFilterBy === "totaluser") {
+      //       return !item.disabled === true;
+      //     } else if (currentFilterBy === "inactiveuser") {
+      //       return !transactions_in_last_month && !item.disabled === true;
+      //     } else if (currentFilterBy === "suspendeduser") {
+      //       return item.disabled === true;
+      //     } else if (currentFilterBy === "kycuser") {
+      //       return item.kyc_status === true;
+      //     } else if (currentFilterBy === "approvalpendinguser") {
+      //       return (
+      //         item.kyc_status === false &&
+      //         item.kyc_details.aadhaarVerified === true &&
+      //         item.kyc_details._PANVerified === true &&
+      //         !item.disabled === true
+      //       );
+      //     } else {
+      //       return true;
+      //     }
+      //   });
+      // }
+      setFilteredItems(mapData.reverse());
+    }
   }, [withdrawals, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
@@ -363,7 +399,7 @@ function WithdrawTable(props) {
               {/* {row?.Customer_data?.FirstName +
                 " " +
                 row?.Customer_data?.LastName} */}
-              {row?.transferId}
+              {row?.withdrawalId}
             </p>
           </NavLink>
 
@@ -377,7 +413,7 @@ function WithdrawTable(props) {
     {
       name: "Type",
       grow: 1,
-      cell: (row) => <p>{row?.type}</p>,
+      cell: (row) => <p>{row?.type ? row?.type : "REQUEST"}</p>,
       style: { textAlign: "left", display: "block" },
     },
     {
@@ -482,6 +518,8 @@ function WithdrawTable(props) {
       const response = await apiClient.post(WITHDRAW_PAYMENT, {
         amount: amount,
         agentId: agentData?._id,
+        accountNumber: agentData?.bank_details?.account?.accountNo,
+        ifscCode: agentData?.bank_details?.account?.ifsc,
       });
 
       let message = response.data.message;
@@ -524,7 +562,10 @@ function WithdrawTable(props) {
             <div className="flex gap-2 mb-5 text-white">
               <div>
                 <span className="mb-2">Balance:</span>
-                <p className="text-[28px]">&#8377;10,000</p>
+                {/* <p className="text-[28px]">&#8377;10,000</p> */}
+                <p className="text-[28px]">
+                  &#8377;{agentData?.total_earnings}
+                </p>
               </div>
               <div className="cursor-pointer">
                 <img src={ReloadIcon} alt="" />

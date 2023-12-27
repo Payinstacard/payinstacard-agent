@@ -148,8 +148,8 @@ export function downloadCSVOfWithdrawTransactions(array, selectedRows) {
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {
       return {
-        Transaction_ID: item?.transferId,
-        Type: "",
+        Transaction_ID: item?.withdrawalId,
+        Type: "REQUEST",
         Status: item?.status,
         Amount: item?.amount,
         Transaction_Date: getDateString(item?.created_At),
@@ -158,8 +158,8 @@ export function downloadCSVOfWithdrawTransactions(array, selectedRows) {
   } else {
     newArray = selectedRows.map((item) => {
       return {
-        Transaction_ID: item?.transferId,
-        Type: "",
+        Transaction_ID: item?.withdrawalId,
+        Type: "REQUEST",
         Status: item?.status,
         Amount: item?.amount,
         Transaction_Date: getDateString(item?.created_At),

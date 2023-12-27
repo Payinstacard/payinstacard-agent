@@ -35,7 +35,6 @@ import { fetchAgent } from "../../stores/AgentRedux";
 import { fetchCustomers } from "../../stores/CustomerRedux";
 
 function WithdrawTable(props) {
-  const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
     endDate: null,
@@ -53,36 +52,51 @@ function WithdrawTable(props) {
   const [filteredItems, setFilteredItems] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [withdrawals, setWithdrawals] = useState([]);
-  const [load, setLoad] = useState(false);
   const [status, setStatus] = useState(false);
   const dispatch = useDispatch();
 
-  //dumy data
-
-  const customersData = useSelector(
-    (state) => state?.customersData?.singleCustomerData
-  );
-
-  const agentData = useSelector((state) => state?.agentData?.agentData);
-  console.log("agentData", agentData?.withdrawals);
+  const { agentData } = useSelector((state) => state.agentData);
+  const [load, setLoad] = useState(true);
 
   React.useEffect(() => {
-    console.log("-----------it run==================");
-    const fetchData = async () => {
-      try {
-        dispatch(fetchCustomers());
-        setLoad(false);
-      } catch (error) {
-        setLoad(false);
-        console.error("Error fetching agent data:", error);
-      }
-    };
-
-    if (agentData?.withdrawals) {
-      setWithdrawals(agentData?.withdrawals);
-      fetchData();
+    if (agentData?.firebase_uid) {
+      console.log("--------iter-----------------", agentData?.firebase_uid);
+      setLoad(true);
+      dispatch(fetchCustomers());
+      setLoad(false);
     }
-  }, [agentData, status, dispatch]);
+  }, [agentData?.firebase_uid, status]);
+
+  const agentDataWithTransactions = useSelector(
+    (state) => state?.customersData?.agentDataWithTransactions
+  );
+
+  //dumy data
+
+  // const customersData = useSelector(
+  //   (state) => state?.customersData?.singleCustomerData
+  // );
+
+  // const agentData = useSelector((state) => state?.agentData?.agentData);
+  // console.log("agentData", agentData?.withdrawals);
+
+  // React.useEffect(() => {
+  //   console.log("-----------it run==================");
+  //   const fetchData = async () => {
+  //     try {
+  //       dispatch(fetchCustomers());
+  //       setLoad(false);
+  //     } catch (error) {
+  //       setLoad(false);
+  //       console.error("Error fetching agent data:", error);
+  //     }
+  //   };
+
+  //   if (agentData?.withdrawals) {
+  //     setWithdrawals(agentData?.withdrawals);
+  //     fetchData();
+  //   }
+  // }, [agentData, status, dispatch]);
 
   // React.useEffect(() => {
   //   console.log("-----------it run==================");
@@ -135,76 +149,78 @@ function WithdrawTable(props) {
   //   fetchData();
   // }, [status]);
 
+  //
   React.useEffect(() => {
-    if (withdrawals) {
-      let mapData = withdrawals.map((item, index) => {
-        return { ...item, ["Index"]: data.length - index };
+    let mapData = [];
+    if (agentDataWithTransactions?.withdrawals) {
+      mapData = agentDataWithTransactions?.withdrawals.map((item, index) => {
+        return {
+          ...item,
+          ["Index"]: agentDataWithTransactions?.withdrawals.length - index,
+        };
       }, []);
-
-      if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
-        const startDate = new Date(dateRange.startDate);
-        startDate.setUTCHours(0, 0, 0, 0);
-        const endDate = new Date(dateRange.endDate);
-        endDate.setUTCHours(23, 59, 59, 999);
-        mapData = mapData.filter((item) => {
-          const itemDate = new Date(item.created_At);
-          return (
-            startDate.getTime() <= itemDate.getTime() &&
-            itemDate.getTime() <= endDate.getTime()
-          );
-        });
-      }
-      if (filterText !== "") {
-        mapData = mapData.filter((item) => {
-          // console.log("item", item);
-          // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
-          return (
-            item?.transferId
-              ?.toLowerCase()
-              .includes(filterText?.toLowerCase()) ||
-            item?.amount?.toLowerCase().includes(filterText?.toLowerCase()) ||
-            item?.transactionId
-              ?.toLowerCase()
-              .includes(filterText?.toLowerCase())
-          );
-        });
-      }
-      // if (currentFilterBy !== false) {
-      //   mapData = mapData.filter((item) => {
-      //     const currentDate = new Date();
-      //     currentDate.setDate(currentDate.getDate() - 30);
-      //     let transactions_in_last_month = item?.transactions?.some(
-      //       (transaction) => {
-      //         const transactionDate = new Date(transaction.created_At);
-      //         return transactionDate >= currentDate;
-      //       }
-      //     );
-
-      //     if (currentFilterBy === "activeuser") {
-      //       return transactions_in_last_month;
-      //     } else if (currentFilterBy === "totaluser") {
-      //       return !item.disabled === true;
-      //     } else if (currentFilterBy === "inactiveuser") {
-      //       return !transactions_in_last_month && !item.disabled === true;
-      //     } else if (currentFilterBy === "suspendeduser") {
-      //       return item.disabled === true;
-      //     } else if (currentFilterBy === "kycuser") {
-      //       return item.kyc_status === true;
-      //     } else if (currentFilterBy === "approvalpendinguser") {
-      //       return (
-      //         item.kyc_status === false &&
-      //         item.kyc_details.aadhaarVerified === true &&
-      //         item.kyc_details._PANVerified === true &&
-      //         !item.disabled === true
-      //       );
-      //     } else {
-      //       return true;
-      //     }
-      //   });
-      // }
-      setFilteredItems(mapData.reverse());
     }
-  }, [withdrawals, filterText, currentFilterBy, dateRange]);
+    if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
+      const startDate = new Date(dateRange.startDate);
+      startDate.setUTCHours(0, 0, 0, 0);
+      const endDate = new Date(dateRange.endDate);
+      endDate.setUTCHours(23, 59, 59, 999);
+      mapData = mapData.filter((item) => {
+        const itemDate = new Date(item.created_At);
+        return (
+          startDate.getTime() <= itemDate.getTime() &&
+          itemDate.getTime() <= endDate.getTime()
+        );
+      });
+    }
+    if (filterText !== "") {
+      mapData = mapData.filter((item) => {
+        // console.log("item", item);
+        // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
+        return (
+          item?.withdrawalId
+            ?.toLowerCase()
+            .includes(filterText?.toLowerCase()) ||
+          item?.amount?.toLowerCase().includes(filterText?.toLowerCase()) ||
+          item?.transactionId?.toLowerCase().includes(filterText?.toLowerCase())
+        );
+      });
+    }
+    // if (currentFilterBy !== false) {
+    //   mapData = mapData.filter((item) => {
+    //     const currentDate = new Date();
+    //     currentDate.setDate(currentDate.getDate() - 30);
+    //     let transactions_in_last_month = item?.transactions?.some(
+    //       (transaction) => {
+    //         const transactionDate = new Date(transaction.created_At);
+    //         return transactionDate >= currentDate;
+    //       }
+    //     );
+
+    //     if (currentFilterBy === "activeuser") {
+    //       return transactions_in_last_month;
+    //     } else if (currentFilterBy === "totaluser") {
+    //       return !item.disabled === true;
+    //     } else if (currentFilterBy === "inactiveuser") {
+    //       return !transactions_in_last_month && !item.disabled === true;
+    //     } else if (currentFilterBy === "suspendeduser") {
+    //       return item.disabled === true;
+    //     } else if (currentFilterBy === "kycuser") {
+    //       return item.kyc_status === true;
+    //     } else if (currentFilterBy === "approvalpendinguser") {
+    //       return (
+    //         item.kyc_status === false &&
+    //         item.kyc_details.aadhaarVerified === true &&
+    //         item.kyc_details._PANVerified === true &&
+    //         !item.disabled === true
+    //       );
+    //     } else {
+    //       return true;
+    //     }
+    //   });
+    // }
+    setFilteredItems(mapData.reverse());
+  }, [agentDataWithTransactions, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -321,7 +337,7 @@ function WithdrawTable(props) {
             <header style="position: relative; padding: 60px 40px 0">
                 <img src="${logo}" width="112" alt="payinstacard" style="">
               <img src="${headerImg}" alt="heder" style="position: absolute; top: 0; left:0; right: 0; bottom: 0; z-index: -1; width: 100%;">
-              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${row.transactionId}</div>
+              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${row.withdrawalId}</div>
           </header>
           <div style=" margin: 40px;">
             <div style="display: flex; justify-content: space-between;">
@@ -329,10 +345,10 @@ function WithdrawTable(props) {
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Transaction Information</span></h6>
                
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${row?.transactionId}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${row?.withdrawalId}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Date:
                     </span> ${formattedDate}</p>
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${row?.total_amount}</p>                  
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${row?.amount}</p>                  
                     <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${row?.status}
                     </p>
                 </div>
@@ -341,9 +357,9 @@ function WithdrawTable(props) {
               <div style="font-size: 14px;">
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Beneficiary Information</span></h6>
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${row?.beneficiary?.mobile}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Account No: </span> ${row?.accountNumber}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">IFSC:
-                    </span> ${row?.beneficiary?.ifsc}</p>
+                    </span> ${row?.ifscCode}</p>
                 </div>
               </div>
             </div>
@@ -381,7 +397,7 @@ function WithdrawTable(props) {
     {
       name: "SL",
       grow: 0,
-      selector: (row, index) => <span className="mr-10">{index + 1}</span>,
+      selector: (row, index) => <span className="mr-10">{row.Index}</span>,
       style: { textAlign: "center", display: "block" },
     },
     {
@@ -420,7 +436,7 @@ function WithdrawTable(props) {
       name: "Status",
       grow: 1,
       cell: (row) => {
-        if (row?.status === "Successful") {
+        if (row?.status === "APPROVED") {
           return (
             <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg  font-medium bg-green-200 text-green-800 text-base">
               <span className="text-[20px]"> &#8226;</span> Successful
@@ -526,7 +542,7 @@ function WithdrawTable(props) {
       const type = response.data.code;
 
       if (type === 200) {
-        setStatus(true);
+        setStatus(!status);
         const message =
           response?.data?.response?.message || response?.data?.message;
         toast(message, {
@@ -601,8 +617,8 @@ function WithdrawTable(props) {
           data={filteredItems}
           pagination
           paginationComponent={Pagination}
-          progressPending={load}
-          progressComponent={<Loader />}
+          // progressPending={load}
+          // progressComponent={<Loader />}
           fixedHeader
           subHeader
           subHeaderComponent={subHeaderComponentMemo}

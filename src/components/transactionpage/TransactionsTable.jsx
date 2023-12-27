@@ -32,7 +32,6 @@ import { fetchCustomers } from "../../stores/CustomerRedux";
 import PaymentStatusPopUp from "./PaymentStatusPopUp";
 
 function TransactionsTable(props) {
-  const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
     endDate: null,
@@ -56,6 +55,10 @@ function TransactionsTable(props) {
   // fetching customer details
 
   React.useEffect(() => {
+    console.log(
+      "------------------karn---------------",
+      agentData?.firebase_uid
+    );
     if (agentData?.firebase_uid) {
       setLoad(true);
       dispatch(fetchCustomers());
@@ -63,21 +66,20 @@ function TransactionsTable(props) {
     }
   }, [agentData?.firebase_uid]);
 
-  const customersData = useSelector(
-    (state) => state?.customersData?.customersData
-  );
-
   const agentDataWithTransactions = useSelector(
     (state) => state?.customersData?.agentDataWithTransactions
   );
 
   React.useEffect(() => {
-    let mapData = agentDataWithTransactions?.transactions?.map(
-      (item, index) => {
-        return { ...item, ["Index"]: data.length - index };
-      },
-      []
-    );
+    let mapData;
+    if (agentDataWithTransactions?.transactions) {
+      mapData = agentDataWithTransactions?.transactions?.map((item, index) => {
+        return {
+          ...item,
+          ["Index"]: agentDataWithTransactions?.transactions.length - index,
+        };
+      }, []);
+    }
 
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
       const startDate = new Date(dateRange.startDate);
@@ -193,7 +195,7 @@ function TransactionsTable(props) {
     {
       name: "SL",
       grow: 0,
-      selector: (row, index) => <span className="mr">{index + 1}</span>,
+      selector: (row, index) => <span className="mr">{row.Index}</span>,
       style: { textAlign: "center", display: "block" },
     },
     {
@@ -324,19 +326,6 @@ function TransactionsTable(props) {
       ),
     },
   ];
-
-  const getTotalPayment = () => {
-    let totalPayment = 0;
-    customersData.forEach((obj) => {
-      if (!_.isEmpty(obj.transactions)) {
-        obj.transactions.forEach((transaction) => {
-          totalPayment += Number(transaction.total_amount);
-        });
-      }
-    });
-
-    return totalPayment;
-  };
 
   const openModelWithSatus = (data) => {
     setPaymentInfo(data);

@@ -25,7 +25,7 @@ import html2pdf from "html2pdf.js";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import transactionWatch from "../../assets/svg/view.svg";
 import withdrawArrowIcon from "../../assets/svg/withdrawArrowIcon.svg";
-import calanderIcon from "../../assets/svg/calanderIcon.svg";
+// import calanderIcon from "../../assets/svg/calanderIcon.svg";
 import ReloadIcon from "../../assets/svg/reloadIcon.svg";
 import WithdrawPopup from "./WithdrawPopup";
 import { toast } from "react-toastify";
@@ -597,14 +597,14 @@ function WithdrawTable(props) {
               </span>
             </button>
           </div>
-          <div>
+          {/* <div>
             <button className="flex items-center gap-2 bg-white px-3 min-[425px]:px-6 py-1.5 min-[425px]:py-3 rounded">
               <span className="text-[#7B7B7B] text-[14px]">Date</span>
               <span>
                 <img src={calanderIcon} alt="" />
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       {isPopupOpen && (

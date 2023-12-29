@@ -164,16 +164,16 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          {
-            path: "reports",
-            element: <Reports />,
-            children: [
-              {
-                path: "",
-                element: <ReportsCharts />,
-              },
-            ],
-          },
+          // {
+          //   path: "reports",
+          //   element: <Reports />,
+          //   children: [
+          //     {
+          //       path: "",
+          //       element: <ReportsCharts />,
+          //     },
+          //   ],
+          // },
           {
             path: "profile",
             element: <ProfileLayout />,

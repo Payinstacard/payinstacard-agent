@@ -29,7 +29,11 @@ import withdrawArrowIcon from "../../assets/svg/withdrawArrowIcon.svg";
 import ReloadIcon from "../../assets/svg/reloadIcon.svg";
 import WithdrawPopup from "./WithdrawPopup";
 import { toast } from "react-toastify";
-import { WITHDRAWALS, WITHDRAW_PAYMENT } from "../../services/apiConstant";
+import {
+  CHECK_AGENT_BALANCE,
+  WITHDRAWALS,
+  WITHDRAW_PAYMENT,
+} from "../../services/apiConstant";
 import apiClient from "../../services/apiClient";
 import { fetchAgent } from "../../stores/AgentRedux";
 import { fetchCustomers } from "../../stores/CustomerRedux";
@@ -58,9 +62,11 @@ function WithdrawTable(props) {
   const { agentData } = useSelector((state) => state.agentData);
   const [load, setLoad] = useState(true);
 
+  const [bankBalLoad, setBankBalLoad] = useState(false);
+  const [bankBal, setBankBal] = useState("0");
+
   React.useEffect(() => {
     if (agentData?.firebase_uid) {
-      console.log("--------iter-----------------", agentData?.firebase_uid);
       setLoad(true);
       dispatch(fetchCustomers());
       setLoad(false);
@@ -567,6 +573,48 @@ function WithdrawTable(props) {
     }
   };
 
+  const checkAgentBalance = async () => {
+    setBankBalLoad(true);
+    await apiClient
+      .post(CHECK_AGENT_BALANCE, {
+        agentId: agentData?._id,
+      })
+      .then((response) => {
+        setBankBalLoad(false);
+        const status = response.status;
+
+        if (status === 200) {
+          setBankBal(response.data.response.Balance);
+        }
+      })
+      .catch((error) => {
+        setBankBalLoad(false);
+        setBankBal("ERROR OCCURED");
+
+        if (!error.status) {
+          toast("server busy", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
+          return;
+        }
+        const status = error.response.status;
+        const message = error.response.data.message;
+
+        if (status === 400) {
+          toast(message, {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
+        }
+      });
+  };
+
+  useEffect(() => {
+    checkAgentBalance();
+  }, [agentData]);
   return (
     <div className="mt-6 sm:mt-10">
       {load && <Loader />}
@@ -579,12 +627,17 @@ function WithdrawTable(props) {
               <div>
                 <span className="mb-2">Balance:</span>
                 {/* <p className="text-[28px]">&#8377;10,000</p> */}
-                <p className="text-[28px]">
+                {/* <p className="text-[28px]">
                   &#8377;{agentData?.total_earnings}
-                </p>
+                </p> */}
+                {bankBalLoad ? (
+                  <p className="text-[28px]"> &#8377;LOADING...</p>
+                ) : (
+                  <p className="text-[28px]">&#8377;{bankBal || 0}</p>
+                )}
               </div>
               <div className="cursor-pointer">
-                <img src={ReloadIcon} alt="" />
+                <img src={ReloadIcon} alt="" onClick={checkAgentBalance} />
               </div>
             </div>
             <button

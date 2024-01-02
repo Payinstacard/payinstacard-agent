@@ -24,3 +24,5 @@ export const AIRPAY_PAYMENT = "/payment/airpay_post";
 export const WITHDRAW_PAYMENT = "/payment/withdraw";
 export const WITHDRAWALS = "/payment/withdrawals";
 export const VERIFY_AIRPAY_PAYMENT = "/payment/airpay/verify-order";
+
+export const CHECK_AGENT_BALANCE = "/payment/agent-balance";

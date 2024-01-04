@@ -63,7 +63,7 @@ function WithdrawTable(props) {
   const [load, setLoad] = useState(true);
 
   const [bankBalLoad, setBankBalLoad] = useState(false);
-  const [bankBal, setBankBal] = useState("0");
+  const [bankBal, setBankBal] = useState(0);
 
   React.useEffect(() => {
     if (agentData?.firebase_uid) {
@@ -534,6 +534,29 @@ function WithdrawTable(props) {
     setIsPopupOpen(false);
   };
   const handleWithdraw = async (amount) => {
+    if (bankBal === 0) {
+      toast("Withdrawal balance is zero", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    } else if (amount > bankBal) {
+      toast("Amount should be less than balance amount", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    }
+    if (bankBal - amount < 0) {
+      toast("Please enter valid amount", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    }
     // Implement your withdrawal logic here
     // console.log("Withdrawal amount:", amount, typeof amount);
     try {
@@ -543,10 +566,9 @@ function WithdrawTable(props) {
         accountNumber: agentData?.bank_details?.account?.accountNo,
         ifscCode: agentData?.bank_details?.account?.ifsc,
       });
-
+      console.log("res===>", response);
       let message = response.data.message;
       const type = response.data.code;
-
       if (type === 200) {
         setStatus(!status);
         const message =
@@ -565,11 +587,13 @@ function WithdrawTable(props) {
       }
     } catch (error) {
       console.log(error);
-      toast("Something wrong", {
+      const msg = error?.response?.data?.message;
+      toast(msg || "Something wrong", {
         theme: "dark",
         hideProgressBar: true,
         type: "error",
       });
+      window.location.reload();
     }
   };
 

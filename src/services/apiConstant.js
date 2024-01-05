@@ -1,6 +1,7 @@
 export const BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:4000";
 
+export const API_STATUS = "/api/v2";
 export const ADD_CUSTOMER = "/api/v2/agents/agents/create-customer";
 export const FETCH_CUSTOMER = "api/v2/agents/agents/fetchAll-customer";
 export const DELETE_CUSTOMER = "api/v2/agents/agents/delete-customer";
@@ -20,4 +21,8 @@ export const FETCH_SINGLE_CUSTOMER_DATA =
 
 export const AIRPAY_PAYMENT_TEST = "/api/v2/agents/agents/airpay_post";
 export const AIRPAY_PAYMENT = "/payment/airpay_post";
+export const WITHDRAW_PAYMENT = "/payment/withdraw";
+export const WITHDRAWALS = "/payment/withdrawals";
 export const VERIFY_AIRPAY_PAYMENT = "/payment/airpay/verify-order";
+
+export const CHECK_AGENT_BALANCE = "/payment/agent-balance";

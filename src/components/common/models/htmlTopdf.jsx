@@ -3,6 +3,7 @@ import headerImg from "../../../assets/img/Header_cleanup.png";
 import logo from "../../../assets/img/Logo.png";
 
 import html2pdf from "html2pdf.js";
+import { getDateString } from "../../../services/helper";
 
 export const downloadTrasactionReceipt = (payData) => {
   // Convert the ISO timestamp to a Date object
@@ -42,7 +43,7 @@ export const downloadTrasactionReceipt = (payData) => {
                 <img src="${logo}" width="112" alt="payinstacard" style="">
               <img src="${headerImg}" alt="heder" style="position: absolute; top: 0; left:0; right: 0; bottom: 0; z-index: -1; width: 100%;">
               <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${
-                payData?.keyid
+                payData?.OrderKeyId
               }</div>
           </header>
           <div style=" margin: 40px;">
@@ -52,15 +53,19 @@ export const downloadTrasactionReceipt = (payData) => {
                
                 <div style="font-size: 13px;">
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${
-                      payData?.orderData?.PaymentTransactionId
+                      payData?.paymentDetails?.TRANSACTIONID
                     }</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Date:
-                    </span> ${`none`}</p>
+                    </span> ${getDateString(payData?.created_At)}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${
-                      payData?.amount
+                      payData?.OrderAmount
                     }</p>                  
                     <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${
-                      payData?.orderData?.OrderPaymentStatusText
+                      payData?.OrderPaymentStatus === "200"
+                        ? "Success"
+                        : payData?.OrderPaymentStatus === "201"
+                        ? "Success"
+                        : "Fail"
                     }
                     </p>
                 </div>
@@ -69,9 +74,25 @@ export const downloadTrasactionReceipt = (payData) => {
               <div style="font-size: 14px;">
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Beneficiary Information</span></h6>
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${`none`}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Beneficiary Id: </span> ${
+                      payData?.benificary_details?.paymentInfo?.beneficier_id
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Name:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.name
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Address:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.address
+                    }</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">BankAccount:
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.bankAccount
+                    }</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">IFSC:
-                    </span> ${`none`}</p>
+                    </span> ${
+                      payData?.benificary_details?.paymentInfo?.ifsc_code
+                    }</p>
                 </div>
               </div>
             </div>

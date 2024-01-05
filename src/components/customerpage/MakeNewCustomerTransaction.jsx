@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MobileField from "../common/forms/MobileField";
 import Button from "../common/forms/Button";
 import { useState, useEffect } from "react";
-import PaymentStatusPopUp from "./PaymentStatusPopUp";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 import {

@@ -10,11 +10,14 @@ import Loader from "../common/Loader/Loader";
 import Pagination from "../common/Table/Pagination";
 import TableFilterComponent from "../common/Table/TableFilterComponent";
 import { getDateString, maskString } from "../../services/helper";
-import { downloadCSVOfCustomerTransactions } from "../../services/customersApis";
+import {
+  downloadCSVOfCustomerTransactions,
+  downloadCSVOfWithdrawTransactions,
+} from "../../services/customersApis";
 import Export from "../common/Table/Export";
 import { customStyles, dummyCustomerData } from "../../utils/TableUtils";
 import downLoadIconAgent from "../../assets/svg/downLoadIconAgent.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import footerImg from "../../assets/img/Footer_cleanup.png";
 import headerImg from "../../assets/img/Header_cleanup.png";
 import logo from "../../assets/img/Logo.png";
@@ -22,11 +25,20 @@ import html2pdf from "html2pdf.js";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import transactionWatch from "../../assets/svg/view.svg";
 import withdrawArrowIcon from "../../assets/svg/withdrawArrowIcon.svg";
-import calanderIcon from "../../assets/svg/calanderIcon.svg";
+// import calanderIcon from "../../assets/svg/calanderIcon.svg";
 import ReloadIcon from "../../assets/svg/reloadIcon.svg";
+import WithdrawPopup from "./WithdrawPopup";
+import { toast } from "react-toastify";
+import {
+  CHECK_AGENT_BALANCE,
+  WITHDRAWALS,
+  WITHDRAW_PAYMENT,
+} from "../../services/apiConstant";
+import apiClient from "../../services/apiClient";
+import { fetchAgent } from "../../stores/AgentRedux";
+import { fetchCustomers } from "../../stores/CustomerRedux";
 
 function WithdrawTable(props) {
-  const [data, setData] = useState([]);
   const [dateRange, setDateRange] = React.useState({
     startDate: null,
     endDate: null,
@@ -42,209 +54,118 @@ function WithdrawTable(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [withdrawals, setWithdrawals] = useState([]);
+  const [status, setStatus] = useState(false);
+  const dispatch = useDispatch();
+
+  const { agentData } = useSelector((state) => state.agentData);
+  const [load, setLoad] = useState(true);
+
+  const [bankBalLoad, setBankBalLoad] = useState(false);
+  const [bankBal, setBankBal] = useState(0);
+
+  React.useEffect(() => {
+    if (agentData?.firebase_uid) {
+      setLoad(true);
+      dispatch(fetchCustomers());
+      setLoad(false);
+    }
+  }, [agentData?.firebase_uid, status]);
+
+  const agentDataWithTransactions = useSelector(
+    (state) => state?.customersData?.agentDataWithTransactions
+  );
 
   //dumy data
 
-  const customersData = useSelector(
-    (state) => state?.customersData?.singleCustomerData
-  );
+  // const customersData = useSelector(
+  //   (state) => state?.customersData?.singleCustomerData
+  // );
 
-  const customersDummyData = {
-    Agent_objectid: "65570149bd2c450af22378eb",
-    BenificaryCollection: [
-      {
-        Customer_id: "6565c7fbb7b65e21cab03c67",
-        beneficiary_address: "diyogi, uttrakhand",
-        beneficiary_email: "liodas@gmail.com",
-        beneficiary_id: "LIOD773BCFFBADE57",
-        beneficiary_name: "PAYINSTA CARD",
-        beneficiary_phone: "+919737502747",
-        created_at: "1701328516733",
-        payment_info: {
-          type: "BANK",
-          upi_code: "",
-          bankAccount: "10000969945",
-          ifsc_code: "IDFB0010204",
-        },
-        updated_at: "1701328516733",
-        __v: 0,
-        _id: "6568368471c0fde2e7c50581",
-      },
-    ],
-    Customer_data: {
-      FirstName: "karan",
-      LastName: "harsora",
-      Address: "Bhavnagar",
-      Pincode: "364001",
-      State: "Gujarat",
-      // ... other customer data properties
-    },
-    Customer_id: "AGCUS-x9ObQ8R7J",
-    Email: "karan.infinitysoftech@gmail.com",
-    created_At: "2023-11-28T10:59:07.091Z",
-    disabled: false,
-    emailVerified: false,
-    mobile: "+919737502747",
-    paymentDisabled: false,
+  // const agentData = useSelector((state) => state?.agentData?.agentData);
+  // console.log("agentData", agentData?.withdrawals);
 
-    transactions: [
-      {
-        total_amount: "200",
-        transactionId: "T123456789872",
-        created_At: "2023-11-08T13:06:49.915Z",
-        status: "Successful",
-        beneficiary: { mobile: "9876543210", ifsc: "SBIN0025487" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "150",
-        transactionId: "T123456789873",
-        created_At: "2023-11-09T14:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "8765432109", ifsc: "HDFC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "120",
-        transactionId: "T123456789874",
-        created_At: "2023-11-10T16:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "7654321098", ifsc: "ICIC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "90",
-        transactionId: "T123456789875",
-        created_At: "2023-11-12T10:15:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "6543210987", ifsc: "AXIS0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "80",
-        transactionId: "T123456789876",
-        created_At: "2023-11-15T12:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "5432109876", ifsc: "BOB0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "70",
-        transactionId: "T123456789877",
-        created_At: "2023-11-18T09:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "4321098765", ifsc: "PNB0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "60",
-        transactionId: "T123456789878",
-        created_At: "2023-11-20T14:00:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "3210987654", ifsc: "SBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "50",
-        transactionId: "T123456789879",
-        created_At: "2023-11-22T11:30:00.000Z",
-        status: "Pending",
-        beneficiary: { mobile: "2109876543", ifsc: "UBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "40",
-        transactionId: "T123456789880",
-        created_At: "2023-11-25T15:45:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "1098765432", ifsc: "IDBI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "30",
-        transactionId: "T123456789881",
-        created_At: "2023-11-27T10:00:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "0987654321", ifsc: "RBL0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "20",
-        transactionId: "T123456789882",
-        created_At: "2023-11-28T13:15:00.000Z",
-        status: "Failed",
-        beneficiary: { mobile: "9876543210", ifsc: "HSBC0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-      {
-        total_amount: "10",
-        transactionId: "T123456789883",
-        created_At: "2023-11-30T09:30:00.000Z",
-        status: "Successful",
-        beneficiary: { mobile: "8765432109", ifsc: "CITI0012345" },
-        contact_info: {
-          fullName: "Manikanta Putta",
-          mobile: "9876543210",
-        },
-        type: "Withdraw",
-      },
-    ],
-    transfers: [],
-    updated_At: "2023-11-28T10:59:07.091Z",
-    verified: false,
-    __v: 4,
-    _id: "6565c7fbb7b65e21cab03c67",
-  };
+  // React.useEffect(() => {
+  //   console.log("-----------it run==================");
+  //   const fetchData = async () => {
+  //     try {
+  //       dispatch(fetchCustomers());
+  //       setLoad(false);
+  //     } catch (error) {
+  //       setLoad(false);
+  //       console.error("Error fetching agent data:", error);
+  //     }
+  //   };
 
+  //   if (agentData?.withdrawals) {
+  //     setWithdrawals(agentData?.withdrawals);
+  //     fetchData();
+  //   }
+  // }, [agentData, status, dispatch]);
+
+  // React.useEffect(() => {
+  //   console.log("-----------it run==================");
+  //   if (agentData?.withdrawals) {
+  //     setWithdrawals(agentData?.withdrawals);
+  //     setLoad(true);
+  //     dispatch(fetchAgent());
+  //     setLoad(false);
+  //   }
+  // }, [status]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoad(true);
+  //       const response = await apiClient.get(WITHDRAWALS);
+  //       // console.log("res======>", response);
+  //       setWithdrawals(response?.data?.response?.data);
+  //       let message = response.data.message;
+  //       const type = response.data.code;
+
+  //       if (type === 200) {
+  //         setLoad(false);
+  //         const message =
+  //           response?.data?.response?.message || response?.data?.message;
+  //         // toast(message, {
+  //         //   theme: "dark",
+  //         //   hideProgressBar: true,
+  //         //   type: "success",
+  //         // });
+  //       } else {
+  //         setLoad(false);
+  //         // toast(message, {
+  //         //   theme: "dark",
+  //         //   hideProgressBar: true,
+  //         //   type: "warning",
+  //         // });
+  //       }
+  //     } catch (error) {
+  //       setLoad(false);
+  //       console.log(error);
+  //       toast("Something wrong", {
+  //         theme: "dark",
+  //         hideProgressBar: true,
+  //         type: "error",
+  //       });
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [status]);
+
+  //
   React.useEffect(() => {
-    let mapData = customersDummyData?.transactions?.map((item, index) => {
-      return { ...item, ["Index"]: data.length - index };
-    }, []);
-
+    let mapData = [];
+    if (agentDataWithTransactions?.withdrawals) {
+      mapData = agentDataWithTransactions?.withdrawals.map((item, index) => {
+        return {
+          ...item,
+          ["Index"]: agentDataWithTransactions?.withdrawals.length - index,
+        };
+      }, []);
+    }
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
       const startDate = new Date(dateRange.startDate);
       startDate.setUTCHours(0, 0, 0, 0);
@@ -260,15 +181,13 @@ function WithdrawTable(props) {
     }
     if (filterText !== "") {
       mapData = mapData.filter((item) => {
-        console.log("item", item);
+        // console.log("item", item);
         // let name = `${item.Customer_data?.FirstName} ${item?.Customer_data?.LastName}`;
         return (
-          item?.total_amount
+          item?.withdrawalId
             ?.toLowerCase()
             .includes(filterText?.toLowerCase()) ||
-          item?.beneficiary?.mobile
-            ?.toLowerCase()
-            .includes(filterText?.toLowerCase()) ||
+          item?.amount?.toLowerCase().includes(filterText?.toLowerCase()) ||
           item?.transactionId?.toLowerCase().includes(filterText?.toLowerCase())
         );
       });
@@ -307,7 +226,7 @@ function WithdrawTable(props) {
     //   });
     // }
     setFilteredItems(mapData.reverse());
-  }, [data, filterText, currentFilterBy, dateRange]);
+  }, [agentDataWithTransactions, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -354,7 +273,7 @@ function WithdrawTable(props) {
           <div>
             <Export
               onExport={() =>
-                downloadCSVOfCustomerTransactions(filteredItems, selectedRows)
+                downloadCSVOfWithdrawTransactions(filteredItems, selectedRows)
               }
             />
           </div>
@@ -424,7 +343,7 @@ function WithdrawTable(props) {
             <header style="position: relative; padding: 60px 40px 0">
                 <img src="${logo}" width="112" alt="payinstacard" style="">
               <img src="${headerImg}" alt="heder" style="position: absolute; top: 0; left:0; right: 0; bottom: 0; z-index: -1; width: 100%;">
-              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${row.transactionId}</div>
+              <div style="display: block; box-sizing: border-box; position: absolute; top: 40px; right: 130px; box-shadow: 0px 2px 4px grey; font-size: 16px; line-height: 20px; border-radius: 20px; padding: 0 10px 13px; background-color: #FFFFFF;">INVOICE NO: #${row.withdrawalId}</div>
           </header>
           <div style=" margin: 40px;">
             <div style="display: flex; justify-content: space-between;">
@@ -432,10 +351,10 @@ function WithdrawTable(props) {
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Transaction Information</span></h6>
                
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${row?.transactionId}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${row?.withdrawalId}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Date:
                     </span> ${formattedDate}</p>
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${row?.total_amount}</p>                  
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Amount: </span> ${row?.amount}</p>                  
                     <p style="color: #19213D;"><span style="color: #5D6481;">Status: </span> ${row?.status}
                     </p>
                 </div>
@@ -444,9 +363,9 @@ function WithdrawTable(props) {
               <div style="font-size: 14px;">
                 <h6 style="margin-bottom: 10px;"><span style="border-radius: 4px; background: rgba(0, 0, 107, 0.10);color: #00006B; font-size: 12px; padding: 0 10px 13px;">Beneficiary Information</span></h6>
                 <div style="font-size: 13px;">
-                    <p style="color: #19213D;"><span style="color: #5D6481;">Mobile: </span> ${row?.beneficiary?.mobile}</p>
+                    <p style="color: #19213D;"><span style="color: #5D6481;">Account No: </span> ${row?.accountNumber}</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">IFSC:
-                    </span> ${row?.beneficiary?.ifsc}</p>
+                    </span> ${row?.ifscCode}</p>
                 </div>
               </div>
             </div>
@@ -484,7 +403,7 @@ function WithdrawTable(props) {
     {
       name: "SL",
       grow: 0,
-      selector: (row, index) => <span className="mr-10">{index + 1}</span>,
+      selector: (row, index) => <span className="mr-10">{row.Index}</span>,
       style: { textAlign: "center", display: "block" },
     },
     {
@@ -502,7 +421,7 @@ function WithdrawTable(props) {
               {/* {row?.Customer_data?.FirstName +
                 " " +
                 row?.Customer_data?.LastName} */}
-              {row?.transactionId}
+              {row?.withdrawalId}
             </p>
           </NavLink>
 
@@ -516,23 +435,23 @@ function WithdrawTable(props) {
     {
       name: "Type",
       grow: 1,
-      cell: (row) => <p>{row?.type}</p>,
+      cell: (row) => <p>{row?.type ? row?.type : "REQUEST"}</p>,
       style: { textAlign: "left", display: "block" },
     },
     {
       name: "Status",
       grow: 1,
       cell: (row) => {
-        if (row?.status === "Successful") {
+        if (row?.status === "APPROVED") {
           return (
             <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg  font-medium bg-green-200 text-green-800 text-base">
               <span className="text-[20px]"> &#8226;</span> Successful
             </span>
           );
-        } else if (row?.status === "Pending") {
+        } else if (row?.status === "AWAITING") {
           return (
             <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg font-medium bg-yellow-200 text-yellow-800 text-base">
-              <span className="text-[20px]"> &#8226;</span> Pending
+              <span className="text-[20px]"> &#8226;</span> Awaiting
             </span>
           );
         } else {
@@ -555,16 +474,16 @@ function WithdrawTable(props) {
         if (row?.status === "Successful") {
           return (
             <div className="text-[#25BF17]">
-              <span>-&#8377;</span>
-              {row?.total_amount}
+              <span>&#8377;</span>
+              {row?.amount}
             </div>
           );
         }
 
         return (
-          <div className="text-[#FF0023]">
-            <span>-&#8377;</span>
-            {row?.total_amount}
+          <div className="text-yellow-800">
+            <span>&#8377;</span>
+            {row?.amount}
           </div>
         );
       },
@@ -607,21 +526,122 @@ function WithdrawTable(props) {
     },
   ];
 
-  const getTotalPayment = () => {
-    let totalPayment = 0;
-    customersData.forEach((obj) => {
-      if (!_.isEmpty(obj.transactions)) {
-        obj.transactions.forEach((transaction) => {
-          totalPayment += Number(transaction.total_amount);
-        });
-      }
-    });
-
-    return totalPayment;
+  const openPopup = () => {
+    setIsPopupOpen(true);
   };
 
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+  const handleWithdraw = async (amount) => {
+    if (bankBal === 0) {
+      toast("Withdrawal balance is zero", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    } else if (amount > bankBal) {
+      toast("Amount should be less than balance amount", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    }
+    if (bankBal - amount < 0) {
+      toast("Please enter valid amount", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "warning",
+      });
+      return;
+    }
+    // Implement your withdrawal logic here
+    // console.log("Withdrawal amount:", amount, typeof amount);
+    try {
+      const response = await apiClient.post(WITHDRAW_PAYMENT, {
+        amount: amount,
+        agentId: agentData?._id,
+        accountNumber: agentData?.bank_details?.account?.accountNo,
+        ifscCode: agentData?.bank_details?.account?.ifsc,
+      });
+      console.log("res===>", response);
+      let message = response.data.message;
+      const type = response.data.code;
+      if (type === 200) {
+        setStatus(!status);
+        const message =
+          response?.data?.response?.message || response?.data?.message;
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "success",
+        });
+      } else {
+        toast(message, {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "warning",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      const msg = error?.response?.data?.message;
+      toast(msg || "Something wrong", {
+        theme: "dark",
+        hideProgressBar: true,
+        type: "error",
+      });
+      window.location.reload();
+    }
+  };
+
+  const checkAgentBalance = async () => {
+    setBankBalLoad(true);
+    await apiClient
+      .post(CHECK_AGENT_BALANCE, {
+        agentId: agentData?._id,
+      })
+      .then((response) => {
+        setBankBalLoad(false);
+        const status = response.status;
+
+        if (status === 200) {
+          setBankBal(response.data.response.Balance);
+        }
+      })
+      .catch((error) => {
+        setBankBalLoad(false);
+        setBankBal("ERROR OCCURED");
+
+        if (!error.status) {
+          toast("server busy", {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
+          return;
+        }
+        const status = error.response.status;
+        const message = error.response.data.message;
+
+        if (status === 400) {
+          toast(message, {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
+        }
+      });
+  };
+
+  useEffect(() => {
+    checkAgentBalance();
+  }, [agentData]);
   return (
     <div className="mt-6 sm:mt-10">
+      {load && <Loader />}
       <h2 className="text-xl font-semibold mb-2 sm:mb-0">Withdraw</h2>
       {/* Withdraw card */}
       <div className="mt-4 min-[425px]:mt-8">
@@ -630,30 +650,43 @@ function WithdrawTable(props) {
             <div className="flex gap-2 mb-5 text-white">
               <div>
                 <span className="mb-2">Balance:</span>
-                <p className="text-[28px]">&#8377;10,000</p>
+                {/* <p className="text-[28px]">&#8377;10,000</p> */}
+                {/* <p className="text-[28px]">
+                  &#8377;{agentData?.total_earnings}
+                </p> */}
+                {bankBalLoad ? (
+                  <p className="text-[28px]"> &#8377;LOADING...</p>
+                ) : (
+                  <p className="text-[28px]">&#8377;{bankBal || 0}</p>
+                )}
               </div>
               <div className="cursor-pointer">
-                <img src={ReloadIcon} alt="" />
+                <img src={ReloadIcon} alt="" onClick={checkAgentBalance} />
               </div>
             </div>
-            <button className="flex items-center gap-2 px-[18.5px] min-[425px]:px-[37px] py-2 min-[425px]:py-4 bg-[#00006B] text-[14px] text-white rounded-lg ">
+            <button
+              className="flex items-center gap-2 px-[18.5px] min-[425px]:px-[37px] py-2 min-[425px]:py-4 bg-[#00006B] text-[14px] text-white rounded-lg "
+              onClick={openPopup}
+            >
               <span>Withdraw</span>
               <span>
                 <img src={withdrawArrowIcon} alt="" />
               </span>
             </button>
           </div>
-          <div>
+          {/* <div>
             <button className="flex items-center gap-2 bg-white px-3 min-[425px]:px-6 py-1.5 min-[425px]:py-3 rounded">
               <span className="text-[#7B7B7B] text-[14px]">Date</span>
               <span>
                 <img src={calanderIcon} alt="" />
               </span>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
-
+      {isPopupOpen && (
+        <WithdrawPopup onClose={closePopup} onWithdraw={handleWithdraw} />
+      )}
       <div className="agent-table react-data-table mt-3 sm:mt-10">
         {/* <StyleSheetManager shouldForwardProp={shouldForwardProp}> */}
         <DataTable
@@ -661,8 +694,8 @@ function WithdrawTable(props) {
           data={filteredItems}
           pagination
           paginationComponent={Pagination}
-          progressPending={loading}
-          progressComponent={<Loader />}
+          // progressPending={load}
+          // progressComponent={<Loader />}
           fixedHeader
           subHeader
           subHeaderComponent={subHeaderComponentMemo}

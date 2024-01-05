@@ -7,7 +7,7 @@ import { ReactComponent as Customers } from "../../assets/svg/ProtectedLayoutIma
 import { ReactComponent as Profile } from "../../assets/svg/ProtectedLayoutImages/sidebar/Profiles.svg";
 import { ReactComponent as LogOut } from "../../assets/svg/ProtectedLayoutImages/sidebar/logout.svg";
 import { ReactComponent as Transaction } from "../../assets/svg/transactionIcon.svg";
-import { ReactComponent as Report } from "../../assets/svg/reportsIcon.svg";
+// import { ReactComponent as Report } from "../../assets/svg/reportsIcon.svg";
 import { ReactComponent as Withdraw } from "../../assets/svg/withdrawIcon.svg";
 import { useAuth } from "../../stores/AuthContext";
 import { BsArrowLeftCircle } from "react-icons/bs";
@@ -46,11 +46,11 @@ function Sidebar() {
       path: "/dashboard/withdraw",
       icon: <Withdraw />,
     },
-    {
-      title: "Reports",
-      path: "/dashboard/reports",
-      icon: <Report />,
-    },
+    // {
+    //   title: "Reports",
+    //   path: "/dashboard/reports",
+    //   icon: <Report />,
+    // },
     {
       title: "Profile",
       path: "/dashboard/profile",

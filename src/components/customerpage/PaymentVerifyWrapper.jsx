@@ -72,7 +72,7 @@ const PaymentVerifyWrapper = () => {
           method: "POST",
           body: JSON.stringify({
             OrderKeyId: orderkeyid,
-            paymentType: "agent",
+            // paymentType: "agent",
           }),
           headers: {
             Authorization: `Bearer ${token}`,

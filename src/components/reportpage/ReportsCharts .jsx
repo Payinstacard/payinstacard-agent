@@ -56,8 +56,8 @@ function ReportsCharts(props) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
   const [filteredItems, setFilteredItems] = useState([]);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const StartDateCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
@@ -70,7 +70,7 @@ function ReportsCharts(props) {
       <span className=""> {value ? value : "From"}</span>
       <span>
         {value ? (
-          <span onClick={() => setStartDate()}>&#10006;</span>
+          <span onClick={() => setStartDate("")}>&#10006;</span>
         ) : (
           <img src={calendarIcon} alt="" />
         )}
@@ -88,7 +88,7 @@ function ReportsCharts(props) {
       <span> {value ? value : "To"}</span>
       <span>
         {value ? (
-          <span onClick={() => setEndDate()}>&#10006;</span>
+          <span onClick={() => setEndDate("")}>&#10006;</span>
         ) : (
           <img src={calendarIcon} alt="" />
         )}
@@ -749,7 +749,7 @@ function ReportsCharts(props) {
       <ReportBarChart />
       <div className="min-[1025px]:flex min-[1025px]:justify-between">
         <div className="min-[1025px]:w-[63%] rounded-lg relative mb-10 min-[1025px]:mb-0">
-          <ReportLineChart />
+          <ReportLineChart startDate={startDate} endDate={endDate} />
           <div className="absolute w-full top-4 min-[500px]:top-9 min-[640px]:top-4 min-[800px]:top-9 flex justify-around items-center flex-col min-[500px]:flex-row min-[640px]:flex-col  min-[800px]:flex-row min-[640px]:items-center ">
             <div className="flex gap-2 items-center mb-1 min-[800px]:mb-0">
               <span>
@@ -803,7 +803,7 @@ function ReportsCharts(props) {
                 </div>
               </div>
               <div className="text-[18px] text-[#212529] font-bold text-center">
-                63%
+               {Math.floor(customersDummyData?.transactions.filter((item) => item.status === 'Successful').length / customersDummyData?.transactions.length * 100)}%
               </div>
             </div>
             <div>
@@ -814,7 +814,8 @@ function ReportsCharts(props) {
                 </div>
               </div>
               <div className="text-[18px] text-[#212529] font-bold text-center	">
-                25%
+              {Math.floor(customersDummyData?.transactions.filter((item) => item.status === 'Pending').length / customersDummyData?.transactions.length * 100)}%
+
               </div>
             </div>
           </div>

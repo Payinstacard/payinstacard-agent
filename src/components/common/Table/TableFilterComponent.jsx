@@ -18,7 +18,7 @@ const TableFilterComponent = ({ filterText, onFilter, onClear, bgColor }) => {
 
           <FiSearch
             size={18}
-            className="absolute left-2 top-0 bottom-0 m-auto text-neutral-700 z-10"
+            className="absolute left-2 top-0 bottom-0 m-auto text-neutral-700 z-[5]"
           />
           {filterText !== "" && (
             <button

@@ -13,6 +13,8 @@ import {
   fetchSingleCustomer,
   setCustomersLoading,
 } from "../../stores/CustomerRedux";
+import _ from "lodash";
+
 import { useEffect } from "react";
 
 const initialBeneficiaryData = {
@@ -44,11 +46,87 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const params = useParams();
   const id = params?.id;
+  const emailRegX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
 
+  const validateProperty = ({ name, value }) => {
+    console.log("called");
+    console.log(name, value);
+    // for first name
+    if (name === "fullName") {
+      if (!value && _.isEmpty(value)) {
+        return "Full name is required";
+      }
+    }
+    // for last email
+
+    if (name === "email") {
+      if (!value && _.isEmpty(value)) {
+        return "Email is required";
+      } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(value)) {
+        return "Invalid Email";
+      }
+    }
+
+    // for mobile
+
+    if (name === "ben_mobile") {
+      if (!value && _.isEmpty(value)) {
+        return "Mobile number is required";
+      } else if (!/^(|\+91)?[6789]\d{9}$/.test(value)) {
+        return "Invalid mobile number";
+      }
+    }
+
+    //for address
+    if (name === "ben_address") {
+      if (!value && _.isEmpty(value)) {
+        return "Address is required";
+      }
+    }
+
+    //for pincode
+
+    if (name === "accountNumber") {
+      if (!value && _.isEmpty(value)) {
+        return "Account is required";
+      } else if (!(value.length >= 9 && value.length <= 18)) {
+        return "Please enter valid length account number";
+      } else if (!/^[0-9]+$/.test(formData.accountNumber)) {
+        return "Please enter valid length account number";
+      }
+    }
+
+    //for confirm_accountNumber
+
+    if (name === "confirm_accountNumber") {
+      if (!value && _.isEmpty(value)) {
+        return "Confirm AccountNumber is required";
+      } else if (formData.accountNumber !== value) {
+        return "Account number do not match";
+      }
+    }
+
+    //for ifsc
+    if (name === "ifsc_code") {
+      if (!value && _.isEmpty(value)) {
+        return "IFSC is required";
+      } else if (!bankIfscRegX.test(value)) {
+        return "Please enter valid ifsc code";
+      }
+    }
+    //
+  };
   const handleChang = (e) => {
+    const errors = { ...formErrors };
+    const errorMessage = validateProperty(e.target);
+    if (errorMessage) errors[e.target.name] = errorMessage;
+    else errors[e.target.name] = "";
+
     const { name, value } = e.target;
     const updatedValue = name === "ifsc_code" ? value.toUpperCase() : value;
     setFormData({ ...formData, [name]: updatedValue });
+    setFormErrors(errors);
   };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -56,7 +134,6 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
   const validateForm = () => {
     const bankIfscRegX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-    const emailRegX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     // const mobileRegX = /^[6789]\d{9}$/;
 
     const errors = {};
@@ -76,10 +153,10 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
     // for mobile filed
 
-    if (formData.ben_mobile === "") {
+    if (!formData.ben_mobile && _.isEmpty(formData.ben_mobile)) {
       errors.ben_mobile = "Mobile number is required";
-    } else if (formData.ben_mobile.length < 13) {
-      errors.ben_mobile = "Please enter valid mobile number";
+    } else if (!/^(|\+91)?[6789]\d{9}$/.test(formData.ben_mobile)) {
+      errors.ben_mobile = "Invalid mobile number";
     }
 
     //for address filed
@@ -253,14 +330,18 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   };
 
   const addBeneficiary = async () => {
+    console.log(formData);
     const errors = validateForm();
+    console.log(formErrors);
+    console.log(Object.keys(errors).length === 0);
     if (Object.keys(errors).length === 0) {
       if (validateBankDetails()) {
+        console.log("yyesadfa");
         try {
           const beneficiaryData = {
             custom_id: id,
-            FirstName: formData.fullName,
-            beneficiary_email: formData.email,
+            FirstName: formData.fullName.trim(),
+            beneficiary_email: formData.email.trim(),
             beneficiary_address: formData.ben_address,
             beneficiary_phone: formData?.ben_mobile,
             payment_info: {
@@ -340,7 +421,13 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
             Phone Number <span className="text-red-500 ">*</span>
           </label>
           <div className="mt-1  mb-2">
-            <MobileInput formData={formData} setFormData={setFormData} />
+            <MobileInput
+              formData={formData}
+              setFormData={setFormData}
+              formError={formErrors}
+              setFormError={setFormErrors}
+              setValidateProperty={validateProperty}
+            />
             {formErrors.ben_mobile && (
               <div className="text-red-700 text-xs">
                 {formErrors.ben_mobile}

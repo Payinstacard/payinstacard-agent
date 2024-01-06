@@ -57,11 +57,11 @@ function LoginForm({
           setLoad(false);
           setLoginAttempts(loginAttempts + 1);
           errors.message = Firebase_login_error(error);
-          // toast(Firebase_login_error(error), {
-          //   theme: "dark",
-          //   hideProgressBar: true,
-          //   type: "error",
-          // });
+          toast(Firebase_login_error(error), {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
         }
       },
     });

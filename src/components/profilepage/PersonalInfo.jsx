@@ -8,7 +8,6 @@ import DocumentCard from "./DocumentCard";
 
 function PersonalInfo(props) {
   const agentData = useSelector((state) => state?.agentData?.agentData);
-  console.log(agentData);
 
   // const Documents = [
   //   "https://payinstacard-admin.s3.ap-south-1.amazonaws.com/agents/1700200774199-WhatsApp%20Image%202023-11-17%20at%2011.23.17%20AM%281%29.png",

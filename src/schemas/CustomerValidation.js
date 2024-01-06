@@ -1,7 +1,17 @@
 import _ from "lodash";
 
 const validate = (formData) => {
-  let newErrors = {};
+  let newErrors = {
+    firstName: "",
+    lastName: "",
+    mobileNo: "",
+    address: "",
+    mobileVerified: false,
+    email: "",
+    city: "",
+    state: "",
+    pincode: "",
+  };
 
   const {
     firstName,
@@ -20,9 +30,9 @@ const validate = (formData) => {
   } else if (firstName.length < 3) {
     newErrors = {
       ...newErrors,
-      firstName: "First name should be minimum 3 characters.",
+      firstName: "First name should be minimum 3 characters",
     };
-  } else if (!/^[A-Za-z]+$/.test(firstName)) {
+  } else if (!/^[A-Za-z]+ *$/.test(firstName)) {
     newErrors = {
       ...newErrors,
       firstName: "First name should be letters",
@@ -36,7 +46,7 @@ const validate = (formData) => {
       ...newErrors,
       lastName: "Last name should be minimum 3 characters.",
     };
-  } else if (!/^[A-Za-z]+$/.test(lastName)) {
+  } else if (!/^[A-Za-z]+ *$/.test(lastName)) {
     newErrors = {
       ...newErrors,
       lastName: "Last name should be letters",
@@ -48,18 +58,18 @@ const validate = (formData) => {
   } else if (!/^(|\+91)?[6789]\d{9}$/.test(mobileNo)) {
     newErrors = {
       ...newErrors,
-      mobileNo: "Invalid mobile number.",
+      mobileNo: "Invalid mobile number",
     };
-  } else if (!mobileVerified) {
-    newErrors = { ...newErrors, mobileVerified: "Verify mobile first." };
+  } else if (mobileVerified === false) {
+    newErrors = { ...newErrors, mobileVerified: "Verify mobile first" };
   }
 
   if (!email || _.isEmpty(email)) {
     newErrors = { ...newErrors, email: "Email is required" };
-  } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
+  } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(email)) {
     newErrors = {
       ...newErrors,
-      email: "Invalid Email.",
+      email: "Invalid Email",
     };
   }
 
@@ -80,7 +90,7 @@ const validate = (formData) => {
   } else if (pincode.length !== 6) {
     newErrors = {
       ...newErrors,
-      pincode: "Invalid Pincode.",
+      pincode: "Invalid Pincode",
     };
   }
 

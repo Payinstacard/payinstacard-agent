@@ -110,10 +110,92 @@ function AddNewCustomer() {
     };
   }, [timer, isTimerActive]);
 
+  const validateProperty = ({ name, value }) => {
+    // for first name
+    if (name === "firstName") {
+      if (!value && _.isEmpty(value)) {
+        return "First name is required";
+      } else if (value.length < 3) {
+        return "First name should be minimum 3 characters";
+      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+        return "First name should be letters(*Not contain space)";
+      }
+    }
+    // for last name
+    if (name === "lastName") {
+      if (!value && _.isEmpty(value)) {
+        return "Last name is required";
+      } else if (value.length < 3) {
+        return "Last name should be minimum 3 characters";
+      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+        return "Last name should be letters(*Not contain space)";
+      }
+    }
+
+    // for mobile
+
+    if (name === "mobileNo") {
+      if (!value && _.isEmpty(value)) {
+        return "Mobile number is required";
+      } else if (!/^(|\+91)?[6789]\d{9}$/.test(value)) {
+        return "Invalid mobile number";
+      }
+    }
+
+    //for email
+    if (name === "email") {
+      if (!value && _.isEmpty(value)) {
+        return "Email is required";
+      } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(value)) {
+        return "Invalid Email";
+      }
+    }
+
+    //for pincode
+
+    if (name === "pincode") {
+      if (!value && _.isEmpty(value)) {
+        return "Pincode is required";
+      } else if (value.length !== 6) {
+        return "Invalid Pincode";
+      } else if (!/^\d*$/.test(value)) {
+        return "Pincode should be number";
+      }
+    }
+
+    //for state
+
+    if (name === "state") {
+      if (!value && _.isEmpty(value)) {
+        return "State is required";
+      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+        return "State should be letters(*Not contain space)";
+      }
+    }
+
+    //for city
+    if (name === "city") {
+      if (!value && _.isEmpty(value)) {
+        return "City is required";
+      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+        return "City should be letters(*Not contain space)";
+      }
+    }
+    //
+  };
+
   const handleInputChange = (e) => {
+    const errors = { ...validation };
+    const errorMessage = validateProperty(e.target);
+    if (errorMessage) errors[e.target.name] = errorMessage;
+    else errors[e.target.name] = "";
+
     setData({ ...data, [e.target.name]: e.target.value });
+    console.log("error", errors);
+    setValidation(errors);
   };
   const mobileRegex = /^(|\+91)?[6789]\d{9}$/;
+
   const validateMobile = async () => {
     if (data.mobileNo.length === 0) {
       setValidation({ ...validation, mobileNo: "Please Enter Mobile Number" });
@@ -195,10 +277,6 @@ function AddNewCustomer() {
           phone: data.mobileNo,
         });
 
-        setVerify(true);
-        setIsEdit(true);
-        setIsTimerActive(true);
-        setTimer(30);
         console.log(response);
 
         const message = response?.data?.message;
@@ -206,6 +284,10 @@ function AddNewCustomer() {
         const code = response?.data?.code;
 
         if (code === 200 && type === "success") {
+          setVerify(true);
+          setIsEdit(true);
+          setIsTimerActive(true);
+          setTimer(30);
           toast("OTP has been sent successfully.", {
             theme: "dark",
             hideProgressBar: true,
@@ -348,20 +430,19 @@ function AddNewCustomer() {
           phone: data.mobileNo,
         });
 
-        setVerify(true);
-        setIsTimerActive(true);
-        setTimer(30);
-        console.log(response);
-        setValidation({
-          ...validation,
-          otp: "",
-        });
-        setOtp("");
-
         const type = response.data.response.type;
         const code = response?.data?.code;
 
         if (code === 200 && type === "success") {
+          setVerify(true);
+          setIsTimerActive(true);
+          setTimer(30);
+          console.log(response);
+          setValidation({
+            ...validation,
+            otp: "",
+          });
+          setOtp("");
           const message =
             response?.data?.response?.message || response?.data?.message;
           toast("OTP resent successfully.", {
@@ -480,14 +561,6 @@ function AddNewCustomer() {
         dispatch(setCustomersLoading(false));
         console.log(response);
 
-        setData((prevData) => ({
-          ...prevData,
-          mobileVerified: response.data.response.type === "success",
-        }));
-
-        setValidation({ ...validation, otp: "" });
-        setIsEdit(false);
-
         const type = response.data.response.type;
         const message =
           response?.data?.response?.message || response?.data?.message;
@@ -499,6 +572,13 @@ function AddNewCustomer() {
         };
 
         if (code === 200 && type === "success") {
+          setData((prevData) => ({
+            ...prevData,
+            mobileVerified: response.data.response.type === "success",
+          }));
+
+          setValidation({ ...validation, otp: "", mobileVerified: "" });
+          setIsEdit(false);
           toast("OTP successfully verified.", {
             ...toastOptions,
             type: "success",
@@ -530,70 +610,55 @@ function AddNewCustomer() {
     }
   };
   const submitPincode = async () => {
-    if (!data.pincode || data.pincode === "") {
-      // setPincodeError("Pincode is required");
-      setValidation({
-        ...validation,
-        pincode: "Pincode is required",
-      });
-    } else if (!/^\d*$/.test(data.pincode)) {
-      setValidation({
-        ...validation,
-        pincode: "Pincode should be number",
-      });
-    } else if (data.pincode.length == 6) {
-      // setLoad(true);
-      dispatch(setCustomersLoading(true));
-      await fetch(`https://api.postalpincode.in/pincode/${data?.pincode}`)
-        .then((response) => response.json())
-        .then((response) => {
-          console.log("data", response);
-          // setLoad(false);
-          dispatch(setCustomersLoading(false));
-          setData({
-            ...data,
-            state: response[0]?.PostOffice[0]?.State,
-            city: response[0]?.PostOffice[0]?.District,
-            address: response[0]?.PostOffice[0]?.Name,
-          });
-          // setPincodeError("");
-          setValidation({ ...validation, pincode: "", city: "", state: "" });
-        })
-        .catch((error) => {
-          // setPincodeError("Invalid Pincode");
-          setValidation({ ...validation, pincode: "Invalid Pincode" });
-
-          // setLoad(false);
-          dispatch(setCustomersLoading(false));
-          console.error("Error:", error);
-          // Handle errors here
+    // setLoad(true);
+    dispatch(setCustomersLoading(true));
+    await fetch(`https://api.postalpincode.in/pincode/${data?.pincode}`)
+      .then((response) => response.json())
+      .then((response) => {
+        console.log("data", response);
+        // setLoad(false);
+        dispatch(setCustomersLoading(false));
+        setData({
+          ...data,
+          state: response[0]?.PostOffice[0]?.State,
+          city: response[0]?.PostOffice[0]?.District,
+          address: response[0]?.PostOffice[0]?.Name,
         });
-    } else
-      setValidation({
-        ...validation,
-        pincode: "Pincode should be of 6 Numbers only.",
-      });
+        // setPincodeError("");
+        setValidation({ ...validation, pincode: "", city: "", state: "" });
+      })
+      .catch((error) => {
+        // setPincodeError("Invalid Pincode");
+        setValidation({ ...validation, pincode: "Invalid Pincode" });
 
-    // else setPincodeError("Pincode should be of 6 Numbers only.");
+        // setLoad(false);
+        dispatch(setCustomersLoading(false));
+        console.error("Error:", error);
+        // Handle errors here
+      });
   };
 
+  // else setPincodeError("Pincode should be of 6 Numbers only.");
   const addCustomer = async (e) => {
     console.log(data);
     const validationErrors = validate(data);
+    console.log(validationErrors);
     setValidation(validationErrors);
     const isValid = Object.keys(validationErrors).length === 0;
     if (isValid) {
       const customerData = {
-        FirstName: data.firstName,
-        LastName: data.lastName,
+        FirstName: data.firstName.trim(),
+        LastName: data.lastName.trim(),
         Address: data.address,
         Pincode: data.pincode,
-        State: data.state,
-        City: data.city,
+        State: data.state.trim(),
+        City: data.city.trim(),
         mobile: data.mobileNo,
-        email: data.email,
+        email: data.email.trim(),
         verified: data.mobileVerified,
       };
+
+      console.log(customerData);
       const endPoint = id ? `${ADD_CUSTOMER}?customerId=${id}` : ADD_CUSTOMER;
       // setLoad(true);
       dispatch(setCustomersLoading(true));
@@ -723,6 +788,7 @@ function AddNewCustomer() {
                 className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg"
                 value={data?.mobileNo || ""}
               /> */}
+
               {validation?.mobileNo && (
                 <p className="text-red-800">{validation.mobileNo}</p>
               )}

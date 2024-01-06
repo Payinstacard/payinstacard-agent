@@ -57,7 +57,7 @@ export const Firebase_login_error = (error) => {
       break;
     case "auth/wrong-password":
       errorMessage = "Please Check your password";
-
+      break;
     default:
       errorMessage = "Error sending OTP";
       break;

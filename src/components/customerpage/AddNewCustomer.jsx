@@ -111,13 +111,14 @@ function AddNewCustomer() {
   }, [timer, isTimerActive]);
 
   const validateProperty = ({ name, value }) => {
+    console.log(name, value);
     // for first name
     if (name === "firstName") {
       if (!value && _.isEmpty(value)) {
         return "First name is required";
       } else if (value.length < 3) {
         return "First name should be minimum 3 characters";
-      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
         return "First name should be letters(*Not contain space)";
       }
     }
@@ -127,7 +128,7 @@ function AddNewCustomer() {
         return "Last name is required";
       } else if (value.length < 3) {
         return "Last name should be minimum 3 characters";
-      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
         return "Last name should be letters(*Not contain space)";
       }
     }
@@ -146,7 +147,7 @@ function AddNewCustomer() {
     if (name === "email") {
       if (!value && _.isEmpty(value)) {
         return "Email is required";
-      } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(value)) {
+      } else if (!/^ *[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(value)) {
         return "Invalid Email";
       }
     }
@@ -168,7 +169,7 @@ function AddNewCustomer() {
     if (name === "state") {
       if (!value && _.isEmpty(value)) {
         return "State is required";
-      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
         return "State should be letters(*Not contain space)";
       }
     }
@@ -177,7 +178,7 @@ function AddNewCustomer() {
     if (name === "city") {
       if (!value && _.isEmpty(value)) {
         return "City is required";
-      } else if (!/^[A-Za-z]+ *$/.test(value)) {
+      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
         return "City should be letters(*Not contain space)";
       }
     }
@@ -287,6 +288,7 @@ function AddNewCustomer() {
           setVerify(true);
           setIsEdit(true);
           setIsTimerActive(true);
+          setValidation({ ...validation, mobileVerified: "" });
           setTimer(30);
           toast("OTP has been sent successfully.", {
             theme: "dark",
@@ -584,6 +586,7 @@ function AddNewCustomer() {
             type: "success",
           });
         } else {
+          setOtp("");
           toast("OTP verification failed. Please try again.", {
             ...toastOptions,
             type: "warning",
@@ -591,6 +594,7 @@ function AddNewCustomer() {
         }
       } catch (error) {
         console.log(error);
+        setOtp("");
 
         let message =
           error?.response?.data?.message ||
@@ -641,10 +645,11 @@ function AddNewCustomer() {
   // else setPincodeError("Pincode should be of 6 Numbers only.");
   const addCustomer = async (e) => {
     console.log(data);
-    const validationErrors = validate(data);
+    let validationErrors = validate(data);
     console.log(validationErrors);
     setValidation(validationErrors);
     const isValid = Object.keys(validationErrors).length === 0;
+    console.log("valid", isValid);
     if (isValid) {
       const customerData = {
         FirstName: data.firstName.trim(),
@@ -660,7 +665,9 @@ function AddNewCustomer() {
 
       console.log(customerData);
       const endPoint = id ? `${ADD_CUSTOMER}?customerId=${id}` : ADD_CUSTOMER;
+
       // setLoad(true);
+
       dispatch(setCustomersLoading(true));
       await apiClient
         .post(endPoint, customerData)
@@ -925,6 +932,7 @@ function AddNewCustomer() {
             <input
               type="text"
               name="pincode"
+              maxLength={6}
               placeholder="Pincode"
               value={data?.pincode || ""}
               onChange={(e) => handleInputChange(e)}

@@ -1,17 +1,7 @@
 import _ from "lodash";
 
 const validate = (formData) => {
-  let newErrors = {
-    firstName: "",
-    lastName: "",
-    mobileNo: "",
-    address: "",
-    mobileVerified: false,
-    email: "",
-    city: "",
-    state: "",
-    pincode: "",
-  };
+  let newErrors = {};
 
   const {
     firstName,
@@ -32,7 +22,7 @@ const validate = (formData) => {
       ...newErrors,
       firstName: "First name should be minimum 3 characters",
     };
-  } else if (!/^[A-Za-z]+ *$/.test(firstName)) {
+  } else if (!/^ *[A-Za-z]+ *$/.test(firstName)) {
     newErrors = {
       ...newErrors,
       firstName: "First name should be letters",
@@ -46,7 +36,7 @@ const validate = (formData) => {
       ...newErrors,
       lastName: "Last name should be minimum 3 characters.",
     };
-  } else if (!/^[A-Za-z]+ *$/.test(lastName)) {
+  } else if (!/^ *[A-Za-z]+ *$/.test(lastName)) {
     newErrors = {
       ...newErrors,
       lastName: "Last name should be letters",
@@ -66,7 +56,7 @@ const validate = (formData) => {
 
   if (!email || _.isEmpty(email)) {
     newErrors = { ...newErrors, email: "Email is required" };
-  } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(email)) {
+  } else if (!/^ *[\w-\.]+@([\w-]+\.)+[\w-]{2,4} *$/g.test(email)) {
     newErrors = {
       ...newErrors,
       email: "Invalid Email",
@@ -87,7 +77,7 @@ const validate = (formData) => {
 
   if (!pincode || _.isEmpty(pincode)) {
     newErrors = { ...newErrors, pincode: "Pincode is required" };
-  } else if (pincode.length !== 6) {
+  } else if (pincode.trim().length !== 6) {
     newErrors = {
       ...newErrors,
       pincode: "Invalid Pincode",

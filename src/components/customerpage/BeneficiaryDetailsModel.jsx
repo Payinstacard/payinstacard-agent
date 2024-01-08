@@ -47,6 +47,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
   const loading = useSelector(
     (state) => state?.customersData?.customersLoading
   );
+  const [load, setLoad] = useState(false);
 
   // const [load, setLoad] = useState(false);
   const navigate = useNavigate();
@@ -265,6 +266,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
   const add_beneficiary_api = async (data, success_cb, error_cb) => {
     dispatch(setCustomersLoading(true));
+    setLoad(true);
     await apiClient
       .post(ADD_BENEFICIARY, data)
       .then((response) => {
@@ -285,6 +287,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
               type: "success",
             }
           );
+
           onClose();
         } else {
           toast(
@@ -299,6 +302,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           );
         }
         dispatch(setCustomersLoading(false));
+        setLoad(false);
       })
       .catch((error) => {
         toast(
@@ -312,6 +316,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           }
         );
         dispatch(setCustomersLoading(false));
+        setLoad(false);
       });
   };
 
@@ -358,10 +363,11 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
               upi_code: "",
             },
           };
+          console.log("benData==>", beneficiaryData);
           add_beneficiary_api(beneficiaryData);
         } catch (error) {
           // setLoad(false);
-          // dispatch(setCustomersLoading(false));
+          dispatch(setCustomersLoading(false));
           console.log(error);
         }
       }
@@ -372,7 +378,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {loading && <Loader />}
+      {loading || (load && <Loader />)}
       <div
         className={`fixed top-0 left-0 w-full h-full flex items-center justify-center scroll  ${
           isOpen ? "" : "hidden"

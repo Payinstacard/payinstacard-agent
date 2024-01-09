@@ -98,7 +98,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
         return "Account is required";
       } else if (!(value.length >= 9 && value.length <= 18)) {
         return "Please enter valid length account number";
-      } else if (!/^ *[0-9]+ *$/.test(formData.accountNumber)) {
+      } else if (!/^ *[0-9]+ *$/.test(value)) {
         return "Please enter valid length account number";
       }
     }

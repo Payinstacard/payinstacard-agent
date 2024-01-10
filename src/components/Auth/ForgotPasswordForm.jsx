@@ -5,6 +5,10 @@ import LogoPng from "../../assets/svg/payinstaLogo.svg";
 import Button from "../common/forms/Button";
 import Input from "../common/forms/Input";
 import { ForgotPasswordPageSchema } from "../../schemas/ValidationSchema";
+import { sendForgotPasswordEmail } from "../../Firebase";
+import { Firebase_login_error } from "../../services/firebaseErrors";
+import { toast } from "react-toastify";
+
 const initialValues = {
   email: "",
 };
@@ -13,8 +17,25 @@ function ForgotPasswordForm({}) {
   const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues: initialValues,
     validationSchema: ForgotPasswordPageSchema,
-    onSubmit: (values) => {
-      // console.log(values);
+    onSubmit: async (values) => {
+      console.log(values);
+
+      try {
+        await sendForgotPasswordEmail(values.email.trim());
+        toast("Successfully send reset password email", {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "success",
+        });
+        setTimeout(() => navigate("/"), 3000);
+      } catch (error) {
+        errors.message = Firebase_login_error(error);
+        toast(Firebase_login_error(error), {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "error",
+        });
+      }
     },
   });
   return (
@@ -60,9 +81,7 @@ function ForgotPasswordForm({}) {
           <Button
             outlined={true}
             buttonActions={{
-              onClick: () => {
-                navigate("/");
-              },
+              onClick: () => navigate("/"),
             }}
             label="Back to Login"
           />

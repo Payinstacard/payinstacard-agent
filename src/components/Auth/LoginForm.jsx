@@ -52,7 +52,7 @@ function LoginForm({
         }
         try {
           setLoad(true);
-          await signIn(values.email, values.password);
+          await signIn(values.email.trim(), values.password.trim());
         } catch (error) {
           setLoad(false);
           setLoginAttempts(loginAttempts + 1);

@@ -55,10 +55,6 @@ function TransactionsTable(props) {
   // fetching customer details
 
   React.useEffect(() => {
-    console.log(
-      "------------------karn---------------",
-      agentData?.firebase_uid
-    );
     if (agentData?.firebase_uid) {
       setLoad(true);
       dispatch(fetchCustomers());
@@ -336,14 +332,31 @@ function TransactionsTable(props) {
     setShowPopup(false);
   };
 
+  const getTotalPay = () => {
+    if (_.isEmpty(agentDataWithTransactions?.transactions)) {
+      return "0";
+    }
+    return agentDataWithTransactions?.transactions
+      ?.filter(
+        (data) =>
+          data?.OrderPaymentStatus === "200" ||
+          data?.OrderPaymentStatus === "201"
+      )
+      .reduce(
+        (total, transaction) =>
+          total + parseInt(transaction.benificary_details.TotalAmount),
+        0
+      );
+  };
   return (
     <div className="mt-10">
       {load && <Loader />}
+
       <PageTitle
         buttonText="Make New Transaction"
         title="Transactions"
         // url={`/dashboard/customers/customer-details/${customersData?.Customer_id}/make-new-transaction`}
-        // url="../make-new-transaction"
+        url="/dashboard/customers"
       />
       <div className="flex flex-wrap justify-center min-[430px]:justify-start gap-3 sm:gap-6 mb-2 mt-4 sm:mb-6 sm:mt-6">
         {/** CARD #1 */}
@@ -358,7 +371,9 @@ function TransactionsTable(props) {
               </button>
             </div>
             <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
-              {agentDataWithTransactions?.transactions?.length}
+              {agentDataWithTransactions?.transactions?.length
+                ? agentDataWithTransactions?.transactions?.length
+                : "0"}
             </p>
           </div>
         </div>
@@ -379,18 +394,7 @@ function TransactionsTable(props) {
             : props?.data} */}
               {/* &#8377;{getTotalPayment()} */}
               &#8377;
-              {agentDataWithTransactions?.transactions
-                ?.filter(
-                  (data) =>
-                    data?.OrderPaymentStatus === "200" ||
-                    data?.OrderPaymentStatus === "201"
-                )
-                .reduce(
-                  (total, transaction) =>
-                    total +
-                    parseInt(transaction.benificary_details.TotalAmount),
-                  0
-                )}
+              {getTotalPay()}
             </p>
           </div>
           {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}

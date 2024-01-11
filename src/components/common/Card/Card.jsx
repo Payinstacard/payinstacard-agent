@@ -3,6 +3,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 
 function Card(props) {
   const thousandSeparatorRegex = /(\d)(?=(\d{3})+(?!\d))/g;
+  console.log("props==>", props);
   return (
     //   <div className="w-1/5 bg-gray-300 px-1 py-2 sm:px-3 sm:py-4 rounded-lg min-w-fit	">
     //     <h5 className="text-xs sm:text-sm font-semibold pb-0 sm:pb-2">
@@ -31,7 +32,7 @@ function Card(props) {
           {/* {props?.number
             ? props?.data.toFixed(2).replace(thousandSeparatorRegex, "$1,")
             : props?.data} */}
-          {props?.data}
+          {props?.data ? props?.data : "0"}
         </p>
       </div>
       {/* <img src={props.icon} alt="" className="w-7 sm:w-10" /> */}

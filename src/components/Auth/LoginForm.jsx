@@ -8,6 +8,7 @@ import Input from "../common/forms/Input";
 import { LoginPageSchema } from "../../schemas/ValidationSchema";
 import { Firebase_login_error } from "../../services/firebaseErrors";
 import { useAuth } from "../../stores/AuthContext";
+import { toast } from "react-toastify";
 // import { signIn } from "../../Firebase";
 // import "firebase/auth";
 // import { Firebase_login_error } from "../../service/firebaseErrors";
@@ -51,11 +52,16 @@ function LoginForm({
         }
         try {
           setLoad(true);
-          await signIn(values.email, values.password);
+          await signIn(values.email.trim(), values.password.trim());
         } catch (error) {
           setLoad(false);
           setLoginAttempts(loginAttempts + 1);
           errors.message = Firebase_login_error(error);
+          toast(Firebase_login_error(error), {
+            theme: "dark",
+            hideProgressBar: true,
+            type: "error",
+          });
         }
       },
     });

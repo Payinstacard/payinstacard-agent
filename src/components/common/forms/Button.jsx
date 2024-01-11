@@ -11,7 +11,7 @@ function Button(props) {
             ? "border-2 border-primary text-primary"
             : "bg-primary hover:bg-primarylight text-[#FFFFFF]"
         }`}
-        onClick={props.onClick}
+        onClick={props?.buttonActions?.onClick}
         disabled={props?.disabled}
       >
         {props?.label}

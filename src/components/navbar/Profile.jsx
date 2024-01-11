@@ -42,7 +42,7 @@ function Profile(props) {
 
       <div className="w-2/5 flex gap-2 justify-between items-center relative hidden sm:block">
         <div>
-          <p className="text-sm text-[#060B1E]">
+          <p className="text-sm text-[#060B1E] whitespace-nowrap">
             {/* {auth?.user?.displayName ? auth?.user?.displayName : "Agent"} */}
             {agentData?.Customer_data?.FullName}
           </p>

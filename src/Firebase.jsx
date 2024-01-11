@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyBhclizk98ZiIyvck2o0Bs6pn7qF_M22Wc",
 
@@ -24,6 +29,11 @@ export const auth = getAuth(app);
 export const signIn = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
+
+export const sendForgotPasswordEmail = (email) => {
+  return sendPasswordResetEmail(auth, email);
+};
+
 export const getAccessToken = async () => {
   return await auth?.currentUser?.getIdToken(true);
 };

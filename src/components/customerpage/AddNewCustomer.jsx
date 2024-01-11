@@ -118,8 +118,6 @@ function AddNewCustomer() {
         return "First name is required";
       } else if (value.length < 3) {
         return "First name should be minimum 3 characters";
-      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
-        return "First name should be letters(*Not contain space)";
       }
     }
     // for last name
@@ -128,8 +126,6 @@ function AddNewCustomer() {
         return "Last name is required";
       } else if (value.length < 3) {
         return "Last name should be minimum 3 characters";
-      } else if (!/^ *[A-Za-z]+ *$/.test(value)) {
-        return "Last name should be letters(*Not contain space)";
       }
     }
 
@@ -557,7 +553,7 @@ function AddNewCustomer() {
       try {
         const response = await apiClient.post(VERIFY_OTP, {
           phone: data?.mobileNo,
-          otp: otp,
+          otp: otp.trim(),
         });
 
         dispatch(setCustomersLoading(false));

@@ -63,6 +63,7 @@ const MakeCustomerTransaction = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+    setFormErrors({ ...formErrors, beneficiary: "" });
   };
 
   const agentData = useSelector((state) => state?.agentData?.agentData);
@@ -109,6 +110,24 @@ const MakeCustomerTransaction = () => {
     }
   };
   const handleAmount = (event) => {
+    if (event.target.name === "amount") {
+      if (event.target.value.length === 0) {
+        setFormErrors({
+          ...formErrors,
+          [event.target.name]: "Please enter amount",
+        });
+      } else if (event.target.value === "0") {
+        setFormErrors({
+          ...formErrors,
+          [event.target.name]: "Please enter amount",
+        });
+      } else {
+        setFormErrors({
+          ...formErrors,
+          [event.target.name]: "",
+        });
+      }
+    }
     let amount = event.target.value;
 
     amount = parseInt(amount); // Convert to integer to remove leading zeros

@@ -22,11 +22,6 @@ const validate = (formData) => {
       ...newErrors,
       firstName: "First name should be minimum 3 characters",
     };
-  } else if (!/^ *[A-Za-z]+ *$/.test(firstName)) {
-    newErrors = {
-      ...newErrors,
-      firstName: "First name should be letters",
-    };
   }
 
   if (!lastName || _.isEmpty(lastName)) {
@@ -35,11 +30,6 @@ const validate = (formData) => {
     newErrors = {
       ...newErrors,
       lastName: "Last name should be minimum 3 characters.",
-    };
-  } else if (!/^ *[A-Za-z]+ *$/.test(lastName)) {
-    newErrors = {
-      ...newErrors,
-      lastName: "Last name should be letters",
     };
   }
 

@@ -1,17 +1,12 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
-import PaymentSuccess from "./PaymentSuccess";
-import PaymentFailure from "./PaymentFailure";
-import PaymentFailure2 from "./PaymentFailure2";
 import _ from "lodash";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import PaymentFailure from "./PaymentFailure";
+import PaymentSuccess from "./PaymentSuccess";
 // import { APIUrls } from "../../baseUrl/BaseUrl";
-import apiClient from "../../services/apiClient";
 import { useAuth } from "../../stores/AuthContext";
-import { useForm } from "react-hook-form";
 // import { Icon } from "@iconify/react";
-import { CgSpinner } from "react-icons/cg";
-import { toast, ToastContainer } from "react-toastify";
-import jsPDF from "jspdf";
+import { toast } from "react-toastify";
 // import "jspdf-autotable";
 // import IndianRupee from "./IndianRupee.ttf";
 // import Pdf from "react-to-pdf";
@@ -25,11 +20,14 @@ import jsPDF from "jspdf";
 //   QueryClientProvider,
 // } from "@tanstack/react-query";
 // import logo from "../../assets/payinstacard log_pblue_pblue (1) 2.png";
-import { AIRPAY_PAYMENT, BASE_URL } from "../../services/apiConstant";
-import { VERIFY_AIRPAY_PAYMENT } from "../../services/apiConstant";
-import FeedBackModal from "./FeedBackModal";
 import { useQuery } from "react-query";
+import {
+  BASE_URL,
+  FETCH_SINGLE_TRANSACTION_DATA,
+  VERIFY_AIRPAY_PAYMENT,
+} from "../../services/apiConstant";
 import Loader from "../common/Loader/Loader";
+import apiClient from "../../services/apiClient";
 
 const PaymentVerifyWrapper = () => {
   // const queryClient = useQueryClient();
@@ -40,6 +38,7 @@ const PaymentVerifyWrapper = () => {
   const navigate = useNavigate();
   const reportTemplateRef = useRef(null);
   const [res, setRes] = useState({});
+  const [tdata, setTdata] = useState({});
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -61,6 +60,15 @@ const PaymentVerifyWrapper = () => {
   useEffect(() => {
     feedbackTimer();
   }, []);
+  const fetchTransaction = async () => {
+    const temptdata = await apiClient.get(
+      FETCH_SINGLE_TRANSACTION_DATA + orderkeyid
+    );
+    setTdata(temptdata?.data?.response?.transactions_array);
+  };
+  React.useEffect(() => {
+    fetchTransaction();
+  }, [orderkeyid]);
 
   // const { isLoading, isError, data, error, status } = useQuery({
   const { isLoading, isError, data, error, status } = useQuery({
@@ -152,6 +160,7 @@ const PaymentVerifyWrapper = () => {
           keyid={orderkeyid}
           amount={data.OrderAmount}
           orderData={data}
+          tdata={tdata}
         />
       ) : (
         <PaymentFailure

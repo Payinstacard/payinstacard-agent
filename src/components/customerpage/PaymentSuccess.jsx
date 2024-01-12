@@ -64,7 +64,9 @@ const PaymentSuccess = (props) => {
           mx-auto
             bg-[#00006B]
            text-center min-w-[240px] max-lg:text-[0.8rem] rounded-[30px] text-white py-[0.8rem] font-[800] flex flex-row items-center justify-center gap-[0.5rem]`}
-          onClick={() => downloadTrasactionReceipt(props)}
+          onClick={() =>
+            props?.tdata ? downloadTrasactionReceipt(props?.tdata) : ""
+          }
         >
           View Recipt
         </button>

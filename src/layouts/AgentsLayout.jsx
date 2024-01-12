@@ -111,7 +111,7 @@ function AgentsLayout(props) {
               //     0
               //   )}
               data={`${getTotalCommi()}`}
-              title={"Commission Earned"}
+              title={"Total Earnings"}
               width="w-1/4"
             />
           </div>

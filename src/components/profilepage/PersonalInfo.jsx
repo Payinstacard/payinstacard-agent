@@ -214,9 +214,9 @@ function PersonalInfo(props) {
                 <div className="bg-[#EFF1F9] px-2 py-3 rounded">
                   {agentData?.Commission?.markupPercentage}
                 </div>
-                <p className="text-[14px] text-[#FFC300]">
+                {/* <p className="text-[14px] text-[#FFC300]">
                   Note: Max limit is 0.7%
-                </p>
+                </p> */}
               </div>
             </div>
           </div>

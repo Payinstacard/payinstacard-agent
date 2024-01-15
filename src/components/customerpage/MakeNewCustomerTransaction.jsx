@@ -324,7 +324,7 @@ const MakeCustomerTransaction = () => {
                   className="text-base block border-0 bg-[#EFF1F999] w-full rounded-lg py-2.5"
                 />
                 {!_.isEmpty(formErrors?.amount) && (
-                  <p className="text-red-800">{formErrors.amount}</p>
+                  <p className="text-red-800 mt-1">{formErrors.amount}</p>
                 )}
               </div>
               <div className="mb-5">

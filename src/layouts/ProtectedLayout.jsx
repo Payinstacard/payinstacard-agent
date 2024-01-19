@@ -7,8 +7,7 @@ import Navbar from "../components/navbar/Navbar";
 export const ProtectedLayout = () => {
   const { user, loading } = useAuth();
   const outlet = useOutlet();
-
-  if (!user && !loading) {
+  if (!user && !user.role.agents && !loading) {
     return <Navigate to="/login" />;
   }
 

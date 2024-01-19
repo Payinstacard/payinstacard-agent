@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { fetchAgent } from "./AgentRedux";
 
 import _ from "lodash";
+import { BASE_URL, GET_USER_ROLE } from "../services/apiConstant";
 
 const AuthContext = createContext();
 
@@ -24,11 +25,38 @@ export function AuthContextProvider({ children, userData }) {
   function getAccessToken() {
     return user?.getIdToken(true);
   }
+  const getUserRoleFunc = async (user) => {
+    try {
+      const result = await fetch(BASE_URL + GET_USER_ROLE, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      }).then(async (result) => {
+        console.log(result);
+        return await result.json();
+      });
+      console.log(result);
+      // const resultJson = await result.json();
+
+      // // console.log(resultJson);
+      if (result.status !== true && result.code === 400) {
+        logoutCurrentUser();
+      }
+      if (result.status !== true) {
+        throw new Error("Failed to login");
+      }
+
+      setUser({ ...user, role: result.response.role });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       let userSessionTimeout = null;
-
+      console.log("user====>", user);
       if (_.isNull(user) && userSessionTimeout) {
         clearTimeout(userSessionTimeout);
         userSessionTimeout = null;
@@ -58,14 +86,15 @@ export function AuthContextProvider({ children, userData }) {
   }, []);
 
   const loginCurrentUser = async (data) => {
-    setUser(data);
+    const userdata = getUserRoleFunc(data);
+    // setUser(userdata);
     // navigate("/dashboard/rent-payouts");
   };
 
-  const logoutCurrentUser = () => {
+  const logoutCurrentUser = (redirect = true) => {
     logout();
     setUser(false);
-    navigate("/", { replace: true });
+    if (redirect) navigate("/", { replace: true });
   };
 
   const value = useMemo(

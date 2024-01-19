@@ -2,6 +2,7 @@ export const BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:4000";
 
 export const API_STATUS = "/api/v2";
+export const GET_USER_ROLE = "/api/v2/getUserRole";
 export const ADD_CUSTOMER = "/api/v2/agents/agents/create-customer";
 export const FETCH_CUSTOMER = "api/v2/agents/agents/fetchAll-customer";
 export const DELETE_CUSTOMER = "api/v2/agents/agents/delete-customer";

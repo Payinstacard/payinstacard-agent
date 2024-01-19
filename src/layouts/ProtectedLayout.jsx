@@ -5,28 +5,39 @@ import { useAuth } from "../stores/AuthContext";
 import Navbar from "../components/navbar/Navbar";
 
 export const ProtectedLayout = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, logoutCurrentUser } = useAuth();
+  console.log("user in proted====>", user);
   const outlet = useOutlet();
-  if (!user && !user.role.agents && !loading) {
+  if (!user && !user?.role?.agents && !loading) {
     return <Navigate to="/login" />;
+  } else if (!user?.role?.agents) {
+    logoutCurrentUser();
   }
 
   return (
     <>
-      {/**For navigation bar  */}
-      <Navbar />
-      <div className="flex bg-gray-100 ">
-        {/* <div className="w-[236px] bg-white h-[calc(100vh-100px)] overflow-auto"> */}
+      {user?.role.agents ? (
+        <>
+          {/**For navigation bar  */}
+          <Navbar />
+          <div className="flex bg-gray-100 ">
+            {/* <div className="w-[236px] bg-white h-[calc(100vh-100px)] overflow-auto"> */}
 
-        <Sidebar />
+            <Sidebar />
 
-        <div className="h-[calc(100vh-100px)] overflow-auto grow">
-          {/* container */}
-          <div className="sm:m-6 rounded-xl">
-            {loading ? <Loader /> : outlet}
+            <div className="h-[calc(100vh-100px)] overflow-auto grow">
+              {/* container */}
+              <div className="sm:m-6 rounded-xl">
+                {loading ? <Loader /> : outlet}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          <Navigate to="/login" />
+        </>
+      )}
     </>
   );
 };

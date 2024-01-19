@@ -44,11 +44,11 @@ function MobileMenu(props) {
       path: "/dashboard/withdraw",
       icon: <Withdraw />,
     },
-    {
-      title: "Reports",
-      path: "/dashboard/reports",
-      icon: <Report />,
-    },
+    // {
+    //   title: "Reports",
+    //   path: "/dashboard/reports",
+    //   icon: <Report />,
+    // },
     {
       title: "Profile",
       path: "/dashboard/profile",

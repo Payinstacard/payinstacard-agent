@@ -55,7 +55,7 @@ function BeneficiaryAccounts(props) {
         </h2>
         <div>
           <button
-            className="bg-primary text-white cursor-pointer  py-1 px-3 sm:py-2 text-sm sm:text-base rounded-lg rounded-6 sm:px-6"
+            className="bg-primary text-white cursor-pointer  py-1.5 px-3 sm:py-2 text-sm sm:text-base rounded-lg rounded-6 sm:px-6"
             onClick={openModal}
           >
             <span className="mr-2 sm:mr-4">+</span>

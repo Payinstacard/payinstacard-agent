@@ -82,12 +82,13 @@ function AgentsLayout(props) {
         </div>
       </div> */}
           <PageTitle
-            url="/dashboard/agentsmanagement/addAgent"
+            // url="/dashboard/agentsmanagement/addAgent"
+            // url="/"
             title="Dashboard"
-            buttonText="Support"
-            buttonIcon={SupportIcon}
+            // buttonText="Support"
+            // buttonIcon={SupportIcon}
           />
-          <div className="flex flex-wrap justify-start gap-3 sm:gap-6 my-8">
+          <div className="flex flex-wrap justify-start gap-3 sm:gap-6 my-8 mx-4 sm:mx-0">
             <Card
               data={customersData.length}
               title={"Total Customers"}
@@ -111,17 +112,10 @@ function AgentsLayout(props) {
               //     0
               //   )}
               data={`${getTotalCommi()}`}
-              title={"Commission Earned"}
+              title={"Total Earnings"}
               width="w-1/4"
             />
           </div>
-          {/* <div className="flex justify-between">
-        <div className="w-3/4">graph here</div>
-        <div className="w-1/4 h-[300px]">pie chart here</div>
-      </div> */}
-
-          {/* <p>for logout</p>
-      <button onClick={logout}>logout</button> */}
         </>
       )}
     </div>

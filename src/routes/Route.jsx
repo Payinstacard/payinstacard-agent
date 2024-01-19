@@ -30,6 +30,8 @@ import PaymentVerifyWrapper from "../components/customerpage/PaymentVerifyWrappe
 import { Children } from "react";
 import NewTransactionLayout from "../layouts/NewTransactionLayout";
 import ReportsCharts from "../components/reportpage/ReportsCharts ";
+import LogOut from "../Unauthorized";
+import Unauthorized from "../Unauthorized";
 
 const getUserData = async () => {
   const user = await window.localStorage.getItem("user");
@@ -189,6 +191,10 @@ export const router = createBrowserRouter([
             ],
           },
         ],
+      },
+      {
+        path: "unautorized",
+        element: <Unauthorized />,
       },
     ],
   },

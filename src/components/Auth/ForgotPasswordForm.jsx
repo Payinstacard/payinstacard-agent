@@ -8,12 +8,14 @@ import { ForgotPasswordPageSchema } from "../../schemas/ValidationSchema";
 import { sendForgotPasswordEmail } from "../../Firebase";
 import { Firebase_login_error } from "../../services/firebaseErrors";
 import { toast } from "react-toastify";
+import Loader from "./../common/Loader/Loader";
 
 const initialValues = {
   email: "",
 };
 function ForgotPasswordForm({}) {
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
   const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues: initialValues,
     validationSchema: ForgotPasswordPageSchema,
@@ -21,6 +23,8 @@ function ForgotPasswordForm({}) {
       console.log(values);
 
       try {
+        setLoading(true);
+
         await sendForgotPasswordEmail(values.email.trim());
         toast("Successfully send reset password email", {
           theme: "dark",
@@ -36,10 +40,12 @@ function ForgotPasswordForm({}) {
           type: "error",
         });
       }
+      setLoading(false);
     },
   });
   return (
     <div className="w-[100%] md:w-[50%] flex flex-col items-center justify-center px-6 py-12 lg:px-8">
+      {loading && <Loader />}
       <div className="w-full sm:mx-auto sm:w-full sm:max-w-sm">
         <img className="" src={LogoPng} alt="Your Company" />
         <h1 className="mt-6 text-[40px] font-bold leading-9 tracking-tight text-gray-900 text-[#1E293B]">
@@ -47,7 +53,7 @@ function ForgotPasswordForm({}) {
         </h1>
         <p className="font-medium	mt-4 text-base text-[#64748B]">
           No worries! Just enter your e-mail and we’ll send you a OTP . then
-          verify it and its done .
+          verify it and its done.
         </p>
       </div>
 

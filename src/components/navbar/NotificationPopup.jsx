@@ -12,142 +12,142 @@ function NotificationPopup(props) {
     setActiveTab(tab);
   };
   const dummyNotifications = [
-    {
-      title: "PayinstaCard",
-      message:
-        "Transaction successful for Manikantaputta amount of ₹5000. Click here to download invoice.",
-      created_at: "2023-11-28T13:15:00.000Z",
-      btn_flag: true,
-      read: false,
-    },
-    {
-      title: "Your App",
-      message: "New update available. Click here to install version 2.0.",
-      created_at: "2023-11-28T14:30:00.000Z",
-      btn_flag: true,
-      read: false,
-    },
-    {
-      title: "Social Media",
-      message:
-        "You have new friend requests. Connect with others in your network.",
-      created_at: "2023-11-28T15:45:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Newsletter",
-      message: "Check out our latest newsletter for exciting updates and news.",
-      created_at: "2023-11-28T16:00:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Event Reminder",
-      message:
-        "Reminder: Attend the upcoming event on December 5th at 6:00 PM.",
-      created_at: "2023-11-29T09:00:00.000Z",
-      btn_flag: true,
-      read: true,
-    },
-    {
-      title: "Promotions",
-      message: "Exclusive holiday discounts! Shop now and save up to 50%.",
-      created_at: "2023-11-29T10:30:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Weather Alert",
-      message: "Severe weather warning in your area. Stay safe and prepared.",
-      created_at: "2023-11-29T12:15:00.000Z",
-      btn_flag: false,
-      read: false,
-    },
-    {
-      title: "Fitness App",
-      message: "Congratulations! You've achieved your weekly fitness goal.",
-      created_at: "2023-11-29T14:00:00.000Z",
-      btn_flag: true,
-      read: true,
-    },
-    {
-      title: "Tech News",
-      message:
-        "Read the latest tech news and stay updated with the industry trends.",
-      created_at: "2023-11-30T11:45:00.000Z",
-      btn_flag: false,
-      read: false,
-    },
-    {
-      title: "Job Opportunity",
-      message: "Exciting job opportunity matching your skills. Apply now!",
-      created_at: "2023-11-30T15:30:00.000Z",
-      btn_flag: true,
-      read: false,
-    },
+    // {
+    //   title: "PayinstaCard",
+    //   message:
+    //     "Transaction successful for Manikantaputta amount of ₹5000. Click here to download invoice.",
+    //   created_at: "2023-11-28T13:15:00.000Z",
+    //   btn_flag: true,
+    //   read: false,
+    // },
+    // {
+    //   title: "Your App",
+    //   message: "New update available. Click here to install version 2.0.",
+    //   created_at: "2023-11-28T14:30:00.000Z",
+    //   btn_flag: true,
+    //   read: false,
+    // },
+    // {
+    //   title: "Social Media",
+    //   message:
+    //     "You have new friend requests. Connect with others in your network.",
+    //   created_at: "2023-11-28T15:45:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Newsletter",
+    //   message: "Check out our latest newsletter for exciting updates and news.",
+    //   created_at: "2023-11-28T16:00:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Event Reminder",
+    //   message:
+    //     "Reminder: Attend the upcoming event on December 5th at 6:00 PM.",
+    //   created_at: "2023-11-29T09:00:00.000Z",
+    //   btn_flag: true,
+    //   read: true,
+    // },
+    // {
+    //   title: "Promotions",
+    //   message: "Exclusive holiday discounts! Shop now and save up to 50%.",
+    //   created_at: "2023-11-29T10:30:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Weather Alert",
+    //   message: "Severe weather warning in your area. Stay safe and prepared.",
+    //   created_at: "2023-11-29T12:15:00.000Z",
+    //   btn_flag: false,
+    //   read: false,
+    // },
+    // {
+    //   title: "Fitness App",
+    //   message: "Congratulations! You've achieved your weekly fitness goal.",
+    //   created_at: "2023-11-29T14:00:00.000Z",
+    //   btn_flag: true,
+    //   read: true,
+    // },
+    // {
+    //   title: "Tech News",
+    //   message:
+    //     "Read the latest tech news and stay updated with the industry trends.",
+    //   created_at: "2023-11-30T11:45:00.000Z",
+    //   btn_flag: false,
+    //   read: false,
+    // },
+    // {
+    //   title: "Job Opportunity",
+    //   message: "Exciting job opportunity matching your skills. Apply now!",
+    //   created_at: "2023-11-30T15:30:00.000Z",
+    //   btn_flag: true,
+    //   read: false,
+    // },
   ];
   const todayNotifications = [
-    {
-      title: "Your App",
-      message: "New update available. Click here to install version 2.0.",
-      created_at: "2023-11-28T14:30:00.000Z",
-      btn_flag: true,
-      read: false,
-    },
-    {
-      title: "Social Media",
-      message:
-        "You have new friend requests. Connect with others in your network.",
-      created_at: "2023-11-28T15:45:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Newsletter",
-      message: "Check out our latest newsletter for exciting updates and news.",
-      created_at: "2023-11-28T16:00:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
+    // {
+    //   title: "Your App",
+    //   message: "New update available. Click here to install version 2.0.",
+    //   created_at: "2023-11-28T14:30:00.000Z",
+    //   btn_flag: true,
+    //   read: false,
+    // },
+    // {
+    //   title: "Social Media",
+    //   message:
+    //     "You have new friend requests. Connect with others in your network.",
+    //   created_at: "2023-11-28T15:45:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Newsletter",
+    //   message: "Check out our latest newsletter for exciting updates and news.",
+    //   created_at: "2023-11-28T16:00:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
   ];
   const oldNotifications = [
-    {
-      title: "Newsletter",
-      message: "Check out our latest newsletter for exciting updates and news.",
-      created_at: "2023-11-28T16:00:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Event Reminder",
-      message:
-        "Reminder: Attend the upcoming event on December 5th at 6:00 PM.",
-      created_at: "2023-11-29T09:00:00.000Z",
-      btn_flag: true,
-      read: true,
-    },
-    {
-      title: "Promotions",
-      message: "Exclusive holiday discounts! Shop now and save up to 50%.",
-      created_at: "2023-11-29T10:30:00.000Z",
-      btn_flag: false,
-      read: true,
-    },
-    {
-      title: "Weather Alert",
-      message: "Severe weather warning in your area. Stay safe and prepared.",
-      created_at: "2023-11-29T12:15:00.000Z",
-      btn_flag: false,
-      read: false,
-    },
-    {
-      title: "Fitness App",
-      message: "Congratulations! You've achieved your weekly fitness goal.",
-      created_at: "2023-11-29T14:00:00.000Z",
-      btn_flag: true,
-      read: true,
-    },
+    // {
+    //   title: "Newsletter",
+    //   message: "Check out our latest newsletter for exciting updates and news.",
+    //   created_at: "2023-11-28T16:00:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Event Reminder",
+    //   message:
+    //     "Reminder: Attend the upcoming event on December 5th at 6:00 PM.",
+    //   created_at: "2023-11-29T09:00:00.000Z",
+    //   btn_flag: true,
+    //   read: true,
+    // },
+    // {
+    //   title: "Promotions",
+    //   message: "Exclusive holiday discounts! Shop now and save up to 50%.",
+    //   created_at: "2023-11-29T10:30:00.000Z",
+    //   btn_flag: false,
+    //   read: true,
+    // },
+    // {
+    //   title: "Weather Alert",
+    //   message: "Severe weather warning in your area. Stay safe and prepared.",
+    //   created_at: "2023-11-29T12:15:00.000Z",
+    //   btn_flag: false,
+    //   read: false,
+    // },
+    // {
+    //   title: "Fitness App",
+    //   message: "Congratulations! You've achieved your weekly fitness goal.",
+    //   created_at: "2023-11-29T14:00:00.000Z",
+    //   btn_flag: true,
+    //   read: true,
+    // },
   ];
 
   return (
@@ -157,7 +157,7 @@ function NotificationPopup(props) {
         <div className="flex items-center gap-2">
           <p className="font-bold">Notifications</p>
           <p className="bg-[#00006B] text-white px-1 text-center rounded-full">
-            15
+            0
           </p>
         </div>
         <div className="flex items-center gap-2">

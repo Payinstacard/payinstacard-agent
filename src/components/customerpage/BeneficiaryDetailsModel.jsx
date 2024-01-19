@@ -388,7 +388,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
           className="absolute w-full h-full bg-gray-800 opacity-50"
           onClick={onClose}
         ></div>
-        <div className="bg-white w-[80%] min-[540px]:w-[60%] md:w-[40%] h-[74%]  overflow-auto p-4 min-[549px]:p-8 rounded-lg shadow-lg z-10">
+        <div className="bg-white w-full h-full min-[540px]:w-[60%] md:w-[40%] min-[540px]:h-[74%]  overflow-auto p-4 min-[549px]:p-8 rounded-lg shadow-lg z-10">
           <p className="flex justify-end">
             <button
               type="button"
@@ -420,7 +420,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 onChange={handleChang}
               />
               {formErrors.fullName && (
-                <div className="text-red-700 text-xs">
+                <div className="text-red-700 text-xs mt-1">
                   {formErrors.fullName}
                 </div>
               )}
@@ -439,7 +439,9 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 onChange={handleChang}
               />
               {formErrors.email && (
-                <div className="text-red-700 text-xs">{formErrors.email}</div>
+                <div className="text-red-700 text-xs mt-1">
+                  {formErrors.email}
+                </div>
               )}
             </div>
             <label htmlFor="phoneNumber" className="text-sm text-[#5E6366] ">
@@ -461,7 +463,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
               />
 
               {formErrors.ben_mobile && (
-                <div className="text-red-700 text-xs">
+                <div className="text-red-700 text-xs mt-1 mt-1">
                   {formErrors.ben_mobile}
                 </div>
               )}
@@ -478,7 +480,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 onChange={handleChang}
               />
               {formErrors.ben_address && (
-                <div className="text-red-700 text-xs">
+                <div className="text-red-700 text-xs mt-1">
                   {formErrors.ben_address}
                 </div>
               )}
@@ -498,7 +500,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 onChange={handleChang}
               />
               {formErrors.accountNumber && (
-                <div className="text-red-700 text-xs">
+                <div className="text-red-700 text-xs mt-1">
                   {formErrors.accountNumber}
                 </div>
               )}
@@ -529,7 +531,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 </div>
               </div>
               {formErrors.confirm_accountNumber && (
-                <span className="text-red-700 text-xs">
+                <span className="text-red-700 text-xs mt-1">
                   {formErrors.confirm_accountNumber}
                 </span>
               )}
@@ -548,7 +550,7 @@ const BeneficiaryDetailsModel = ({ isOpen, onClose }) => {
                 onChange={handleChang}
               />
               {formErrors.ifsc_code && (
-                <div className="text-red-700 text-xs">
+                <div className="text-red-700 text-xs mt-1">
                   {formErrors.ifsc_code}
                 </div>
               )}

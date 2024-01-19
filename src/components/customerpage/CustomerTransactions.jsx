@@ -187,9 +187,10 @@ function CustomerTransactions(props) {
   };
 
   React.useEffect(() => {
-    let mapData = customersData?.transactions?.map((item, index) => {
-      return { ...item, ["Index"]: data.length - index };
-    }, []);
+    let mapData =
+      customersData?.transactions?.map((item, index) => {
+        return { ...item, ["Index"]: data.length - index };
+      }) || [];
 
     if (!_.isEmpty(dateRange.startDate) && !_.isEmpty(dateRange.endDate)) {
       const startDate = new Date(dateRange.startDate);
@@ -250,8 +251,10 @@ function CustomerTransactions(props) {
     //     }
     //   });
     // }
-    setFilteredItems(mapData.reverse());
-  }, [data, filterText, currentFilterBy, dateRange]);
+    if (customersData) {
+      setFilteredItems(mapData.reverse());
+    }
+  }, [customersData, filterText, currentFilterBy, dateRange]);
 
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
@@ -354,14 +357,14 @@ function CustomerTransactions(props) {
           {/* <p>{index}</p> */}
         </div>
       ),
-      grow: 1,
+      grow: 1.55,
       // sortable: true,
       //   sortFunction: caseInsensitiveSort,
     },
 
     {
       name: "Beneficiary",
-      grow: 1,
+      grow: 1.25,
       cell: (row) => (
         <div>
           <p className="mb-1 w-max">
@@ -381,7 +384,7 @@ function CustomerTransactions(props) {
     },
     {
       name: "Transaction Date",
-      grow: 1,
+      grow: 1.4,
       selector: (row) => getDateString(row.created_At),
       sortable: "true",
       // width: "140px",

@@ -17,13 +17,14 @@ import { BASE_URL, GET_USER_ROLE } from "../services/apiConstant";
 const AuthContext = createContext();
 
 export function AuthContextProvider({ children, userData }) {
+  const [userAuthData, setUserAuthData] = useLocalStorage("user", userData);
   const [user, setUser] = useLocalStorage("user", userData);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoding] = useState(true);
 
   function getAccessToken() {
-    return user?.getIdToken(true);
+    return userAuthData?.getIdToken(true);
   }
   const getUserRoleFunc = async (user) => {
     try {
@@ -86,6 +87,7 @@ export function AuthContextProvider({ children, userData }) {
   }, []);
 
   const loginCurrentUser = async (data) => {
+    setUserAuthData(data);
     const userdata = getUserRoleFunc(data);
     // setUser(userdata);
     // navigate("/dashboard/rent-payouts");

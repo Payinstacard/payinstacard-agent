@@ -24,9 +24,6 @@ function Card(props) {
           <p className="text-xs sm:text-sm text-[#464748] py-3">
             {props?.title}
           </p>
-          <button>
-            <HiOutlineDotsVertical className="text-[#464748]" />
-          </button>
         </div>
         <p className="text-lg sm:text-2xl font-semibold color mb-1 sm:mb-3">
           {/* {props?.number

@@ -14,17 +14,7 @@ function Navbar(props) {
         <img src={PayinstaLogo} alt="" className="w-[63px]" />
       </div>
       <MobileMenu />
-      <div className="grow flex justify-end  min-[834px]:justify-between items-center">
-        <div className="relative hidden min-[834px]:block ">
-          <input
-            type="search"
-            placeholder="Search.."
-            className="bg-[#F6F6F8] rounded-lg text-sm border-0 w-[300px] py-3 px-4 pl-[35px] "
-          />
-          <span className="absolute left-[12px] top-[16px]">
-            <img src={SearchIcon} alt="" />
-          </span>
-        </div>
+      <div className="grow flex justify-end  items-center">
         <div className="scroll">
           <div className="flex gap-4 cursor-pointer">
             <span>

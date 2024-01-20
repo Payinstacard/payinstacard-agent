@@ -69,7 +69,7 @@ function DropdownMenu({ classes, options, selectedOption, setSelectedOption }) {
       </button>
       {isOpen && (
         <ul
-          className={`absolute mt-0 py-2 bg-white border rounded-b-lg w-11/12 shadow-md z-10 ${
+          className={`absolute mt-0 py-2 bg-white border rounded-lg w-11/12 shadow-md z-10  max-h-52	overflow-hidden	overflow-y-scroll	scroll ${
             position === "above" ? "bottom-full " : ""
           }`}
         >

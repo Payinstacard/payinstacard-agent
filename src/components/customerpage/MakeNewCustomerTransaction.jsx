@@ -20,9 +20,12 @@ import apiClient from "../../services/apiClient";
 import {
   AIRPAY_PAYMENT,
   BASE_URL,
+  JUSPAY,
   airpay_payment,
 } from "../../services/apiConstant";
 import Loader from "../common/Loader/Loader";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const MakeCustomerTransaction = () => {
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ const MakeCustomerTransaction = () => {
   const [amount, setAmount] = useState(0); // amount input
   const [convieFee, setConvieFee] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [paymentStatus, setPaymentStatus] = useState(""); // 'success' or 'failed'
   const [isModalOpen, setModalOpen] = useState(false);
@@ -167,7 +171,7 @@ const MakeCustomerTransaction = () => {
       const payableAmount = amount.toString();
       const paymentData = payInfo;
       const Paydata = {
-        Amount: amount,
+        Amount: amount.toString(),
         TotalAmount: totalAmount.toString(),
         // paymentType: rent, // "agent rent"
         paymentType: "agentrent",
@@ -240,9 +244,9 @@ const MakeCustomerTransaction = () => {
         keysElement.value = encryptData(Paydata, public_key);
 
         //Submit the form
-        console.log("form", form);
+        console.log("form==>", form);
 
-        form.submit();
+        // form.submit();
         // await apiClient
         //   .post(AIRPAY_PAYMENT, {
         //     payData: updatedValue,
@@ -252,7 +256,35 @@ const MakeCustomerTransaction = () => {
         //   .then((response) => {
         //     console.log("response", response);
         //   });
+
+        //JUSPAY
+
+        const jusPayData = {
+          token: tokens.value,
+          key: keysElement.value,
+          payData: inputElement.value,
+        };
+
+        try {
+          const response = await axios.post(BASE_URL + JUSPAY, jusPayData);
+          console.log("Juspay response====>", response);
+          setIsLoading(false);
+
+          if (response.status === 201) {
+            const { order_id } = response?.data?.response.order_id;
+
+            window.location.replace(
+              response?.data?.response?.payment_links?.web
+            );
+          }
+        } catch (error) {
+          setIsLoading(false);
+          dispatch(setCustomersLoading(false));
+          console.log("Error creating juspay order====>", error);
+          toast.error("Something went Wrong !");
+        }
       } catch (error) {
+        setIsLoading(false);
         dispatch(setCustomersLoading(false));
         console.log(error);
       }

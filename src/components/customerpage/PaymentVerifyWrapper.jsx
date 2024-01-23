@@ -25,6 +25,7 @@ import {
   BASE_URL,
   FETCH_SINGLE_TRANSACTION_DATA,
   VERIFY_AIRPAY_PAYMENT,
+  VERIFY_JUSPAY_PAYMENT,
 } from "../../services/apiConstant";
 import Loader from "../common/Loader/Loader";
 import apiClient from "../../services/apiClient";
@@ -60,15 +61,16 @@ const PaymentVerifyWrapper = () => {
   useEffect(() => {
     feedbackTimer();
   }, []);
-  const fetchTransaction = async () => {
-    const temptdata = await apiClient.get(
-      FETCH_SINGLE_TRANSACTION_DATA + orderkeyid
-    );
-    setTdata(temptdata?.data?.response?.transactions_array);
-  };
-  React.useEffect(() => {
-    fetchTransaction();
-  }, [orderkeyid]);
+
+  // const fetchTransaction = async () => {
+  //   const temptdata = await apiClient.get(
+  //     FETCH_SINGLE_TRANSACTION_DATA + orderkeyid
+  //   );
+  //   setTdata(temptdata?.data?.response?.transactions_array);
+  // };
+  // React.useEffect(() => {
+  //   fetchTransaction();
+  // }, [orderkeyid]);
 
   // const { isLoading, isError, data, error, status } = useQuery({
   const { isLoading, isError, data, error, status } = useQuery({
@@ -76,7 +78,7 @@ const PaymentVerifyWrapper = () => {
     queryFn: async () => {
       try {
         const token = await getAccessToken();
-        const response = await fetch(BASE_URL + VERIFY_AIRPAY_PAYMENT, {
+        const response = await fetch(BASE_URL + VERIFY_JUSPAY_PAYMENT, {
           method: "POST",
           body: JSON.stringify({
             OrderKeyId: orderkeyid,
@@ -114,6 +116,7 @@ const PaymentVerifyWrapper = () => {
       }
     },
   });
+
   console.log("data=>", data, "erro=>", error, "status=>", status);
 
   if (isLoading) {
@@ -155,20 +158,26 @@ const PaymentVerifyWrapper = () => {
           className="z-40"
         />
       )} */}
-      {status === "success" ? (
-        <PaymentSuccess
-          keyid={orderkeyid}
-          amount={data.OrderAmount}
-          orderData={data}
-          tdata={tdata}
-        />
-      ) : (
-        <PaymentFailure
-          reasonStatus={res.message}
-          keyid={orderkeyid}
-          amount={res?.response?.OrderAmount}
-          orderData={res?.response}
-        />
+
+      {status === "success" && (
+        <div>
+          {" "}
+          {data?.OrderStatus === "1" ? (
+            <PaymentSuccess
+              keyid={orderkeyid}
+              amount={data?.OrderAmount}
+              orderData={data}
+              // tdata={tdata}
+            />
+          ) : (
+            <PaymentFailure
+              reasonStatus={res.message}
+              keyid={orderkeyid}
+              amount={res?.response?.OrderAmount}
+              orderData={res?.response}
+            />
+          )}
+        </div>
       )}
     </div>
   );

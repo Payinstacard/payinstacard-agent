@@ -5,7 +5,10 @@ import CardWrapper from "./CardWrapper";
 import success from "../../assets/svg/success.svg";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi2";
 import { MdOutlineArrowBack } from "react-icons/md";
-import { downloadTrasactionReceipt } from "../common/models/htmlTopdf";
+import {
+  downloadReceiptbyjuspay,
+  downloadTrasactionReceipt,
+} from "../common/models/htmlTopdf";
 
 // import Pdf from "react-to-pdf";
 // import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
@@ -65,7 +68,7 @@ const PaymentSuccess = (props) => {
             bg-[#00006B]
            text-center min-w-[240px] max-lg:text-[0.8rem] rounded-[30px] text-white py-[0.8rem] font-[800] flex flex-row items-center justify-center gap-[0.5rem]`}
           onClick={() =>
-            props?.tdata ? downloadTrasactionReceipt(props?.tdata) : ""
+            props?.orderData ? downloadReceiptbyjuspay(props?.orderData) : ""
           }
         >
           View Recipt

@@ -31,7 +31,7 @@ export const WITHDRAWALS = "/payment/withdrawals";
 export const VERIFY_AIRPAY_PAYMENT = "/payment/airpay/verify-order";
 
 //Jus pay endpoint
-export const JUSPAY = "/paymentg/agent-juspay/create-order";
-export const VERIFY_JUSPAY_PAYMENT = "/paymentg/agent-juspay/status";
+export const JUSPAY = "/paymentg/juspay/create-order";
+export const VERIFY_JUSPAY_PAYMENT = "/paymentg/juspay/status";
 
 export const CHECK_AGENT_BALANCE = "/payment/agent-balance";

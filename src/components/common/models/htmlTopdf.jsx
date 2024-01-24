@@ -53,7 +53,7 @@ export const downloadTrasactionReceipt = (payData) => {
                
                 <div style="font-size: 13px;">
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Id: </span> ${
-                      payData?.paymentDetails?.TRANSACTIONID
+                      payData?.OrderId
                     }</p>
                     <p style="color: #19213D;"><span style="color: #5D6481;">Transaction Date:
                     </span> ${getDateString(payData?.created_At)}</p>

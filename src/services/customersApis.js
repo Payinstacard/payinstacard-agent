@@ -64,7 +64,7 @@ export function downloadCSVOfCustomerTransactions(array, selectedRows) {
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {
       return {
-        Transaction_ID: item?.paymentDetails?.TRANSACTIONID,
+        Transaction_ID: item?.OrderId,
         Transaction_Date: getDateString(item?.created_At),
         Beneficiary_Id: item?.benificary_details?.paymentInfo?.beneficier_id,
         Beneficiary_IFSC: item?.benificary_details?.paymentInfo?.ifsc_code,
@@ -75,7 +75,7 @@ export function downloadCSVOfCustomerTransactions(array, selectedRows) {
   } else {
     newArray = selectedRows.map((item) => {
       return {
-        Transaction_ID: item?.paymentDetails?.TRANSACTIONID,
+        Transaction_ID: item?.OrderId,
         Transaction_Date: getDateString(item?.created_At),
         Beneficiary_Id: item?.benificary_details?.paymentInfo?.beneficier_id,
         Beneficiary_IFSC: item?.benificary_details?.paymentInfo?.ifsc_code,
@@ -106,7 +106,7 @@ export function downloadCSVOfTransactions(array, selectedRows) {
   if (_.isEmpty(selectedRows)) {
     newArray = array.map((item) => {
       return {
-        Transaction_ID: item?.paymentDetails?.TRANSACTIONID,
+        Transaction_ID: item?.OrderId,
         Transaction_Date: getDateString(item?.created_At),
         Beneficiary_Id: item?.benificary_details?.paymentInfo?.beneficier_id,
         Beneficiary_IFSC: item?.benificary_details?.paymentInfo?.ifsc_code,
@@ -117,7 +117,7 @@ export function downloadCSVOfTransactions(array, selectedRows) {
   } else {
     newArray = selectedRows.map((item) => {
       return {
-        Transaction_ID: item?.paymentDetails?.TRANSACTIONID,
+        Transaction_ID: item?.OrderId,
         Transaction_Date: getDateString(item?.created_At),
         Beneficiary_Id: item?.benificary_details?.paymentInfo?.beneficier_id,
         Beneficiary_IFSC: item?.benificary_details?.paymentInfo?.ifsc_code,

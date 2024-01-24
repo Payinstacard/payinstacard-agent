@@ -210,7 +210,7 @@ function TransactionsTable(props) {
               {/* {row?.Customer_data?.FirstName +
                 " " +
                 row?.Customer_data?.LastName} */}
-              {row?.paymentDetails?.TRANSACTIONID}
+              {row?.OrderId}
             </p>
           </NavLink>
 

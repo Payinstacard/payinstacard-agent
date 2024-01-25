@@ -8,10 +8,15 @@ export const ProtectedLayout = () => {
   const { user, loading, logoutCurrentUser } = useAuth();
   console.log("user in proted====>", user);
   const outlet = useOutlet();
-  if (!user && !user?.role?.agents && !loading) {
+
+  if (user) {
+    if (!user && !user?.role?.agents && !loading) {
+      return <Navigate to="/login" />;
+    } else if (!user?.role?.agents) {
+      logoutCurrentUser();
+    }
+  } else {
     return <Navigate to="/login" />;
-  } else if (!user?.role?.agents) {
-    logoutCurrentUser();
   }
 
   return (

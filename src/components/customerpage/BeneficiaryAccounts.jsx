@@ -59,7 +59,7 @@ function BeneficiaryAccounts(props) {
             onClick={openModal}
           >
             <span className="mr-2 sm:mr-4">+</span>
-            Add new Benificiary
+            Add new Beneficiary
           </button>
           {/* </button> */}
         </div>
@@ -73,7 +73,7 @@ function BeneficiaryAccounts(props) {
         currentItems?.map((item, key) => (
           <BeneficiaryItem item={item} key={key} />
         ))}
-      <ReactPaginate
+      {/* <ReactPaginate
         breakLabel="..."
         nextLabel={<GrFormNext className="text-2xl" />}
         onPageChange={handlePageClick}
@@ -86,7 +86,7 @@ function BeneficiaryAccounts(props) {
         }
         pageLinkClassName={"px-2 py-1"}
         activeLinkClassName={"bg-[#00006B] text-white rounded"}
-      />
+      /> */}
     </div>
   );
 }

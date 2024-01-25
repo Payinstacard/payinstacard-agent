@@ -13,6 +13,7 @@ import { fetchAgent } from "./AgentRedux";
 
 import _ from "lodash";
 import { BASE_URL, GET_USER_ROLE } from "../services/apiConstant";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -37,12 +38,16 @@ export function AuthContextProvider({ children, userData }) {
         console.log(result);
         return await result.json();
       });
-      console.log(result);
       // const resultJson = await result.json();
 
       // // console.log(resultJson);
       if (result.status !== true && result.code === 400) {
         logoutCurrentUser();
+        toast("You are not authorized user", {
+          theme: "dark",
+          hideProgressBar: true,
+          type: "error",
+        });
       }
       if (result.status !== true) {
         throw new Error("Failed to login");

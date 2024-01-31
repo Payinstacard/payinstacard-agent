@@ -85,6 +85,8 @@ export function AuthContextProvider({ children, userData }) {
             }, expirationInMilliseconds);
           }
         });
+      } else {
+        logoutCurrentUser(false);
       }
       setLoding(false);
     });
